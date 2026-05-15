@@ -59,34 +59,19 @@ To use it:
 
 Manual tracker editing is disabled until progress data has been imported.
 
-## Files
+## Project Files
 
-Recommended GitHub structure:
+This repository contains:
 
-```text
-index.html
-README.md
-CHANGELOG.md
-```
+- `index.html` — the VEINFIRE RPG Engine browser tool
+- `README.md` — project overview and usage notes
+- `CHANGELOG.md` — version history
+- `NOTICE.md` — intellectual property and fan-use notice
 
-Only `index.html` is required for GitHub Pages or Netlify hosting, but `README.md` and `CHANGELOG.md` are strongly recommended.
+## Important Notes
 
-## Hosting
-
-This is a standalone static HTML project. It does not require a backend.
-
-It can be hosted on:
-
-- GitHub Pages
-- Netlify
-- Vercel
-- itch.io
-- any static web host
-
-## Important notes
-
-- The HTML does not directly call ChatGPT, Gemini, Grok, Claude, or any other AI.
+- The HTML tool does not directly call ChatGPT, Gemini, Grok, Claude, or any other AI.
 - The live campaign happens in the AI chat after the GM packet is copied.
-- The HTML is the character/campaign/control panel.
+- The HTML is the character creation, campaign generation, GM handoff, and progress tracking panel.
 - The AI chat is the GM/Narrator.
-- Browser download behavior may block multiple automatic downloads. If that happens, use the individual canon download buttons.
+- If browser download behavior blocks multiple automatic downloads, use the individual canon download buttons.
