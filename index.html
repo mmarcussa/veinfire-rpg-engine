@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>VEINFIRE RPG Engine v5.5 — Character Creation</title>
+<title>VEINFIRE RPG Engine v5.6 — Character Creation</title>
 <style>
 :root{
   --bg:#080a0d;--panel:#11100d;--gold:#d6b36a;--gold2:#f1d893;--text:#f3ead7;
@@ -558,7 +558,7 @@ input[type="file"]{
 </head>
 <body>
 <div class="wrap">
-  <div class="top"><div><h1>VEINFIRE RPG Engine v5.5</h1><div class="sub">VEINFIRE character creation, lore validation, campaign generation, GitHub-hosted Markdown canon access, GM handoff, and progress tracking.</div></div><div class="small"></div></div>
+  <div class="top"><div><h1>VEINFIRE RPG Engine v5.6</h1><div class="sub">VEINFIRE character creation, lore validation, campaign generation, GitHub-hosted Markdown canon handoff, and progress tracking.</div></div><div class="small"></div></div>
 
   <div class="phase-nav">
     <button id="navCreationBtn">Character Creation</button>
@@ -609,20 +609,6 @@ input[type="file"]{
           <button class="model-btn" data-model="Grok">Grok</button>
           <button class="model-btn" data-model="Claude">Claude</button>
         </div>
-      </div>
-
-
-      <div class="detail">
-        <div class="detail-title">Canon Source Setup</div>
-        <p>The GM packet gives the AI direct links to the GitHub-hosted VEINFIRE Markdown canon files. If the AI cannot access those links, download/open the canon files here and upload or paste them manually to the AI chat.</p>
-        <div class="canon-actions">
-          <button id="downloadAllCanonBtn">Download All Canon Files</button>
-          <button id="downloadCanonBtn" class="secondary">Show Individual Download Links</button>
-          </div>
-        <div class="download-note">
-          Multi-download depends on browser permission. If only one file downloads, allow multiple downloads for this page/site, then click <b>Download All Canon Files</b> again. The individual download buttons are the reliable fallback.
-        </div>
-        <div id="canonDownloadPanel" class="download-panel"></div>
       </div>
       <div class="detail">
         <div class="detail-title">How to Play</div>
@@ -1169,7 +1155,7 @@ const STEPS=[
  {key:"review",title:"Review",kind:"review",prompt:"Review the dossier and create your character.",help:"Difficulty emerges from the world and your actions."}
 ];
 
-const APP_VERSION="5.5";
+const APP_VERSION="5.6";
 function freshState(){
  return {
   version:APP_VERSION,
@@ -1229,8 +1215,8 @@ function freshState(){
 }
 let S=freshState();
 function $(id){return document.getElementById(id)};function pick(a){return a[Math.floor(Math.random()*a.length)]};function roll(n=20){return 1+Math.floor(Math.random()*n)};function clamp(n,a,b){return Math.max(a,Math.min(b,n))};function now(){return new Date().toLocaleTimeString()};function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
-function save(){localStorage.setItem("veinfire_rpg_v55",JSON.stringify(S))}function load(){
- try{ localStorage.removeItem("veinfire_rpg_v55"); }catch(e){}
+function save(){localStorage.setItem("veinfire_rpg_v56",JSON.stringify(S))}function load(){
+ try{ localStorage.removeItem("veinfire_rpg_v56"); }catch(e){}
  S=freshState();
 }
 function addLog(title,text){S.log.unshift({t:now(),title,text});renderLog();save()}
@@ -2394,7 +2380,7 @@ function renderPhase(){
    if(navProg) navProg.disabled=!S.pc;
  }
 }function renderAll(saveIt=true){validateLore(false);renderPhase();renderPath();renderStep();renderDossier("dossier");renderDossier("dossier2");renderPlayPanels();if(saveIt)save()}
-function resetAll(){localStorage.removeItem("veinfire_rpg_v55");S={version:APP_VERSION,phase:"creation",step:0,form:{race:"Valcian",kind:"Mundane",proficiency:"Martial Arts",discipline:"Elementalism",home:"Ordanthia",origin:"Commoner",background:"Relic Runner",startingGear:"Road Kit",factionTie:"None",flaw:"Debt-bound",goal:"Clear your name",secret:"You moved cargo off-record once"},pc:null,campaign:null,sessionStarted:false,resources:null,log:[],leads:[],turn:0};renderAll(false)}
+function resetAll(){localStorage.removeItem("veinfire_rpg_v56");S={version:APP_VERSION,phase:"creation",step:0,form:{race:"Valcian",kind:"Mundane",proficiency:"Martial Arts",discipline:"Elementalism",home:"Ordanthia",origin:"Commoner",background:"Relic Runner",startingGear:"Road Kit",factionTie:"None",flaw:"Debt-bound",goal:"Clear your name",secret:"You moved cargo off-record once"},pc:null,campaign:null,sessionStarted:false,resources:null,log:[],leads:[],turn:0};renderAll(false)}
 
 function initPresetSelect(){
  const sel=$("presetSelect");
@@ -2416,10 +2402,7 @@ function loadPreset(){
 
 
 
-function setupCanonModes(){
- renderCanonDownloadPanel();
- selectedCanonMode="google";
-}
+function setupCanonModes(){ selectedCanonMode="github"; }
 function canonDocDownloadUrl(doc){ return doc.url; }
 function renderCanonDownloadPanel(){
  const panel=$("canonDownloadPanel");
@@ -2468,12 +2451,13 @@ function canonSourcePacketBlock(){
 The v5 VEINFIRE canon documents are provided as public GitHub-hosted Markdown canon URLs.
 
 Before starting the campaign:
-1. Try to access and read these GitHub-hosted Markdown canon URLs. Markdown is plain text and should be easier to read than DOCX links.
+1. Access and read these GitHub-hosted Markdown canon URLs. Markdown is plain text and is the required canon source for this session.
 2. Explicitly confirm whether you can read each document.
-3. If you cannot access/read the documents, ask the player to download the documents using the HTML's Download Canon Docs button and upload/attach them manually to this chat.
+3. Do not start canon-sensitive play until the Markdown canon links have been checked.
 4. Do not pretend you accessed documents you cannot actually read.
-5. If access succeeds or documents are uploaded manually, use only these v5 documents as VEINFIRE canon.
-6. If a canon issue is not clearly supported or forbidden by accessible v5 canon, mark it as Needs Review instead of inventing an answer.
+5. Use only these v5 Markdown documents as VEINFIRE canon.
+6. If your platform cannot access/read the GitHub Markdown links, stop and tell the player that manual upload or pasted canon text is required.
+7. If a canon issue is not clearly supported or forbidden by accessible v5 canon, mark it as Needs Review instead of inventing an answer.
 
 Canon GitHub Document URLs:
 ${urls}`;
@@ -2642,7 +2626,7 @@ document.addEventListener("DOMContentLoaded",()=>{load();initCampaignOptions();i
  const v=validateLore(false);
  if(v.ok) showToast(`<b>Uploaded-docs lore validated.</b><br>No hard conflict found against the embedded v5 rules from this chat.`);
  else showToast(`<b>Not ready.</b><br>${v.problems.slice(0,4).join("<br>")}`);
-};$("randomBtn").onclick=randomize;$("presetBtn").onclick=loadPreset;$("resetBtn").onclick=resetAll;$("genCampaignBtn").onclick=generateCampaign;$("advanceBellBtn").onclick=advanceBell;$("restBtn").onclick=rest;$("buildPacketBtn").onclick=buildGMPacket;$("copyPacketBtn").onclick=copyGMPacket;$("editPacketBtn").onclick=enablePacketEdit;$("downloadAllCanonBtn").onclick=downloadAllCanonDocs;$("downloadCanonBtn").onclick=downloadCanonDocs;$("navCreationBtn").onclick=goCreation;$("navCampaignBtn").onclick=goCampaign;$("navHandoffBtn").onclick=goHandoff;$("navProgressBtn").onclick=goProgress;$("importUpdateBtn").onclick=importGMUpdate;$("importFileBtn").onclick=importProgressFile;$("applyManualBtn").onclick=applyManualEdits;$("exportProgressBtn").onclick=exportProgressJSON;$("downloadSaveBtn").onclick=downloadProgressSave});
+};$("randomBtn").onclick=randomize;$("presetBtn").onclick=loadPreset;$("resetBtn").onclick=resetAll;$("genCampaignBtn").onclick=generateCampaign;$("advanceBellBtn").onclick=advanceBell;$("restBtn").onclick=rest;$("buildPacketBtn").onclick=buildGMPacket;$("copyPacketBtn").onclick=copyGMPacket;$("editPacketBtn").onclick=enablePacketEdit;if($("downloadAllCanonBtn"))$("downloadAllCanonBtn").onclick=downloadAllCanonDocs;if($("downloadCanonBtn"))$("downloadCanonBtn").onclick=downloadCanonDocs;$("navCreationBtn").onclick=goCreation;$("navCampaignBtn").onclick=goCampaign;$("navHandoffBtn").onclick=goHandoff;$("navProgressBtn").onclick=goProgress;$("importUpdateBtn").onclick=importGMUpdate;$("importFileBtn").onclick=importProgressFile;$("applyManualBtn").onclick=applyManualEdits;$("exportProgressBtn").onclick=exportProgressJSON;$("downloadSaveBtn").onclick=downloadProgressSave});
 </script>
 </body>
 </html>

@@ -1,5 +1,13 @@
 # Changelog
 
+## v5.6 — Forced GitHub Canon
+
+- Removed the visible Canon Source Setup download panel from GM Handoff.
+- Removed canon download/open buttons from the handoff flow.
+- GM packet now directly instructs the AI GM to read the GitHub-hosted Markdown canon links before starting.
+- If an AI platform cannot access the Markdown links, it must stop and ask for manual upload or pasted canon text.
+- Updated How to Play steps to match the forced GitHub canon-link workflow.
+
 ## v5.5 — Markdown Canon Docs
 
 - Updated canon links from `.docx` files to GitHub-hosted `.md` files.

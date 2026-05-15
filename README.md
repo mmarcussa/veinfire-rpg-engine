@@ -2,7 +2,7 @@
 
 A standalone browser-based character creation, campaign generation, GM handoff, and progress tracking tool for **VEINFIRE / Eldoria**.
 
-Current build: **v5.5 — Markdown Canon Docs**
+Current build: **v5.6 — Forced GitHub Canon**
 
 ## What this tool does
 
