@@ -75,3 +75,13 @@ This repository contains:
 - The HTML is the character creation, campaign generation, GM handoff, and progress tracking panel.
 - The AI chat is the GM/Narrator.
 - If browser download behavior blocks multiple automatic downloads, use the individual canon download buttons.
+
+## Intellectual Property and Fan Use
+
+VEINFIRE, Eldoria, and all related lore, characters, terminology, factions, races, campaign material, and worldbuilding are original creative works by Kanniti Singsanan. All rights reserved.
+
+Players and fans may use the VEINFIRE RPG Engine for personal, non-commercial gameplay, character creation, campaign generation, fan OCs, fanart, and session participation. Fan creations are welcome, but they do not grant ownership of VEINFIRE or become official canon unless approved by Kanniti Singsanan.
+
+Do not sell, redistribute official lore documents, copy large portions of the source material, claim VEINFIRE as your own, create commercial derivative works, or use VEINFIRE materials for AI training, datasets, or prompt packs without written permission.
+
+See [`NOTICE.md`](NOTICE.md) for the full intellectual property and fan-use notice.
