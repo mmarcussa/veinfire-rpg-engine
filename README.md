@@ -2,13 +2,13 @@
 
 A standalone browser-based character creation, campaign generation, GM handoff, and progress tracking tool for **VEINFIRE / Eldoria**.
 
-Current build: **v5.7 — Guided Navigation & Creation Fixes**
+Current build: **v5.8 — Campaign, Name & Appearance Patch**
 
 ## What this tool does
 
 The VEINFIRE RPG Engine helps players:
 
-- create a character through a structured character creation path
+- create a character through a structured, freely browsable character creation path
 - validate character details against VEINFIRE canon rules
 - choose race, gender, type, discipline/proficiency, class, origin, background, gear, faction tie, flaw, goal, secret, appearance, backstory, and personal object
 - load preset test characters

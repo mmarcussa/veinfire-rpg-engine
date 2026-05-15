@@ -1,5 +1,85 @@
 # Changelog
 
+## v5.8 — Campaign, Name & Appearance Patch
+
+- Evened out Campaign Generator spacing.
+- Simplified the Campaign Generator intro copy for easier reading.
+- Restored the Appearance dice randomizer at the top of the Appearance step.
+- Reworked the Name step into a more meaningful character-naming moment.
+- Added race and homeland naming guidance to the Name step.
+- Enlarged and emphasized the character name input area.
+
+## v5.8 — Final UI Readability Patch
+
+- Simplified Campaign Generator layout into readable prose instead of technical info panels.
+- Removed Character Dossier from Campaign Generator because character creation is already complete.
+- Simplified GM Handoff visible How to Play steps to only player-needed actions.
+- Kept canon-link enforcement inside the GM packet instead of exposing it in player-facing instructions.
+- Fixed long Gear pill wrapping in Review and Dossier.
+- Reworked Gear display into wrapping chips with cleaner max widths and tooltip support.
+- Improved campaign archetype descriptions to focus on world texture, pressure, danger, and atmosphere.
+
+## v5.8 — Tracker Schema & Randomizer Polish
+
+- Added Faction Tie dice randomization with matching custom stat suggestions.
+- Randomize dice for Origin, Background, and Faction Tie now appears only when Custom is selected.
+- Moved custom randomize dice beside the custom text box with improved spacing.
+- Expanded randomization datasets for custom Origin, Background, Faction Tie, Backstory, and Appearance.
+- Aligned setup choice card descriptions and buttons more consistently.
+- Removed the preset preview helper sentence.
+- Restyled preset preview tooltips to match the gold stat-tooltip style and help cursor.
+- Review now uses a floating Back / Create Character action bar.
+- Campaign Generator descriptions now focus on world texture, scenery, atmosphere, faction pressure, danger shape, and opening feel.
+- Expanded campaign generation combinations with opening place, sensory hook, rumor, complication, scarcity, and first meaningful choice.
+- Updated GM packet campaign information to include the richer generated atmosphere.
+- Updated GM_UPDATE_JSON to schemaVersion veinfire-progress-v2.
+- Tracker import now supports campaignState, skillAdd/skillRemove, gear aliases, factionReputation, npcUpdate, and trackerNoteAdd.
+- Campaign Tracker rendering no longer requires a completed character and better supports standalone imports.
+- Progress JSON export now includes schemaVersion and campaignState.
+
+## v5.8 — UI Flow Polish Patch
+
+- Aligned the setup choice buttons so Create My Own and Choose Preset sit at the same visual level.
+- Added more right-side padding to dropdowns so the arrow no longer sits against the border.
+- Removed the generic preset preview sentence.
+- Added hover tooltips for preset Race, Type, Class, and Origin cards.
+- Review now hides the middle panel entirely with a smooth layout transition and expands the dossier.
+- Added a Create Character action to the review dossier area.
+- Floating Back / Next controls are fixed at the bottom of the screen during Creation Path.
+- Removed description detail from Gender.
+- Added dice randomizer buttons for Custom Origin, Custom Background, Backstory, and Appearance.
+- Added randomization datasets for guided origin, background, backstory, and appearance prompts.
+- Dice buttons jiggle when clicked.
+- Required guided text boxes now use an asterisk marker.
+- Improved Creation Path completion check marks.
+
+## v5.8 — Welcome Flow & Tracker Polish
+
+- Added a first-load Welcome page explaining what the VEINFIRE RPG Engine is and what players should expect.
+- Added a setup choice page asking whether players want to create their own character or use a preset.
+- Moved preset selection out of the Creation Path.
+- Added a preset preview page with dossier and brief character details.
+- Preset users can now proceed directly to campaign generation or edit the preset through the full Creation Path.
+- Removed the header description because the Welcome page now handles engine explanation.
+- Campaign Tracker is now fully standalone and no longer requires a completed character.
+- Improved Campaign Tracker spacing and standalone helper text.
+- Review step now expands the character dossier and visually collapses the middle review area.
+- Campaign Generator archetype descriptions are laid out with factions, threat seeds, generated fields, and player control notes.
+- Success toast alerts now default to green; preset alerts remain blue.
+- Updated GM Handoff wording to rely on GitHub-hosted Markdown canon links.
+
+## v5.8 — Creation Flow Polish
+
+- Updated preset characters for the new guided Appearance flow.
+- Moved presets to the top of the left panel and renamed Load Test Preset to Load Preset.
+- Moved Name to the final creation step before Review and added race/homeland naming guidance.
+- Reworked Appearance to use backstory-style guided fields with required-star labels.
+- Made description/instruction panels visually distinct from player input boxes.
+- Removed the Validate button entirely; completion is communicated through Creation Path check marks.
+- Fixed Creation Path check marks, including Type discipline/proficiency and guided text sections.
+- Added sticky floating Back/Next controls.
+- Changed preset-loaded alerts to blue/info styling.
+
 ## v5.7 — Guided Navigation & Creation Fixes
 
 - Removed the visible process-note sentence under the main navigation.

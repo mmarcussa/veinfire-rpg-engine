@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>VEINFIRE RPG Engine v5.7 — Character Creation</title>
+<title>VEINFIRE RPG Engine v5.8 — Character Creation</title>
 <style>
 :root{
   --bg:#080a0d;--panel:#11100d;--gold:#d6b36a;--gold2:#f1d893;--text:#f3ead7;
@@ -625,12 +625,553 @@ input[type="file"]{
   min-height:96px;
 }
 
+
+/* v5.8 creation flow polish */
+.detail{background:linear-gradient(180deg,rgba(44,32,14,.58),rgba(7,8,10,.66));border-color:rgba(214,179,106,.45)}
+.section-intro{border:1px solid rgba(214,179,106,.52);border-radius:16px;padding:16px;background:linear-gradient(180deg,rgba(50,36,14,.72),rgba(22,17,9,.72));color:#f3ead7;line-height:1.65;margin-bottom:14px}
+.section-intro b{color:var(--gold2);font-family:Georgia,serif;font-size:22px;display:block;margin-bottom:6px}.required-star{color:var(--gold2);font-weight:900;margin-left:4px}
+.guided-field{background:rgba(3,5,8,.82)!important;border-color:rgba(214,179,106,.28)!important}.guided-field textarea{min-height:132px;background:#08090b}.appearance-guided .guided-field textarea{min-height:122px}.appearance-guided .guided-field.optional textarea{min-height:150px}
+.controls{position:sticky;bottom:14px;z-index:80;padding:10px;margin-top:20px!important;border:1px solid rgba(214,179,106,.38);border-radius:18px;background:linear-gradient(180deg,rgba(20,16,9,.94),rgba(8,8,8,.96));box-shadow:0 16px 45px rgba(0,0,0,.48);backdrop-filter:blur(8px)}
+.controls button{min-width:118px;padding:13px 18px;border-radius:14px}.controls .secondary{background:linear-gradient(180deg,#3a2b14,#17120a);color:#fff1cc;border-color:rgba(214,179,106,.62)}
+.toast.info{background:#0b1a2a!important;border-color:#5aa0d8!important;color:#e3f2ff!important}.toast.success{background:#0b2416!important;border-color:#57c47a!important;color:#e5ffec!important}.toast.error{background:#241017!important;border-color:#ff7878!important;color:#ffe2e2!important}
+.alert.accept{border-color:rgba(87,196,122,.72)!important;background:rgba(8,42,25,.72)!important;color:#dfffe7}.alert.reject{border-color:rgba(255,120,120,.72)!important;background:rgba(58,12,22,.72)!important;color:#ffe2e2}.path-item{cursor:pointer}
+.preset-zone{border:1px solid rgba(214,179,106,.28);border-radius:16px;padding:12px;background:rgba(5,6,8,.62);margin-bottom:14px}.preset-zone h2{margin-bottom:8px}
+
+
+.welcome-shell,.preset-choice-shell,.preset-review-shell{
+  max-width:1120px;
+  margin:20px auto;
+}
+.hero-card{
+  border:1px solid rgba(214,179,106,.42);
+  border-radius:24px;
+  background:linear-gradient(180deg,rgba(33,25,12,.86),rgba(7,8,10,.92));
+  box-shadow:0 24px 70px rgba(0,0,0,.45);
+  padding:30px;
+}
+.hero-card h2{
+  font-size:34px;
+  margin-bottom:12px;
+}
+.hero-card p{
+  line-height:1.75;
+  color:#f2ead8;
+  font-size:1.03rem;
+}
+.hero-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:14px;
+  margin-top:18px;
+}
+.hero-pill{
+  border:1px solid rgba(214,179,106,.32);
+  border-radius:16px;
+  padding:15px;
+  background:rgba(4,5,7,.62);
+}
+.hero-pill b{
+  color:var(--gold2);
+  display:block;
+  margin-bottom:6px;
+}
+.choice-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:16px;
+  margin-top:18px;
+}
+.choice-card{
+  border:1px solid rgba(214,179,106,.42);
+  border-radius:18px;
+  background:rgba(5,6,8,.72);
+  padding:18px;
+}
+.choice-card h3{
+  margin-bottom:8px;
+}
+.choice-card p{
+  color:var(--muted);
+  line-height:1.55;
+}
+.preset-preview-grid{
+  display:grid;
+  grid-template-columns:minmax(320px,1fr) minmax(360px,1.15fr);
+  gap:16px;
+  align-items:start;
+}
+.preset-brief{
+  border:1px solid rgba(214,179,106,.3);
+  border-radius:16px;
+  background:rgba(4,5,7,.68);
+  padding:16px;
+  line-height:1.58;
+}
+.shell.review-mode{
+  grid-template-columns:250px minmax(310px,390px) minmax(560px,1.55fr);
+}
+.shell.review-mode main.panel{
+  max-height:470px;
+  overflow:auto;
+}
+.shell.review-mode .right-panel{
+  border-color:rgba(244,215,139,.72);
+  box-shadow:0 0 0 1px rgba(244,215,139,.25) inset,0 18px 55px rgba(0,0,0,.32);
+}
+.description-panel{
+  border:1px solid rgba(105,130,170,.44);
+  border-radius:18px;
+  padding:18px;
+  background:linear-gradient(180deg,rgba(18,27,42,.72),rgba(6,8,11,.78));
+  color:#eaf2ff;
+  line-height:1.7;
+  margin-bottom:16px;
+}
+.description-panel .detail-title{
+  color:#9fc7ff;
+}
+.guided-field{
+  border-color:rgba(214,179,106,.34)!important;
+}
+.guided-field .small{
+  color:#d7c9ad;
+}
+.campaign-layout{
+  display:grid;
+  grid-template-columns:minmax(260px,.8fr) minmax(360px,1.2fr);
+  gap:16px;
+  align-items:start;
+}
+.campaign-detail-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:12px;
+  margin-top:12px;
+}
+.campaign-info-card{
+  border:1px solid rgba(214,179,106,.28);
+  border-radius:14px;
+  background:rgba(5,6,8,.68);
+  padding:12px;
+  line-height:1.48;
+}
+.campaign-info-card b{
+  color:var(--gold2);
+}
+#progressShell{
+  gap:18px;
+}
+#progressShell main{
+  display:grid;
+  gap:16px;
+}
+#progressShell aside{
+  display:grid;
+  gap:16px;
+  align-content:start;
+}
+#progressShell .panel{
+  margin-bottom:0;
+}
+.tracker-standalone-note{
+  border:1px solid rgba(90,160,216,.48);
+  border-radius:16px;
+  background:rgba(10,26,42,.58);
+  color:#e3f2ff;
+  padding:14px;
+  line-height:1.55;
+  margin-bottom:14px;
+}
+
+
+.choice-grid{
+  align-items:stretch;
+}
+.choice-card{
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  min-height:172px;
+}
+.choice-card button{
+  align-self:flex-start;
+  margin-top:18px;
+}
+select{
+  padding-right:44px!important;
+  background-position:right 18px center!important;
+}
+.preset-info-tip{
+  cursor:help;
+  border-bottom:1px dotted rgba(244,215,139,.8);
+}
+.tip-box{
+  position:relative;
+}
+.tip-box[data-tip]:hover::after{
+  content:attr(data-tip);
+  position:absolute;
+  left:12px;
+  top:calc(100% + 8px);
+  z-index:50;
+  max-width:320px;
+  white-space:normal;
+  line-height:1.45;
+  color:#eef6ff;
+  background:rgba(8,14,22,.97);
+  border:1px solid rgba(105,160,216,.65);
+  border-radius:12px;
+  padding:10px 12px;
+  box-shadow:0 12px 36px rgba(0,0,0,.45);
+}
+.shell.review-mode{
+  grid-template-columns:250px 0 minmax(620px,1fr)!important;
+  transition:grid-template-columns .32s ease;
+}
+.shell.review-mode main.panel{
+  opacity:0;
+  padding:0!important;
+  border-width:0!important;
+  overflow:hidden!important;
+  pointer-events:none;
+  transform:translateX(-8px);
+  transition:opacity .22s ease, transform .22s ease;
+}
+.shell:not(.review-mode) main.panel{
+  transition:opacity .22s ease, transform .22s ease;
+}
+.shell.review-mode .right-panel{
+  min-height:680px;
+}
+.floating-actions{
+  position:fixed!important;
+  left:50%;
+  bottom:22px;
+  transform:translateX(-50%);
+  z-index:60;
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  align-items:center;
+  padding:10px;
+  border:1px solid rgba(214,179,106,.42);
+  border-radius:999px;
+  background:rgba(9,8,6,.88);
+  backdrop-filter:blur(10px);
+  box-shadow:0 18px 50px rgba(0,0,0,.5);
+}
+.floating-actions button{
+  min-width:104px;
+}
+body.has-floating-actions{
+  padding-bottom:96px;
+}
+.dice-random-row{
+  display:flex;
+  justify-content:flex-end;
+  margin:0 0 10px;
+}
+.dice-btn{
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  padding:0;
+}
+@keyframes diceJiggle{
+  0%,100%{transform:rotate(0deg) scale(1)}
+  20%{transform:rotate(-13deg) scale(1.08)}
+  45%{transform:rotate(11deg) scale(1.02)}
+  70%{transform:rotate(-7deg) scale(1.05)}
+}
+.dice-btn.jiggle{
+  animation:diceJiggle .42s ease;
+}
+.description-panel,
+.detail.description-only{
+  border-color:rgba(105,130,170,.5)!important;
+  background:linear-gradient(180deg,rgba(18,27,42,.76),rgba(6,8,11,.8))!important;
+}
+.input-panel,
+.guided-field{
+  border:1px solid rgba(214,179,106,.32);
+  border-radius:16px;
+  background:rgba(0,0,0,.34);
+  padding:12px;
+}
+.required-star{
+  color:#ffd98b;
+  font-weight:900;
+}
+
+
+.choice-card h3{min-height:28px}
+.choice-card p{min-height:64px;display:flex;align-items:flex-start}
+.choice-card button{margin-top:18px}
+select{
+  padding-right:54px!important;
+  background-position:right 22px center!important;
+}
+.tip-box{
+  cursor:help;
+  position:relative;
+}
+.tip-box[data-tip]:hover::after{
+  content:attr(data-tip);
+  position:absolute;
+  left:12px;
+  top:calc(100% + 8px);
+  z-index:80;
+  max-width:340px;
+  white-space:normal;
+  line-height:1.45;
+  color:#fff4da;
+  background:rgba(33,25,12,.98);
+  border:1px solid rgba(244,215,139,.7);
+  border-radius:12px;
+  padding:10px 12px;
+  box-shadow:0 12px 36px rgba(0,0,0,.48);
+}
+.custom-input-row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:10px;
+  align-items:start;
+}
+.custom-input-row textarea{min-height:118px}
+.custom-input-row .dice-btn{
+  margin-top:0;
+  flex:none;
+}
+.creation-random-header{
+  display:flex;
+  justify-content:flex-end;
+  margin:0 0 10px;
+}
+.shell.review-mode{
+  grid-template-columns:250px 0 minmax(620px,1fr)!important;
+  transition:grid-template-columns .32s ease;
+}
+.shell.review-mode main.panel{
+  opacity:0;
+  padding:0!important;
+  border-width:0!important;
+  overflow:hidden!important;
+  pointer-events:none;
+  transform:translateX(-8px);
+  transition:opacity .22s ease, transform .22s ease;
+}
+.shell.review-mode .right-panel{
+  min-height:700px;
+}
+.floating-actions{
+  position:fixed!important;
+  left:50%;
+  bottom:22px;
+  transform:translateX(-50%);
+  z-index:80;
+  display:flex;
+  gap:12px;
+  justify-content:center;
+  align-items:center;
+  padding:10px;
+  border:1px solid rgba(214,179,106,.42);
+  border-radius:999px;
+  background:rgba(9,8,6,.90);
+  backdrop-filter:blur(10px);
+  box-shadow:0 18px 50px rgba(0,0,0,.5);
+}
+.floating-actions button{min-width:112px}
+body.has-floating-actions{padding-bottom:98px}
+.dice-btn{
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  padding:0;
+}
+@keyframes diceJiggle{
+  0%,100%{transform:rotate(0deg) scale(1)}
+  20%{transform:rotate(-13deg) scale(1.08)}
+  45%{transform:rotate(11deg) scale(1.02)}
+  70%{transform:rotate(-7deg) scale(1.05)}
+}
+.dice-btn.jiggle{animation:diceJiggle .42s ease}
+.campaign-atmosphere{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:12px;
+  margin-top:12px;
+}
+.campaign-atmosphere .campaign-info-card{
+  min-height:116px;
+}
+.tracker-schema-card{
+  border:1px solid rgba(105,160,216,.45);
+  border-radius:16px;
+  background:rgba(10,22,34,.64);
+  padding:14px;
+  line-height:1.55;
+}
+
+
+/* v5.8 final polish */
+.choice-card p{
+  min-height:64px;
+  display:flex;
+  align-items:flex-start;
+}
+.gear-chip-wrap{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:flex-start;
+}
+.gear-chip{
+  display:inline-flex;
+  width:auto!important;
+  max-width:360px;
+  white-space:normal;
+  line-height:1.25;
+  padding:7px 10px;
+  border:1px solid rgba(214,179,106,.46);
+  border-radius:999px;
+  background:rgba(0,0,0,.28);
+}
+.right-panel .gear-chip{
+  max-width:100%;
+  border-radius:14px;
+}
+.campaign-copy-card{
+  border:1px solid rgba(214,179,106,.32);
+  border-radius:18px;
+  background:rgba(5,6,8,.72);
+  padding:18px;
+  line-height:1.7;
+  margin-bottom:14px;
+}
+.campaign-copy-card h3{
+  margin:0 0 8px;
+  color:var(--gold2);
+}
+.campaign-copy-card p{
+  margin:8px 0;
+}
+.campaign-copy-card ul{
+  margin:8px 0 0 20px;
+}
+.campaign-copy-card li{
+  margin:6px 0;
+}
+.handoff-steps{
+  display:grid;
+  gap:12px;
+  margin-top:12px;
+}
+.handoff-step{
+  border:1px solid rgba(214,179,106,.3);
+  border-radius:15px;
+  background:rgba(5,6,8,.68);
+  padding:13px 14px;
+  line-height:1.55;
+}
+.handoff-step b{
+  color:var(--gold2);
+}
+
+
+/* v5.8 campaign/name/appearance polish */
+#betweenShell main.panel{
+  padding:26px!important;
+}
+#betweenShell .campaign-copy-card{
+  margin:0 0 18px!important;
+}
+#betweenShell label{
+  margin-top:18px;
+  margin-bottom:8px;
+}
+#betweenShell select,
+#betweenShell input{
+  margin-bottom:18px;
+}
+#betweenShell .controls{
+  margin-top:20px;
+}
+.campaign-copy-card{
+  padding:20px!important;
+  line-height:1.72!important;
+}
+.campaign-copy-card h3{
+  margin:0 0 12px!important;
+}
+.campaign-copy-card p{
+  margin:0 0 14px!important;
+}
+.campaign-copy-card p:last-child{
+  margin-bottom:0!important;
+}
+.name-ceremony{
+  border:1px solid rgba(244,215,139,.58);
+  border-radius:22px;
+  background:linear-gradient(180deg,rgba(44,31,12,.82),rgba(6,7,9,.88));
+  padding:22px;
+  margin-bottom:16px;
+  box-shadow:0 18px 42px rgba(0,0,0,.32);
+}
+.name-ceremony h3{
+  color:var(--gold2);
+  font-size:1.55rem;
+  margin:0 0 10px;
+}
+.name-ceremony p{
+  line-height:1.7;
+  margin:8px 0;
+}
+.naming-guide-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:12px;
+  margin-top:14px;
+}
+.naming-guide-card{
+  border:1px solid rgba(214,179,106,.30);
+  border-radius:15px;
+  background:rgba(0,0,0,.35);
+  padding:13px;
+  line-height:1.55;
+}
+.naming-guide-card b{
+  color:var(--gold2);
+}
+.name-input-panel{
+  border:1px solid rgba(244,215,139,.48);
+  border-radius:18px;
+  background:rgba(0,0,0,.34);
+  padding:15px;
+}
+.name-input-panel input{
+  font-size:1.15rem;
+  padding:15px 16px;
+}
+.creation-random-header{
+  display:flex!important;
+  justify-content:flex-end!important;
+  margin:0 0 10px!important;
+}
+
 @media(max-width:1180px){.shell{grid-template-columns:220px 1fr}.right-panel{grid-column:1/-1}}@media(max-width:800px){.shell,.play-shell,.lore-row{grid-template-columns:1fr}.top{display:block}.option-grid{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}.statbar{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="top"><div><h1>VEINFIRE RPG Engine v5.7</h1><div class="sub">Create a VEINFIRE character, generate a lore-grounded campaign seed, and build a GM handoff packet for AI-led play in Eldoria. The engine guides setup only; the live story happens in your chosen AI chat.</div></div><div class="small"></div></div>
+  <div class="top"><div><h1>VEINFIRE RPG Engine v5.8</h1></div><div class="small"></div></div>
 
   <div class="guided-nav">
     <button id="navCreationBtn">Create Character</button>
@@ -648,32 +1189,89 @@ input[type="file"]{
     </div>
   </div>
 
-  <div id="creationShell" class="shell">
-    <aside class="panel"><h2>Creation Path</h2><div class="path" id="pathList"></div><hr/><button class="secondary" id="randomBtn" style="width:100%">Randomize Draft</button>
-      <button class="secondary" id="presetBtn" style="width:100%;margin-top:8px">Load Test Preset</button>
-      <select id="presetSelect" style="margin-top:8px"></select>
-      <button class="danger" id="resetBtn" style="width:100%;margin-top:8px">Reset</button></aside>
-    <main class="panel"><div class="center-head"><div><div class="step-kicker" id="stepKicker">Step</div><h2 id="stepTitle">Create Character</h2><div class="small" id="stepHelp"></div></div><div class="small" id="stepCounter"></div></div><div id="stepContent"></div><div id="validationBox"></div><div class="controls"><button class="secondary" id="backBtn">Back</button><div><button class="secondary" id="validateBtn">Validate</button><button id="nextBtn">Next</button></div></div></main>
-    <aside class="panel right-panel"><h2>Character Dossier</h2><div id="dossier"></div></aside>
+
+  <div id="welcomeShell" class="welcome-shell">
+    <section class="hero-card">
+      <h2>Welcome to the VEINFIRE RPG Engine</h2>
+      <p>This engine helps you prepare a heavy VEINFIRE / Eldoria roleplaying session for an AI GM. You will build a canon-aware character, generate a fresh campaign premise, and create a structured GM handoff packet that tells your chosen AI how to run the opening session.</p>
+      <p>The engine is not the live GM. It is the setup table: character sheet, campaign seed, canon handoff, and optional tracker tools. Once the packet is copied, the story continues in your AI chat as a narrated RPG session.</p>
+      <div class="hero-grid">
+        <div class="hero-pill"><b>Create a grounded character</b>Choose race, type, class, origin, backstory, appearance, goal, flaw, secret, gear, and personal stakes.</div>
+        <div class="hero-pill"><b>Generate a campaign</b>Roll a new VEINFIRE premise shaped by faction pressure, mana ecology, law, danger, and your character.</div>
+        <div class="hero-pill"><b>Hand off to an AI GM</b>Copy a canon-aware packet that instructs the AI to use the GitHub Markdown canon files before play.</div>
+        <div class="hero-pill"><b>Track progress separately</b>Use Campaign Tracker from Tools when you want to import GM updates, inventory, NPCs, and consequences.</div>
+      </div>
+      <div class="controls" style="justify-content:flex-start">
+        <button id="welcomeStartBtn">I’m Ready</button>
+        <button id="welcomeTrackerBtn" class="secondary">Open Campaign Tracker</button>
+      </div>
+    </section>
   </div>
 
-  <div id="betweenShell" class="shell stage-hidden" style="grid-template-columns:1fr 350px">
+  <div id="presetChoiceShell" class="preset-choice-shell stage-hidden">
+    <section class="hero-card">
+      <h2>How do you want to begin?</h2>
+      <p>You can build a character from scratch, or start from a prepared VEINFIRE character. Presets are already filled and can skip straight to campaign generation, but you can still edit them first.</p>
+      <div class="choice-grid">
+        <div class="choice-card">
+          <h3>Create your own character</h3>
+          <p>Walk through the full Creation Path and fill every part yourself.</p>
+          <button id="createOwnBtn">Create My Own</button>
+        </div>
+        <div class="choice-card">
+          <h3>Use a preset character</h3>
+          <p>Choose from prepared characters, preview their dossier, then either proceed directly or edit their details.</p>
+          <button id="choosePresetBtn">Choose Preset</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="presetReviewShell" class="preset-review-shell stage-hidden">
+    <section class="hero-card">
+      <h2>Choose a Preset Character</h2>
+      <p>Select a prepared character to preview their dossier. You can proceed directly to campaign generation or edit the character through the normal Creation Path.</p>
+      <label>Preset Character</label>
+      <select id="presetSelect"></select>
+      <div class="preset-preview-grid" style="margin-top:14px">
+        <div class="preset-brief" id="presetBrief"></div>
+        <div class="panel right-panel" style="margin:0"><h2>Character Dossier</h2><div id="presetDossier"></div></div>
+      </div>
+      <div class="controls" style="justify-content:flex-start">
+        <button id="presetProceedBtn">Proceed to Campaign Generator</button>
+        <button id="presetEditBtn" class="secondary">Edit This Character</button>
+        <button id="presetBackBtn" class="secondary">Back</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="creationShell" class="shell">
+    <aside class="panel"><h2>Creation Path</h2><div class="path" id="pathList"></div></aside>
+    <main class="panel"><div class="center-head"><div><div class="step-kicker" id="stepKicker">Step</div><h2 id="stepTitle">Create Character</h2><div class="small" id="stepHelp"></div></div><div class="small" id="stepCounter"></div></div><div id="stepContent"></div><div id="validationBox"></div><div class="controls"><button class="secondary" id="backBtn">Back</button><div><button id="nextBtn">Next</button></div></div></main>
+    <aside class="panel right-panel"><h2>Character Dossier</h2><div id="reviewCreateSlot"></div><div id="dossier"></div></aside>
+  </div>
+
+  <div id="betweenShell" class="shell stage-hidden" style="grid-template-columns:minmax(420px,900px);justify-content:center">
     <main class="panel">
       <h2>Generate Campaign</h2>
-      <p class="small">Your character is ready. Generate a procedural campaign. The starting region is not selected by the player; it is rolled fresh for each run, with Ordanthia naturally weighted higher when artifact-heavy stories are involved.</p>
+      <div class="campaign-copy-card">
+        <h3>Choose the opening pressure</h3>
+        <p>Your character is complete. Choose the kind of story pressure that should find them first.</p>
+        <p>The generator creates a fresh VEINFIRE opening with place, atmosphere, faction tension, visible danger, scarcity, rumor, complication, and a first meaningful choice. The starting region is rolled by the engine so every run feels like stepping into a living part of Eldoria, not choosing a fixed stage.</p>
+      </div>
+
       <label>Campaign Archetype</label>
       <select id="archetype"></select>
-      <div class="detail" id="archetypeDesc"></div>
+
       <label>Campaign Seed</label>
       <input id="seed" placeholder="Optional. Leave blank for random."/>
+
+      <div id="archetypeDesc" class="campaign-copy-card"></div>
+
       <div class="controls">
         <button id="genCampaignBtn">Generate Campaign</button>
       </div>
     </main>
-    <aside class="panel right-panel">
-      <h2>Character Dossier</h2>
-      <div id="dossier2"></div>
-    </aside>
   </div>
 
   <div id="playShell" class="stage-hidden handoff-only">
@@ -693,19 +1291,13 @@ input[type="file"]{
       </div>
       <div class="detail">
         <div class="detail-title">How to Play</div>
-        <ol class="step-list">
-          <li>Start a new chat with the selected AI model.</li>
-          <li>Let the AI try the GitHub-hosted Markdown canon links first. If it cannot access them, use Download All Canon Files or the individual download buttons, then upload the files manually to the AI chat.</li>
-          <li>Click <b>Build GM Packet</b>.</li>
-          <li>Click <b>Copy Packet</b>.</li>
-          <li>Paste the packet into the new AI chat.</li>
-          <li>Tell the AI: <b>Start the session.</b></li>
-          <li>Play by typing what your character does.</li>
-          <li>When the GM gives tracker changes, paste them into the <b>Campaign Tracker</b> tab or edit the trackers manually.</li>
-        </ol>
-      </div>
-
-      <div class="controls" style="justify-content:flex-start">
+        <div class="handoff-steps">
+          <div class="handoff-step"><b>1. Choose your AI model.</b><br>Select the model you want to use for the live campaign.</div>
+          <div class="handoff-step"><b>2. Build the GM packet.</b><br>The packet contains your character, campaign premise, and play instructions.</div>
+          <div class="handoff-step"><b>3. Copy the packet.</b><br>Paste it into your AI chat as the first campaign message.</div>
+          <div class="handoff-step"><b>4. Start playing.</b><br>The AI will narrate the opening scene and ask what you do.</div>
+        </div>
+      </div><div class="controls" style="justify-content:flex-start">
         <button id="buildPacketBtn">Build GM Packet</button>
         <button class="secondary" id="copyPacketBtn">Copy Packet</button>
         <button class="secondary packet-hidden" id="editPacketBtn">Edit Packet</button>
@@ -721,9 +1313,9 @@ input[type="file"]{
   <div id="progressShell" class="play-shell stage-hidden">
     <main>
       <div class="panel">
-        <h2>Import Progress / GM Update</h2>
+        <h2>Campaign Tracker</h2><div class="tracker-standalone-note">This is a standalone tool. You can open it at any time to import a GM update, review progress data, or prepare a save file. It is not required for character creation, campaign generation, or GM handoff.</div><h3>Import Progress / GM Update</h3>
         <div id="progressBlankNotice" class="import-warning">
-          Progress Tracker starts blank. Import a Progress JSON save or paste a structured GM update before trackers appear. Manual editing stays disabled until progress data is imported.
+          Campaign Tracker starts blank. Import a Progress JSON save or paste a structured GM update before trackers appear. Manual editing stays disabled until progress data is imported.
         </div>
         <p class="small">Upload a progress JSON save, or paste a structured GM update from the live AI session. JSON works best because it preserves tracker structure.</p>
         <div class="file-row">
@@ -732,9 +1324,17 @@ input[type="file"]{
         </div>
         <textarea id="gmUpdateInput" style="min-height:220px" placeholder='Example structured GM update:
 {
+  "schemaVersion": "veinfire-progress-v2",
+  "campaignState": {
+    "currentLocation": "private room above the silk hall",
+    "currentBell": "Watch Bell",
+    "sceneStatus": "Jereq has a name, but the house ledger is still missing.",
+    "knownObjective": "Find who altered the ledger before the patrol arrives.",
+    "activePressure": ["High suspicion", "sealed exits"],
+    "visibleConsequences": ["The madam is watching every door."]
+  },
   "resources": {"Stress": 2, "Suspicion": 1},
-  "inventoryAdd": ["marked client note"],
-  "inventoryRemove": ["rations x3"],
+  "inventoryAdd": [{"name": "marked client note", "description": "A folded note with perfume and a false initial.", "use": "May support Presence or Mind checks when confronting a patron."}],
   "playerFacingLedgerAdd": ["Known lead: Vel Sarro is tied to the Red Market Auction."],
   "chronicleAdd": "Jereq learned a patron name in the private room."
 }'></textarea>
@@ -762,7 +1362,7 @@ input[type="file"]{
     </main>
 
     <aside>
-      <div class="panel"><h2>Advanced Trackers</h2><div id="trackers">No active character.</div></div>
+      <div class="panel"><h2>Advanced Trackers</h2><div id="trackers">No imported tracker data yet.</div></div>
       <div class="panel"><h2>NPC Cast</h2><div id="npcView">No NPCs generated.</div></div>
       <div class="panel"><h2>Chronicle</h2><div class="log" id="log"></div></div>
       <div class="panel"><button id="advanceBellBtn" class="secondary">Advance Bellcount</button><button id="restBtn" class="secondary" style="margin-top:8px">Rest / Recover</button></div>
@@ -1000,8 +1600,13 @@ function renderSkillUsageList(skills){
  return skills.map(s=>{const u=skillUsage(s);return `<div class="usage-card"><b>${escapeHtml(s)}</b><div>${escapeHtml(u.desc)}</div><div class="small"><b>Session Use:</b> ${escapeHtml(u.check)}</div></div>`}).join("");
 }
 function renderGearUsageList(items){
- if(!items||!items.length) return `<div class="usage-card"><b>No gear selected yet.</b><div class="small">Choose starting gear to see item use.</div></div>`;
- return items.map(i=>{const u=gearUsage(i);return `<div class="usage-card"><b>${escapeHtml(i)}</b><div>${escapeHtml(u.desc)}</div><div class="small"><b>Use:</b> ${escapeHtml(u.check)}</div></div>`}).join("");
+ if(!items||!items.length)return "";
+ return `<div class="gear-chip-wrap">${items.map(item=>{
+   const name=typeof item==="string"?item:item.name;
+   const desc=typeof item==="string"?(GEAR_DESCRIPTIONS[name]?.description||"A carried item whose usefulness depends on how it is used in the fiction."):item.description||"A carried item whose usefulness depends on how it is used in the fiction.";
+   const use=typeof item==="string"?(GEAR_DESCRIPTIONS[name]?.use||"May grant leverage, access, permission, advantage, or a reasonable stat check when relevant."):item.use||"May grant leverage, access, permission, advantage, or a reasonable stat check when relevant.";
+   return `<span class="gear-chip tip-box" data-tip="${escapeHtml(desc+" Use: "+use)}">${escapeHtml(name)}</span>`;
+ }).join("")}</div>`;
 }
 
 
@@ -1117,15 +1722,24 @@ function personalItemUse(name){
  return "Can create leverage when its history matters. The GM chooses the stat and risk from the scene.";
 }
 
-function showToast(message){
+function showToast(message,type=""){
  const t=document.getElementById("toast");
- if(!t)return alert(message);
+ if(!t)return alert(String(message).replace(/<[^>]+>/g,""));
+ if(!type){
+   const plain=String(message).replace(/<[^>]+>/g," ").toLowerCase();
+   const isBad=/(not ready|required|must|cannot|failed|error|rejected|missing|invalid|blocked)/.test(plain);
+   type=isBad?"error":"success";
+ }
  t.innerHTML=message;
+ t.classList.remove("info","success","error");
+ t.classList.add(type||"success");
  t.classList.add("show");
  clearTimeout(window.__toastTimer);
  window.__toastTimer=setTimeout(()=>t.classList.remove("show"),3600);
 }
 function selectedDetailName(source,val){
+ if(source==="gender" || source==="genders")return "";
+
  return DB[source] && DB[source][val] ? val : "";
 }
 function longerFlavor(source,val){
@@ -1154,7 +1768,7 @@ const CANON_DOC_RULES=[
 function docCanonValidate(){
  const f=S.form;
  const text=[
-   f.name,f.gender,f.className,f.appearance,f.backstory,f.backstoryOrigin,f.backstoryPressure,f.backstoryIncident,f.backstoryTie,f.backstoryReason,f.backstoryOther,f.object,
+   f.name,f.gender,f.className,appearanceText(),f.backstory,f.backstoryOrigin,f.backstoryPressure,f.backstoryIncident,f.backstoryTie,f.backstoryReason,f.backstoryOther,f.object,
    f.originCustom,f.backgroundCustom,f.factionTieCustom,f.flawCustom,f.goalCustom,f.secretCustom,
    valueText("origin"),valueText("background"),valueText("factionTie"),valueText("goal"),valueText("secret")
  ].join(" ").toLowerCase();
@@ -1217,7 +1831,6 @@ const SECTION_NOTES={
  object:["This is a personal object, not a legendary weapon.","Good objects create memory, leverage, grief, or risk."]
 };
 const STEPS=[
- {key:"name",title:"Name",kind:"input",prompt:"Name the person the world will know.",help:"A name can carry family, clan, deed, or public-mask tradition."},
  {key:"race",title:"Race",kind:"cards",source:"races",prompt:"Choose the people you were born among.",help:"Blood, body, custom, and old prejudice will shape how the world answers you."},
  {key:"gender",title:"Gender",kind:"cards",source:"genders",prompt:"Choose how the world first reads your gender.",help:"Gender affects address, assumptions, intimacy, danger, and social expectations, but does not decide your power."},
  {key:"kind",title:"Type",kind:"cards",source:"types",prompt:"Choose how your body answers the Mana Veins.",help:"Mundanes and Veinborn survive the same world by different costs."},
@@ -1233,14 +1846,15 @@ const STEPS=[
  {key:"appearance",title:"Appearance",kind:"textarea",prompt:"Describe your appearance.",help:"Keep physical details grounded in your race and history."},
  {key:"backstory",title:"Backstory",kind:"textarea",prompt:"Write your personal backstory.",help:"Personal-scale. Costly. Politically accountable."},
  {key:"object",title:"Personal Object",kind:"input",prompt:"Name one personal object.",help:"A keepsake, tool, token, notebook, route mark, or minor heirloom works best."},
+ {key:"name",title:"Name",kind:"input",prompt:"Name the person the world will know.",help:"Choose a name after you know race, homeland, origin, and social mask."},
  {key:"review",title:"Review",kind:"review",prompt:"Review the dossier and create your character.",help:"Difficulty emerges from the world and your actions."}
 ];
 
-const APP_VERSION="5.7";
+const APP_VERSION="5.8";
 function freshState(){
  return {
   version:APP_VERSION,
-  phase:"creation",
+  phase:"welcome",
   step:0,
   form:{
     name:"",
@@ -1296,8 +1910,8 @@ function freshState(){
 }
 let S=freshState();
 function $(id){return document.getElementById(id)};function pick(a){return a[Math.floor(Math.random()*a.length)]};function roll(n=20){return 1+Math.floor(Math.random()*n)};function clamp(n,a,b){return Math.max(a,Math.min(b,n))};function now(){return new Date().toLocaleTimeString()};function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
-function save(){localStorage.setItem("veinfire_rpg_v57",JSON.stringify(S))}function load(){
- try{ localStorage.removeItem("veinfire_rpg_v57"); }catch(e){}
+function save(){localStorage.setItem("veinfire_rpg_v58",JSON.stringify(S))}function load(){
+ try{ localStorage.removeItem("veinfire_rpg_v58"); }catch(e){}
  S=freshState();
 }
 function addLog(title,text){S.log.unshift({t:now(),title,text});renderLog();save()}
@@ -1499,6 +2113,333 @@ function selectedDetail(source,val){
 function renderNotes(key){const notes=SECTION_NOTES[key]||[];if(!notes.length)return "";return `<div class="section-notes"><b>Notes</b><ul>${notes.map(n=>`<li>${n}</li>`).join("")}</ul></div>`}
 
 
+
+function sentenceParts(text){return String(text||"").split(/(?<=[.!?])\s+/).map(x=>x.trim()).filter(Boolean)}
+function inferAppearanceFromText(text,race="",name=""){
+ const s=sentenceParts(text), all=String(text||"");
+ const find=(rx)=>s.find(x=>rx.test(x))||"";
+ const first=s[0]||all;
+ return {
+  body: find(/broad|tall|short|slender|heavy|shoulder|build|frame|stone|skin|Valcian|Orikarn|Nyxborn|Taurakin|Aelvari|Drakothen/i) || first,
+  face: find(/face|mouth|smile|jaw|cheek|expression|eyes|gaze|veil/i) || s[1] || first,
+  hairEyes: find(/hair|eyes|gaze|brow|horn|veil|lamplight/i) || s[1] || first,
+  clothing: find(/wears|coat|cloak|harness|wrap|armor|cloth|layers|sleeve|band|cuff/i) || s[2] || first,
+  marks: find(/scar|mark|tattoo|burn|crack|band|dust|ink|ring|seam|token/i) || s[2] || first,
+  presence: s[s.length-1] || first,
+  extra: all
+ };
+}
+function normalizeAppearanceInput(form){
+ if(!form)return form;
+ if(typeof form.appearance==="string") form.appearance=inferAppearanceFromText(form.appearance,form.race,form.name);
+ if(!form.appearance || typeof form.appearance!=="object") form.appearance={body:"",face:"",hairEyes:"",clothing:"",marks:"",presence:"",extra:""};
+ return form;
+}
+function raceNameGuide(){
+ const race=S.form.race||"Valcian", home=S.form.home||"your homeland";
+ const raceLines={
+  Valcian:"Valcians commonly use Given Name + Family Name. Trade-linked family names, fort nicknames, or house markers fit well.",
+  Drakothen:"Drakothen names often carry clan markers, public honor titles, or scale/breath associations. A name should sound usable in oath and challenge.",
+  Orikarn:"Orikarn names favor strong consonants and craft identifiers. Given Name + craft, stone, bridge, or forge lineage works well.",
+  Nyxborn:"Nyxborn may use public names, shortened names, travel names, or shadow names. Full names are usually reserved for trusted spaces.",
+  Aelvari:"Aelvari may use an outsider name while keeping true-name patterns private in Veilthread. Soft cadence and pattern identity fit well.",
+  Taurakin:"Taurakin often use Given Name + Clan Name + deed epithet. Horn-band markings and deeds can matter more than written surnames."
+ };
+ return `<div class="section-intro"><b>Naming Guidance</b><p>${escapeHtml(raceLines[race]||raceLines.Valcian)}</p><p>Because your character is tied to ${escapeHtml(home)}, the name can also reflect local institutions, family duty, exile, guild life, border travel, or public reputation.</p><p>Keep the name personal. It should not imply chosen-one status, divine inheritance, secret royalty, or world-level destiny.</p></div>`;
+}
+
+
+const RAND_ORIGINS=[
+ "You grew up in a ledger-counting household where every favor had a price, every silence had a witness, and every dinner taught you how to smile through calculation.",
+ "You were raised at the edge of a trade road where caravans brought rumors before coin, and you learned early that hospitality could be both kindness and camouflage.",
+ "Your childhood belonged to a small holding under too many seals, where law arrived late, weather arrived hungry, and family reputation mattered less than who could repair a roof before dark.",
+ "You came from a household that survived by service: uniforms brushed, boots mended, doors opened, secrets overheard, and names remembered long after nobles forgot yours.",
+ "You were born near a Vein-shadowed district where bells, Watcher drills, and evacuation routes were as ordinary as market days."
+];
+const RAND_BACKGROUNDS=[
+ "You learned work that left marks on your hands: ink stains, weapon calluses, herb burns, old rope cuts, or the permanent ache of carrying more than people noticed.",
+ "Your training was practical because theory did not feed anyone. You learned who asked dangerous questions, which doors squeaked, and how to keep moving when officials wanted paperwork instead of truth.",
+ "You served under people who valued obedience until obedience became dangerous. What you know now is useful, but the habit of watching exits came with it.",
+ "Your old trade taught you patience, pattern, and when to lie badly enough that someone thought they had caught the whole truth.",
+ "You were never a master. You were useful, underpaid, overlooked, and close enough to important rooms to understand how fragile important people really are."
+];
+const RAND_BACKSTORY={
+ origin:[
+  "You came from a place that taught you caution before ambition: a border town, guild ward, service house, caravan stop, academy annex, or minor noble household with more expectations than protection.",
+  "Your first home was never fully safe. Law existed, but it arrived wearing someone else's seal and asking who could pay for enforcement.",
+  "You grew up close enough to power to understand its manners, but not close enough to be protected by it."
+ ],
+ pressure:[
+  "Someone else's mistake became your burden. A debt, accusation, broken oath, missing person, or hidden report still follows your name.",
+  "The pressure began as a family matter and became public at the worst possible Bell.",
+  "You are carrying a cost that cannot be solved by claiming destiny: money owed, trust broken, reputation stained, or someone still waiting for you to return."
+ ],
+ incident:[
+  "One night, a bell rang out of sequence, a door opened that should have stayed sealed, and you saw enough to know the official story was incomplete.",
+  "The turning point was small enough to deny and sharp enough to ruin you: a forged seal, a body moved before inspection, a forbidden relic changing hands, or a Watcher looking away.",
+  "You made one choice under pressure. It saved someone, cost someone, or revealed something you were not meant to know."
+ ],
+ tie:[
+  "Someone still knows the person you were before this. They may help you, betray you, or simply remind you that you cannot rewrite yourself without witnesses.",
+  "You left behind a contact who has reason to answer your letter, but also reason to charge you for the reply.",
+  "There is a living tie: family, former partner, creditor, mentor, rival, patient, client, squadmate, or someone who survived because of you."
+ ],
+ reason:[
+  "You enter the campaign because standing still has become more dangerous than moving.",
+  "You are not chasing prophecy. You are chasing proof, payment, shelter, leverage, forgiveness, or the one person who can still contradict the lie.",
+  "The campaign offers the first real chance to change your position before someone else writes your future into a ledger."
+ ],
+ other:[
+  "You keep one habit from your old life: counting bells, checking window latches, folding clothes too precisely, touching a charm before lying, or never sitting with your back exposed.",
+  "You dislike being called brave. Brave people get used by better-dressed cowards.",
+  "You know one local song, one official seal pattern, and one smell that means trouble is about to enter the room."
+ ]
+};
+const RAND_APPEARANCE={
+ body:[
+  "Lean from travel rather than training, with a posture that straightens whenever authority enters the room.",
+  "Broad-shouldered and tired around the joints, built like someone who has carried tools, bodies, or burdens longer than they admit.",
+  "Compact and quick, with stillness that feels practiced rather than natural.",
+  "Tall enough to be noticed, but dressed and held in a way that tries not to invite questions."
+ ],
+ face:[
+  "A guarded face with soft exhaustion under the eyes and a mouth that looks like it learned restraint before laughter.",
+  "Sharp cheekbones, weather-worn skin, and an expression that becomes polite whenever danger has a title.",
+  "An open, almost harmless face until the eyes stop moving and begin counting the room.",
+  "A face made memorable by one asymmetry: a scar, uneven smile, broken nose, old burn, or gaze that lingers too long."
+ ],
+ hairEyes:[
+  "Dark hair kept practical and tied back; eyes steady enough that people mistake caution for confidence.",
+  "Hair cut with a traveler's impatience; eyes that brighten at useful information and harden at official lies.",
+  "Well-kept hair that hints at old discipline; eyes ringed by sleeplessness rather than age.",
+  "Loose hair, wind-tangled or deliberately styled, with eyes that rarely give the first answer for free."
+ ],
+ clothing:[
+  "Layered travel clothes patched with care, not poverty; every pocket has a reason and every strap sits where a hand can find it quickly.",
+  "A worn coat or wrap over practical clothing, carrying the faint smells of road dust, smoke, oil, herbs, or rain.",
+  "Clothing that once belonged to a better station but has been altered for survival.",
+  "Plain garments chosen to pass through crowds, marked only by one personal detail too stubborn to discard."
+ ],
+ marks:[
+  "Small scars at the hands and forearms suggest work done close to heat, blades, animals, machinery, or panicked people.",
+  "A visible tell appears under stress: a thumb rubbing old scar tissue, eyes flicking to exits, breath counting silently with the Bells.",
+  "One mark draws attention: a tattoo, burn, old stitch-line, broken ring, faded brand, or charm tied too carefully to be decoration.",
+  "Their body carries evidence of survival, but none of it looks heroic when seen up close."
+ ],
+ presence:[
+  "At first impression, they seem useful before they seem dangerous, which is exactly why people underestimate them.",
+  "They enter rooms like someone measuring consequence: who blocks the door, who owns the silence, who is pretending not to watch.",
+  "Their presence is quiet but difficult to dismiss, like a sealed letter left on the wrong desk.",
+  "People read them differently depending on what they fear: servant, witness, problem, temptation, or blade in plain clothes."
+ ],
+ extra:[
+  "They carry themselves as if every public room has rules written in invisible ink.",
+  "Their voice lowers when they are angry, and that restraint is often more alarming than shouting.",
+  "They keep one piece of clothing or jewelry from their old life, even when it would be wiser to sell it.",
+  "Their hands reveal more truth than their face: careful, scarred, restless, or too still."
+ ]
+};
+
+const RAND_BACKGROUND_PACKS=[
+ {text:"You worked under a tired quartermaster who taught you how to read panic from missing supplies, late seals, and boots cleaned too carefully.",plus:["Mind","Craft"],minus:"Presence"},
+ {text:"You trained on escort roads where the first lesson was not how to fight, but how to notice the moment a road stopped behaving like a road.",plus:["Survival","Body"],minus:"Mind"},
+ {text:"You learned from a healer who could not save everyone. Your hands remember triage, bad water, fever math, and the silence after a wrong call.",plus:["Mind","Survival"],minus:"Presence"},
+ {text:"You were useful in a guild office because you noticed which ledgers were too clean and which clients paid extra to avoid being remembered.",plus:["Mind","Craft"],minus:"Body"},
+ {text:"You survived service work in rooms where powerful people forgot servants had ears. You learned names, perfumes, habits, and which smiles meant danger.",plus:["Presence","Mind"],minus:"Body"},
+ {text:"You ran messages between districts where the wrong alley could add a debt, a bruise, or a new patron. You became quick, polite, and hard to keep.",plus:["Survival","Presence"],minus:"Craft"},
+ {text:"You apprenticed near runes without ever being trusted with the final line. You know enough geometry to fear bad work and enough craft to spot it.",plus:["Craft","Mind"],minus:"Body"},
+ {text:"You were trained by people who valued silence: border scouts, salvage crews, house guards, smugglers, or Watcher aides with no patience for heroics.",plus:["Survival","Body"],minus:"Presence"},
+ {text:"You grew up around performance, bargaining, and controlled vulnerability. You learned how desire, shame, vanity, and loneliness move coin and secrets.",plus:["Presence","Mind"],minus:"Survival"},
+ {text:"You were the spare pair of hands in a place that never had enough: kitchens, medbays, stables, archives, brothels, barracks, or caravan camps.",plus:["Craft","Survival"],minus:"Vein"}
+];
+const RAND_FACTIONS=[
+ {text:"A local salvage guild knows your name because you once returned an artifact fragment instead of selling it. They respect the choice, but they also think you are useful.",plus:"Craft",minus:"Presence"},
+ {text:"A Vein Watcher clerk owes you a quiet favor after you helped move people during a false alarm. The favor exists, but asking for it creates a record.",plus:"Mind",minus:"LegalHeat"},
+ {text:"A brothel house protects you as long as you do not endanger the ledger. The workers may warn you first; the owner may sell you second.",plus:"Presence",minus:"Body"},
+ {text:"A border patrol captain remembers you from a bad road and will listen once. After that, evidence matters more than history.",plus:"Survival",minus:"Presence"},
+ {text:"A temple authority keeps your name in a mercy register. Help is possible, but so is scrutiny, confession, and obligation.",plus:"Presence",minus:"Craft"},
+ {text:"A caravan family treats you as road-kin because you bled for their wheels once. They offer routes, rumors, and shelter, not immunity.",plus:"Survival",minus:"Mind"},
+ {text:"A small academy annex still has your old marks in its files. Some instructors call you promising; others call you unfinished.",plus:"Mind",minus:"Body"},
+ {text:"A Dead Zone smuggler ring has a practical interest in you. They can move things quietly, but every favor arrives with a second shadow.",plus:"Survival",minus:"LegalHeat"},
+ {text:"A minor noble household would rather you stay inconveniently alive than publicly dead. Their protection is thin, conditional, and full of knives.",plus:"Presence",minus:"Survival"},
+ {text:"A medical college knows you from an ugly triage night. They may provide supplies or testimony, but they will not risk their charter for free.",plus:"Mind",minus:"Coin"}
+];
+RAND_ORIGINS.push(
+ "You were raised in a house that looked respectable from the street and sounded like bargaining behind every closed door.",
+ "You grew up near a Watcher bell tower where children learned evacuation routes before festival songs.",
+ "You came from a settlement that survived by pretending not to notice who used the old road after Dark Bell.",
+ "Your family name opened some doors and closed better ones. People expected manners, usefulness, and silence.",
+ "You were born among workers who measured safety in rations, dry socks, and whether the local seal-master was drunk.",
+ "You learned early that a home can be a caravan, a dormitory, a barracks cot, a private room, or any place where someone remembers your cup.",
+ "You came from a border ward where every adult had two versions of the same story: one for officials and one for the people who had to survive it.",
+ "You were raised where magic was either work, danger, rent, or weather. Nobody there called it wondrous unless they were selling something."
+);
+RAND_BACKGROUNDS.push(
+ "You learned how to make yourself useful before anyone had time to decide whether you belonged.",
+ "You were trained to notice what paperwork tries to hide: missing seals, changed routes, convenient witnesses, and ink that dried too recently.",
+ "Your old work taught you the value of arriving early, leaving quietly, and never asking a question unless you already knew who would hate it.",
+ "You know the small economies of fear: who pays for escorts, who buys clean water, who bribes a clerk, and who pretends none of it is happening.",
+ "Your hands know a craft well enough to work under pressure, but not well enough to stop powerful people from calling you replaceable.",
+ "You were once trusted with keys, ledgers, bodies, messages, tools, or secrets. You lost that trust, spent it, or learned what it was worth."
+);
+Object.keys(RAND_BACKSTORY).forEach(k=>{
+ const extra={
+  origin:[
+   "You began in a place where the official map looked clean and every local knew which streets it lied about.",
+   "Your first lessons came from people who were not teachers: clients, guards, dockhands, medics, smugglers, cousins, and debt collectors.",
+   "Your home taught you one rule that still follows you: survive the bell you are in before worrying about the next one."
+  ],
+  pressure:[
+   "A faction, family, patron, officer, guild, or creditor believes you still owe them something.",
+   "Your name is attached to a mistake that was never fully investigated because closing the file helped someone important.",
+   "Someone you care about is safer if you stay useful, quiet, absent, or blamed."
+  ],
+  incident:[
+   "You saw a familiar seal used in the wrong place, at the wrong Bell, by someone who should not have had it.",
+   "The crisis began with something ordinary becoming impossible: a silent bell, a warm corpse, a dry canal, a moving shadow, or a door locked from both sides.",
+   "You helped cover up a small truth to prevent a larger panic. Now the small truth has teeth."
+  ],
+  tie:[
+   "A former superior, lover, client, squadmate, patient, student, or rival can confirm part of your story, but doing so would endanger them.",
+   "Someone still uses your old name when they want to hurt you.",
+   "You have a contact who will answer if you send the right phrase and enough coin."
+  ],
+  reason:[
+   "You move forward because the people hunting the truth have started circling your life.",
+   "You need leverage before an official record hardens around the lie.",
+   "You are searching for the person, proof, route, cure, payment, or confession that can change what happens next."
+  ],
+  other:[
+   "You keep counting exits even in rooms where everyone calls you safe.",
+   "You have one superstition you pretend is practical.",
+   "You never throw away written proof, even when carrying it is dangerous."
+  ]
+ }[k]||[];
+ RAND_BACKSTORY[k].push(...extra);
+});
+Object.keys(RAND_APPEARANCE).forEach(k=>{
+ const extra={
+  body:[
+   "Built with the uneven strength of someone shaped by work rather than a training yard.",
+   "Carrying old fatigue in the shoulders and quick readiness in the hands.",
+   "A body that looks ordinary until pressure reveals exactly where it has been trained."
+  ],
+  face:[
+   "A face that can pass as forgettable when relaxed, but becomes too observant when silence stretches.",
+   "Features softened by careful manners and sharpened by sleepless decisions.",
+   "A familiar-looking face with one detail people remember later."
+  ],
+  hairEyes:[
+   "Hair kept in a style that can survive rain, smoke, and being grabbed in a fight; eyes that count before they trust.",
+   "Hair slightly too well-kept for the road, or too road-worn for the room they enter; eyes carrying a private calculation.",
+   "Eyes that change the mood of the face before the mouth does."
+  ],
+  clothing:[
+   "Clothing chosen for movement first and presentation second, with one piece that belongs to an older life.",
+   "Layered garments that hide repairs, pockets, and the compromises of travel.",
+   "A practical outfit marked by one deliberate aesthetic choice that refuses to die."
+  ],
+  marks:[
+   "A scar, tattoo, burn, chipped tooth, old stitch-line, or pressure habit gives away more history than they offer aloud.",
+   "Their hands betray the past: ink, callus, tremor, healer's steadiness, weapon discipline, or the softness of service work.",
+   "A visible tell appears whenever they lie, remember, desire, or prepare to run."
+  ],
+  presence:[
+   "They feel like someone who has learned not to take up space until taking up space becomes necessary.",
+   "The first impression is controlled, useful, and slightly difficult to place.",
+   "They carry the quiet pressure of someone who has been underestimated often enough to weaponize it."
+  ],
+  extra:[
+   "They smell faintly of road dust, soap, oil, smoke, perfume, paper, herbs, or rain depending on what they cannot leave behind.",
+   "Their voice changes in formal rooms, becoming cleaner, flatter, or warmer than their real mood.",
+   "They own one object that does not match the rest of their presentation."
+  ]
+ }[k]||[];
+ RAND_APPEARANCE[k].push(...extra);
+});
+
+function randPick(arr){return arr[Math.floor(Math.random()*arr.length)]}
+function jiggleDice(btn){
+ if(!btn)return;
+ btn.classList.remove("jiggle");
+ void btn.offsetWidth;
+ btn.classList.add("jiggle");
+}
+function randomizeCustomOrigin(btn){
+ S.form.originCustom=randPick(RAND_ORIGINS);
+ S.form.origin="Custom";
+ jiggleDice(btn);
+ renderAll();
+ showToast("<b>Origin idea rolled.</b><br>You can edit it before continuing.","success");
+}
+function randomizeCustomBackground(btn){
+ const pack=randPick(RAND_BACKGROUND_PACKS);
+ S.form.backgroundCustom=pack.text;
+ S.form.background="Custom";
+ S.form.backgroundPlus=pack.plus;
+ S.form.backgroundMinus=pack.minus;
+ jiggleDice(btn);
+ renderAll();
+ showToast("<b>Background idea rolled.</b><br>You can edit the text and stat choices before continuing.","success");
+}
+function randomizeBackstory(btn){
+ S.form.backstoryOrigin=randPick(RAND_BACKSTORY.origin);
+ S.form.backstoryPressure=randPick(RAND_BACKSTORY.pressure);
+ S.form.backstoryIncident=randPick(RAND_BACKSTORY.incident);
+ S.form.backstoryTie=randPick(RAND_BACKSTORY.tie);
+ S.form.backstoryReason=randPick(RAND_BACKSTORY.reason);
+ S.form.backstoryOther=randPick(RAND_BACKSTORY.other);
+ jiggleDice(btn);
+ renderAll();
+ showToast("<b>Backstory prompts rolled.</b><br>You can edit every box before continuing.","success");
+}
+function randomizeAppearance(btn){
+ const a=appearanceValue();
+ a.body=randPick(RAND_APPEARANCE.body);
+ a.face=randPick(RAND_APPEARANCE.face);
+ a.hairEyes=randPick(RAND_APPEARANCE.hairEyes);
+ a.clothing=randPick(RAND_APPEARANCE.clothing);
+ a.marks=randPick(RAND_APPEARANCE.marks);
+ a.presence=randPick(RAND_APPEARANCE.presence);
+ a.extra=randPick(RAND_APPEARANCE.extra);
+ S.form.appearance=a;
+ jiggleDice(btn);
+ renderAll();
+ showToast("<b>Appearance details rolled.</b><br>You can edit every box before continuing.","success");
+}
+
+function randomizeCustomFactionTie(btn){
+ const pack=randPick(RAND_FACTIONS);
+ S.form.factionTieCustom=pack.text;
+ S.form.factionTie="Custom";
+ S.form.factionTiePlus=pack.plus==="LegalHeat"||pack.plus==="Coin"?"Presence":pack.plus;
+ S.form.factionTieMinus=pack.minus==="LegalHeat"||pack.minus==="Coin"?"Survival":pack.minus;
+ jiggleDice(btn);
+ renderAll();
+ showToast("<b>Faction tie rolled.</b><br>You can edit the tie and stat choices before continuing.","success");
+}
+function randomButtonInline(kind){
+ const map={
+  origin:`randomizeCustomOrigin(this)`,
+  background:`randomizeCustomBackground(this)`,
+  factionTie:`randomizeCustomFactionTie(this)`,
+  backstory:`randomizeBackstory(this)`,
+  appearance:`randomizeAppearance(this)`
+ };
+ return `<button type="button" class="dice-btn secondary" title="Randomize this section" onclick="${map[kind]}">🎲</button>`;
+}
+
+function randomButton(kind){
+ const map={
+  origin:`randomizeCustomOrigin(this)`,
+  background:`randomizeCustomBackground(this)`,
+  factionTie:`randomizeCustomFactionTie(this)`,
+  backstory:`randomizeBackstory(this)`,
+  appearance:`randomizeAppearance(this)`
+ };
+ return `<div class="creation-random-header"><button type="button" class="dice-btn secondary" title="Randomize this section" onclick="${map[kind]}">🎲</button></div>`;
+}
+
 function appearanceValue(){
  const f=S.form||{};
  if(typeof f.appearance==="object" && f.appearance!==null)return f.appearance;
@@ -1529,17 +2470,17 @@ function isAppearanceComplete(){
 }
 function renderAppearanceStep(){
  const a=appearanceValue();
- return `<div class="detail">
+ return `${randomButton("appearance")}<div class="description-panel">
   <div class="detail-title">Appearance</div>
   <p>Describe what people can actually notice when your character enters a room. Keep it grounded in body, clothing, marks, movement, and presence rather than destiny or hidden greatness.</p>
  </div>
  <div class="appearance-grid">
-  <label>Body / Build <small>Required</small><textarea data-app="body" placeholder="Height, frame, posture, age impression, physical condition.">${escapeHtml(a.body||"")}</textarea></label>
-  <label>Face / Features <small>Required</small><textarea data-app="face" placeholder="Face shape, expression, complexion, distinctive visible traits.">${escapeHtml(a.face||"")}</textarea></label>
-  <label>Hair / Eyes <small>Required</small><textarea data-app="hairEyes" placeholder="Hair, eyes, gaze, grooming, color, texture.">${escapeHtml(a.hairEyes||"")}</textarea></label>
-  <label>Clothing / Style <small>Required</small><textarea data-app="clothing" placeholder="Everyday clothing, armor, fabrics, social tells, travel wear.">${escapeHtml(a.clothing||"")}</textarea></label>
-  <label>Scars / Marks / Tells <small>Required</small><textarea data-app="marks" placeholder="Scars, tattoos, burns, jewelry, gait, nervous habits, race-specific tells.">${escapeHtml(a.marks||"")}</textarea></label>
-  <label>Presence / First Impression <small>Required</small><textarea data-app="presence" placeholder="How strangers read them before they speak.">${escapeHtml(a.presence||"")}</textarea></label>
+  <label>Body / Build <span class="required-star">*</span><textarea data-app="body" placeholder="Height, frame, posture, age impression, physical condition.">${escapeHtml(a.body||"")}</textarea></label>
+  <label>Face / Features <span class="required-star">*</span><textarea data-app="face" placeholder="Face shape, expression, complexion, distinctive visible traits.">${escapeHtml(a.face||"")}</textarea></label>
+  <label>Hair / Eyes <span class="required-star">*</span><textarea data-app="hairEyes" placeholder="Hair, eyes, gaze, grooming, color, texture.">${escapeHtml(a.hairEyes||"")}</textarea></label>
+  <label>Clothing / Style <span class="required-star">*</span><textarea data-app="clothing" placeholder="Everyday clothing, armor, fabrics, social tells, travel wear.">${escapeHtml(a.clothing||"")}</textarea></label>
+  <label>Scars / Marks / Tells <span class="required-star">*</span><textarea data-app="marks" placeholder="Scars, tattoos, burns, jewelry, gait, nervous habits, race-specific tells.">${escapeHtml(a.marks||"")}</textarea></label>
+  <label>Presence / First Impression <span class="required-star">*</span><textarea data-app="presence" placeholder="How strangers read them before they speak.">${escapeHtml(a.presence||"")}</textarea></label>
  </div>
  <label>Optional Extra Appearance Details<textarea data-app="extra" placeholder="Anything else the player wants to add.">${escapeHtml(a.extra||"")}</textarea></label>${renderNotes("appearance")}`;
 }
@@ -1573,6 +2514,10 @@ function stepErrors(index){
    const err=qualityCheckField(st.title,f[st.key],"object"); if(err) errors.push(err);
  }
  if((st.kind==="cards"||st.kind==="cardsCustom") && !f[st.key]) errors.push(`${st.title} must be selected.`);
+ if(st.key==="kind"){
+   if(f.kind==="Veinborn"&&!f.discipline) errors.push("Veinborn discipline must be selected.");
+   if(f.kind==="Mundane"&&!f.proficiency) errors.push("Mundane proficiency must be selected.");
+ }
  if(st.kind==="cardsCustom" && f[st.key]==="Custom"){
    const err=qualityCheckField(`Custom ${st.title}`,f[st.key+"Custom"],"custom"); if(err) errors.push(err);
  }
@@ -1595,11 +2540,40 @@ function canNavigateTo(index){
  return {ok:true};
 }
 
+function pathValueForStep(s){
+ if(s.key==="review")return "";
+ if(s.key==="appearance")return appearanceText();
+ if(s.key==="backstory")return backstoryCombined();
+ if(s.key==="kind")return S.form.kind==="Veinborn"?`Veinborn · ${S.form.discipline||"—"}`:S.form.kind==="Mundane"?`Mundane · ${S.form.proficiency||"—"}`:(S.form.kind||"");
+ const v=S.form[s.key]||"";
+ return v==="Custom"?(S.form[s.key+"Custom"]||"Custom"):v;
+}
+
+function isCreationStepComplete(i){
+ const st=STEPS[i];
+ if(!st)return false;
+ if(st.key==="review")return false;
+ if(st.key==="kind"){
+   if(!S.form.kind)return false;
+   return S.form.kind==="Veinborn" ? !!S.form.discipline : !!S.form.proficiency;
+ }
+ if(st.key==="appearance")return isAppearanceComplete();
+ if(st.key==="backstory"){
+   return ["backstoryOrigin","backstoryPressure","backstoryIncident","backstoryTie","backstoryReason"].every(k=>String(S.form[k]||"").trim().length>=8);
+ }
+ if(st.kind==="cardsCustom"){
+   if(!S.form[st.key])return false;
+   if(S.form[st.key]==="Custom")return String(S.form[st.key+"Custom"]||"").trim().length>=8;
+   return true;
+ }
+ if(st.kind==="input"||st.kind==="textarea")return String(S.form[st.key]||"").trim().length>=2;
+ return !!S.form[st.key];
+}
+
 function renderPath(){
  document.getElementById("pathList").innerHTML=STEPS.map((s,i)=>{
-  let val=s.kind==="input"||s.kind==="textarea"?(S.form[s.key]||""):s.key==="review"?"":(S.form[s.key]||"");
-  if(s.key==="appearance")val=appearanceText();
-  const filled=stepErrors(i).length===0 && s.key!=="review";
+  const val=pathValueForStep(s);
+  const filled=isCreationStepComplete(i);
   return `<div class="path-item ${i===S.step?'active':''} ${filled?'done':''}" data-i="${i}">
    <div class="dot">${filled?'✓':i+1}</div>
    <div><div class="path-title">${s.title}</div><div class="path-val">${escapeHtml(val||"—")}</div></div>
@@ -1673,39 +2647,39 @@ function backstoryCombined(){
  return parts.join("\n\n");
 }
 function renderBackstoryGuided(){
- return `<div class="section-notes"><b>Backstory Structure</b><ul>
+ return randomButton("backstory") +  `<div class="section-notes"><b>Backstory Structure</b><ul>
   <li>All required boxes must be filled before you can continue.</li>
   <li>Each answer should be grounded, personal-scale, and usable by the campaign.</li>
   <li>The optional box can add flavor, but it cannot override canon or grant special power.</li>
  </ul></div>
  <div class="guided-grid">
   <div class="guided-field">
-   <label>Required 1 — Origin Point</label>
+   <label>Origin Point<span class="required-star">*</span></label>
    <div class="small">Where did your character come from? Name the place, household, route, institution, or circumstance that shaped them.</div>
    <textarea data-backstory="backstoryOrigin" placeholder="Example: They grew up around salvage ledgers in a minor Ordanthian guild-town, learning early that every relic had three owners and two lies attached.">${escapeHtml(S.form.backstoryOrigin||"")}</textarea>
   </div>
   <div class="guided-field">
-   <label>Required 2 — Pressure or Burden</label>
+   <label>Pressure or Burden<span class="required-star">*</span></label>
    <div class="small">What pressure followed them? Give them a debt, duty, fear, reputation, family pressure, institutional obligation, or wound the campaign can press.</div>
    <textarea data-backstory="backstoryPressure" placeholder="Example: Their family still owes money to a route broker who knows which manifests were altered.">${escapeHtml(S.form.backstoryPressure||"")}</textarea>
   </div>
   <div class="guided-field">
-   <label>Required 3 — Turning Incident</label>
+   <label>Turning Incident<span class="required-star">*</span></label>
    <div class="small">What changed their path? Describe the mistake, loss, discovery, betrayal, accident, or choice that pushed them toward danger.</div>
    <textarea data-backstory="backstoryIncident" placeholder="Example: During a Highflow season, a sealed crate arrived warm to the touch, and the person who signed for it vanished before Watch Bell.">${escapeHtml(S.form.backstoryIncident||"")}</textarea>
   </div>
   <div class="guided-field">
-   <label>Required 4 — Living Tie</label>
+   <label>Living Tie<span class="required-star">*</span></label>
    <div class="small">Who or what ties them to the world? Name a person, faction, settlement, promise, rival, or unresolved relationship that can appear later.</div>
    <textarea data-backstory="backstoryTie" placeholder="Example: A Watcher trainee once covered for them, but only after taking a copy of the false route mark.">${escapeHtml(S.form.backstoryTie||"")}</textarea>
   </div>
   <div class="guided-field">
-   <label>Required 5 — Reason to Enter the Campaign</label>
+   <label>Reason to Enter the Campaign<span class="required-star">*</span></label>
    <div class="small">Why do they step into danger now? Give the immediate reason they cannot simply stay home or ignore the opening crisis.</div>
    <textarea data-backstory="backstoryReason" placeholder="Example: The same mark has appeared again, and this time their younger sibling's name is on the manifest.">${escapeHtml(S.form.backstoryReason||"")}</textarea>
   </div>
   <div class="guided-field">
-   <label>Optional — Other Details</label>
+   <label>Optional Other Details</label>
    <div class="small">Add extra flavor: habits, relationships, regrets, speech style, scars, small beliefs, or personal contradictions. This box is optional.</div>
    <textarea data-backstory="backstoryOther" placeholder="Example: They count Bellcounts under their breath when nervous and refuse to sleep with their boots off on unfamiliar roads.">${escapeHtml(S.form.backstoryOther||"")}</textarea>
   </div>
@@ -1722,6 +2696,46 @@ function wireBackstoryGuided(){
  });
 }
 
+
+function namingGuide(){
+ const race=S.form.race||"";
+ const home=S.form.homeland||S.form.home||"";
+ const raceGuide={
+  "Valcian":"Valcian names often feel practical and socially legible: given name plus family name, with house markers or trade-linked surnames in formal settings.",
+  "Aelvari":"Aelvari / Lumenweft names can sound graceful, patterned, or old. Some identities are expressed through pattern, lineage, or Veilthread meaning rather than a simple surname.",
+  "Drakothen":"Drakothen names often carry clan markers, hard consonants, honor syllables, or public titles earned through deed and battle.",
+  "Orikarn":"Orikarn names tend toward weight, craft, stone, bridge, forge, or lineage identifiers. The name should feel built, not decorated.",
+  "Nyxborn":"Nyxborn names may be shortened in public and guarded in full. Titles, veils, shadow-names, and chosen names matter deeply.",
+  "Taurakin":"Taurakin names can include given name, clan name, and optional deed epithet. Horn-band markings and clan memory may matter as much as sound."
+ }[race] || "Use a name that sounds like it belongs to the race, region, class, and pressure you chose. Avoid joke names unless the whole campaign is built for that tone.";
+ const homeGuide={
+  "Ordanthia":"Ordanthian names can carry ruin-hunter, guild, or artifact-epoch flavor. Practical surnames, expedition names, and guild-linked identifiers fit well.",
+  "Kulois":"Kulois names may feel quiet, formal, preserved, or twilight-touched. Titles and ritual names can carry social weight.",
+  "Drakkaros":"Drakkaros names often feel martial, clan-bound, volcanic, or honor-marked.",
+  "Elarion":"Elarion names can sound natural, lyrical, old-growth, or tied to bloom, season, or living tradition.",
+  "Zepharyth":"Zepharyth names can feel wind-cut, storm-marked, aerial, clipped, or shaped by floating-island cultures.",
+  "Glacoria":"Glacorian names may feel spare, cold-forged, survival-shaped, clan-counted, or tied to generational memory."
+ }[home] || "Let region shape the cadence if you know where the character feels rooted. If not, let race and personal history guide the sound.";
+ return {raceGuide,homeGuide};
+}
+function renderNameStep(){
+ const guide=namingGuide();
+ const current=S.form.name||"";
+ return `<div class="name-ceremony">
+  <h3>Name the person who will enter Eldoria.</h3>
+  <p>This is not just a label on a sheet. This is the name the GM will speak when danger turns toward them, the name enemies may write into a ledger, the name allies may shout across a bad road, and the name the story will remember.</p>
+  <p>Choose something that feels like it belongs to their race, homeland, origin, and wounds. A good VEINFIRE name should sound like it has lived somewhere before the first scene begins.</p>
+  <div class="naming-guide-grid">
+    <div class="naming-guide-card"><b>Race Naming Guide</b><br>${escapeHtml(guide.raceGuide)}</div>
+    <div class="naming-guide-card"><b>Region / Homeland Tone</b><br>${escapeHtml(guide.homeGuide)}</div>
+  </div>
+ </div>
+ <div class="name-input-panel">
+  <label>Character Name <span class="required-star">*</span></label>
+  <input id="mainInput" value="${escapeHtml(current)}" placeholder="Enter the name your character will carry into the story.">
+ </div>${renderNotes("name")}`;
+}
+
 function renderStep(){
  const st=currentStep();
  $("stepKicker").textContent=`Step ${S.step+1} of ${STEPS.length}`;
@@ -1730,10 +2744,6 @@ function renderStep(){
  $("stepCounter").textContent=st.prompt;
  $("backBtn").disabled=S.step===0;
  $("nextBtn").textContent=st.key==="review"?"Create Character":"Next";
- if($("validateBtn")){
-   $("validateBtn").style.display=st.key==="review"?"inline-flex":"none";
-   $("validateBtn").textContent="Validate Character";
- }
  let html="";
  const isDialogue=["flaw","goal","secret"].includes(st.key);
 
@@ -1745,7 +2755,8 @@ function renderStep(){
  }
 
  if(st.kind==="input"){
-   html=`<label>${st.title}</label><input id="mainInput" value="${escapeHtml(S.form[st.key]||"")}" placeholder="${st.prompt}">${renderNotes(st.key)}`;
+   if(st.key==="name") html=`${raceNameGuide()}<div class="guided-field"><label>Name<span class="required-star">*</span></label><div class="small">Write the public name the world will know. It can be a birth name, travel name, clan/deed name, or socially convenient mask.</div><input id="mainInput" value="${escapeHtml(S.form[st.key]||"")}" placeholder="${st.prompt}"></div>${renderNotes(st.key)}`;
+   else html=`<div class="guided-field"><label>${st.title}<span class="required-star">*</span></label><input id="mainInput" value="${escapeHtml(S.form[st.key]||"")}" placeholder="${st.prompt}"></div>${renderNotes(st.key)}`;
  } else if(st.kind==="textarea"){
   if(st.key==="backstory"){
     html=`${renderBackstoryGuided()}${renderNotes(st.key)}`;
@@ -1773,10 +2784,10 @@ function renderStep(){
    }
    if(st.kind==="cardsCustom"){
      const customOn=val==="Custom";
-     html+=`<div class="custom-box ${customOn?'':'hidden'}"><label>Custom ${st.title}</label><textarea id="customInput" placeholder="Write your own ${st.title.toLowerCase()} here. The lore validator will check it.">${escapeHtml(S.form[st.key+"Custom"]||"")}</textarea>${["background","factionTie"].includes(st.key)?renderCustomStatPicker(st.key):""}</div>`;
+     html+=`<div class="custom-box ${customOn?'':'hidden'}"><label>Custom ${st.title}</label><div class="custom-input-row"><textarea id="customInput" placeholder="Write your own ${st.title.toLowerCase()} here. The lore validator will check it.">${escapeHtml(S.form[st.key+"Custom"]||"")}</textarea>${customOn&&["origin","background","factionTie"].includes(st.key)?randomButtonInline(st.key):""}</div>${["background","factionTie"].includes(st.key)?renderCustomStatPicker(st.key):""}</div>`;
    }
  } else if(st.kind==="review"){
-   html=`<div class="detail"><div class="detail-title">Final Review</div><p>Read the dossier on the right. Press Validate Character to check every required field and compare custom lore against the embedded rules extracted from the v5 canon files. Then create the character.</p></div>${renderNotes("backstory")}`;
+   html=`<div class="detail"><div class="detail-title">Final Review</div><p>The middle panel is collapsed for final review. Read the expanded dossier on the right. When every Creation Path entry shows a check mark, create the character.</p></div>${renderNotes("backstory")}`;
  }
  $("stepContent").innerHTML=html;
  if(st.kind==="input"||st.kind==="textarea"){
@@ -1980,7 +2991,7 @@ function renderDossier(target="dossier"){
  if($(target))$(target).innerHTML=html;
  if(target==="dossier"&&$("dossier2"))$("dossier2").innerHTML=html;
 }
-function randomize(){const race=pick(Object.keys(DB.races));S.form={race,gender:pick(["Male","Female"]),kind:DB.races[race].vein==="Forbidden"?"Mundane":pick(["Mundane","Veinborn"]),home:pick(Object.keys(DB.homes)),origin:pick(Object.keys(DB.origins).filter(x=>x!=="Custom")),background:pick(Object.keys(DB.backgrounds).filter(x=>x!=="Custom")),className:"",startingGear:pick(Object.keys(DB.startingGear)),factionTie:pick(Object.keys(DB.factions).filter(x=>x!=="Custom")),flaw:pick(Object.keys(DB.flaws).filter(x=>x!=="Custom")),goal:pick(Object.keys(DB.goals).filter(x=>x!=="Custom")),secret:pick(Object.keys(DB.secrets).filter(x=>x!=="Custom")),name:pick(DB.names[race]),appearance:"",backstory:"",object:pick(["cracked route compass","family seal-ring","burn-scarred field notebook","horn-band token","Veilthread scrap","illegal waymarker coin"])};S.form.className=pick(Object.keys(DB.classes).filter(x=>DB.classes[x].requires!=="Veinborn"||S.form.kind==="Veinborn"));S.form.discipline=S.form.kind==="Veinborn"?pick(Object.keys(DB.disciplines)):"";S.form.proficiency=S.form.kind==="Mundane"?pick(Object.keys(DB.proficiencies)):"";S.step=0;addLog("Randomized Draft","A new character draft was prepared.");renderAll()}
+function randomize(){const race=pick(Object.keys(DB.races));S.form={race,gender:pick(["Male","Female"]),kind:DB.races[race].vein==="Forbidden"?"Mundane":pick(["Mundane","Veinborn"]),home:pick(Object.keys(DB.homes)),origin:pick(Object.keys(DB.origins).filter(x=>x!=="Custom")),background:pick(Object.keys(DB.backgrounds).filter(x=>x!=="Custom")),className:"",startingGear:pick(Object.keys(DB.startingGear)),factionTie:pick(Object.keys(DB.factions).filter(x=>x!=="Custom")),flaw:pick(Object.keys(DB.flaws).filter(x=>x!=="Custom")),goal:pick(Object.keys(DB.goals).filter(x=>x!=="Custom")),secret:pick(Object.keys(DB.secrets).filter(x=>x!=="Custom")),name:pick(DB.names[race]),appearance:{body:"",face:"",hairEyes:"",clothing:"",marks:"",presence:"",extra:""},backstory:"",object:pick(["cracked route compass","family seal-ring","burn-scarred field notebook","horn-band token","Veilthread scrap","illegal waymarker coin"])};S.form.className=pick(Object.keys(DB.classes).filter(x=>DB.classes[x].requires!=="Veinborn"||S.form.kind==="Veinborn"));S.form.discipline=S.form.kind==="Veinborn"?pick(Object.keys(DB.disciplines)):"";S.form.proficiency=S.form.kind==="Mundane"?pick(Object.keys(DB.proficiencies)):"";S.step=0;addLog("Randomized Draft","A new character draft was prepared.");renderAll()}
 
 function defaultProgression(){
  return {
@@ -2022,30 +3033,155 @@ function renderAdvancement(){
  </div>`;
 }
 
-function createCharacter(){const v=validateLore(false);if(!v.ok){showToast(`<b>Character is not ready.</b><br>${v.problems.slice(0,4).join("<br>")}`);return;}const stats=provisionalStats(),f=S.form,gear=[...(f.background&&DB.backgrounds[f.background]?DB.backgrounds[f.background].gear||[]:[]),...(f.startingGear&&DB.startingGear[f.startingGear]?DB.startingGear[f.startingGear].items||[]:[])];if(f.object)gear.push(f.object);gear.splice(0, gear.length, ...sanitizeGearList(gear)); const raceSkills=(f.race&&DB.races[f.race]&&DB.races[f.race].skills)?DB.races[f.race].skills:[]; const classSkills=(f.className&&DB.classes[f.className]&&DB.classes[f.className].skills)?DB.classes[f.className].skills:[]; S.pc={...f,stats,gear,skills:[...raceSkills,...classSkills]};S.progression=defaultProgression();
+function createCharacter(){const v=validateLore(false);if(!v.ok){showToast(`<b>Character is not ready.</b><br>${v.problems.slice(0,4).join("<br>")}`);return;}const stats=provisionalStats(),f=S.form,gear=[...(f.background&&DB.backgrounds[f.background]?DB.backgrounds[f.background].gear||[]:[]),...(f.startingGear&&DB.startingGear[f.startingGear]?DB.startingGear[f.startingGear].items||[]:[])];if(f.object)gear.push(f.object);gear.splice(0, gear.length, ...sanitizeGearList(gear)); const raceSkills=(f.race&&DB.races[f.race]&&DB.races[f.race].skills)?DB.races[f.race].skills:[]; const classSkills=(f.className&&DB.classes[f.className]&&DB.classes[f.className].skills)?DB.classes[f.className].skills:[]; S.pc={...f,appearance:appearanceText(),stats,gear,skills:[...raceSkills,...classSkills]};S.progression=defaultProgression();
 const hpMax=10+stats.Body*3+tierBonus();
-S.resources={Health:hpMax,MaxHealth:hpMax,Stress:0,MaxStress:8+stats.Presence,Fatigue:0,MaxFatigue:6+stats.Body,Veinburn:0,MaxVeinburn:f.kind==="Veinborn"?8+stats.Vein+(f.race==="Taurakin"?2:0):0,Blight:0,MaxBlight:8,Supplies:5+stats.Survival,Coin:15+stats.Presence*3,LegalHeat:0,Suspicion:0,Inventory:sanitizeGearList([...gear]),Injury:"None",Encumbrance:gear.length,MaxEncumbrance:10+stats.Body*3};S.phase="between";addLog("Character Created",`<b>${escapeHtml(f.name)}</b> is ready.`);renderAll()}
-function initCampaignOptions(){$("archetype").innerHTML=Object.keys(DB.archetypes).map(x=>`<option>${x}</option>`).join("");$("archetype").onchange=()=>{$("archetypeDesc").innerHTML=`<div class="detail-title">${$("archetype").value}</div><p>${DB.archetypes[$("archetype").value].desc}</p>`};$("archetype").onchange()}
+S.resources={Health:hpMax,MaxHealth:hpMax,Stress:0,MaxStress:8+stats.Presence,Fatigue:0,MaxFatigue:6+stats.Body,Veinburn:0,MaxVeinburn:f.kind==="Veinborn"?8+stats.Vein+(f.race==="Taurakin"?2:0):0,Blight:0,MaxBlight:8,Supplies:5+stats.Survival,Coin:15+stats.Presence*3,LegalHeat:0,Suspicion:0,Inventory:sanitizeGearList([...gear]),Injury:"None",Encumbrance:gear.length,MaxEncumbrance:10+stats.Body*3};S.phase="between";addLog("Character Created",`<b>${escapeHtml(f.name)}</b> is ready.`);renderAll();showToast(`<b>Character created.</b><br>${escapeHtml(f.name)} is ready for campaign generation.`,"success")}
+function initCampaignOptions(){
+ $("archetype").innerHTML=Object.keys(DB.archetypes).map(x=>`<option>${x}</option>`).join("");
+ $("archetype").onchange=()=>{
+   const name=$("archetype").value;
+   const a=DB.archetypes[name];
+   const mood={
+    "Relic Road":"Broken roads, old wardstones, rain-dark mile markers, and villages that know which ruins should never be named after dark.",
+    "Border Lockdown":"Checkpoint fires, stamped permits, anxious crowds, confiscated gear, and soldiers pretending the alarm bells are routine.",
+    "Dead Zone Courier":"Clean shadows, dead rune-lamps, quiet roads, and the strange relief of a place where magic goes thin and every sound becomes honest.",
+    "Guild Debt":"Counting houses, polished ledgers, contract knives, private offices, and the soft violence of people who can ruin lives without raising their voices.",
+    "Watcher Alarm":"Bell towers, evacuation chalk, sensor pylons, pressure headaches, and the public fear that follows a Watcher running instead of walking.",
+    "Ruin Claim":"Jungle heat, impossible stone, sealed vaults, old geometry, and the smell of wet leaves over mechanisms that should have died centuries ago.",
+    "House Shame":"Perfumed halls, family portraits, servants who know too much, old debts dressed as etiquette, and rooms where reputation is a weapon.",
+    "Smuggler Moon":"Fogged docks, false bottoms, coded lanterns, hidden coin, and people who smile only after checking the exits.",
+    "Clinic Night":"Blood-warm basins, exhausted healers, rationed sedatives, corridor prayers, and the moment a patient says something they should not know.",
+    "Festival Bell":"Lantern crowds, spilled wine, masks, fireworks, patrol routes stretched too thin, and a wrong bell tolling beneath the music.",
+    "Whore House":"Perfumed rooms, silk screens, overheard names, private shame, locked ledgers, and desire turning into leverage before Watch Bell.",
+    "Silent City Claim":"Vast impossible corridors, soundless stone, expedition lamps, rope marks, and the fear that the ruin is listening.",
+    "Blight Survey":"Color bleed on the horizon, masks damp with breath, instruments twitching, and a landscape that makes distance feel dishonest.",
+    "Caravan Winter":"Frozen wheels, ration math, blue hands, tired animals, and the hard mercy of choosing what the caravan can afford to keep.",
+    "Noble Inspection":"Wax seals, staged hospitality, hidden servants, choreographed smiles, and officials measuring truth by who seems expensive enough to believe."
+   }[name] || "A pressure-heavy VEINFIRE opening shaped by place, faction memory, local danger, and what the character brings into the room.";
+   const factions=a.factions.join(", ");
+   const threats=a.threats.join(", ");
+   $("archetypeDesc").innerHTML=`<h3>${escapeHtml(name)}</h3>
+   <p>${escapeHtml(a.desc)}</p>
+   <p><b>World texture:</b> ${escapeHtml(mood)}</p>
+   <p><b>Likely pressure:</b> ${escapeHtml(factions)}.</p>
+   <p><b>Possible dangers:</b> ${escapeHtml(threats)}.</p>
+   <p>The generated opening will combine atmosphere, rumor, scarcity, faction pressure, and one unexpected complication so the first scene has a clear reason to move without feeling scripted.</p>`;
+ };
+ $("archetype").onchange();
+}
 function seedRandom(seed){let x=0;for(let i=0;i<seed.length;i++)x=(x*31+seed.charCodeAt(i))>>>0;return()=>{x=(1664525*x+1013904223)>>>0;return x/4294967296}}
-function generateCampaign(){if(!S.pc)return;const seed=$("seed").value.trim()||String(Date.now()+Math.random()),rand=seedRandom(seed),rp=a=>a[Math.floor(rand()*a.length)],archName=$("archetype").value,arch=DB.archetypes[archName];let region;
-const regionPool = archName==="Whore House"
+function generateCampaign(){
+ if(!S.pc)return;
+ const seed=$("seed").value.trim()||String(Date.now()+Math.random());
+ const rand=seedRandom(seed),rp=a=>a[Math.floor(rand()*a.length)];
+ const archName=$("archetype").value,arch=DB.archetypes[archName];
+ const regionPool = archName==="Whore House"
   ? ["Ordanthia","Ordanthia","Kulois","Drakkaros","Zepharyth","Elarion"]
   : (archName==="Relic Road"||archName==="Silent City Claim")
     ? ["Ordanthia","Ordanthia","Ordanthia",...Object.keys(DB.homes)]
     : ["Ordanthia","Ordanthia",...Object.keys(DB.homes)];
-region=rp(regionPool);const pressure=rp(Object.keys(DB.pressureBands)),season=rp(Object.keys(DB.seasons)),town=rp(DB.regions[region]),factions=[...arch.factions].sort(()=>rand()-.5).slice(0,3),activeThreat=rp(arch.threats),law=rp(["Low","Moderate","High","Emergency"]),clock=rp(["next Bellcount","by Dark Bell","before the next Sunturn","within three Bellcounts"]),difficulty=calculateDifficulty(pressure,season,law,S.pc),opening=rp(archName==="Whore House" ? [
-`The house ledger goes missing before Watch Bell, and three powerful clients suddenly pretend they were never here.`,
-`A worker vanishes after receiving a patron with a sealed guild token and Dead Zone dust on his boots.`,
-`The madam orders the doors barred, not because of a client, but because someone inside the house is selling names to a faction.`,
-`A patron is found dead in a private room with no wound, no spell trace, and a Vein Watcher badge hidden under the mattress.`,
-`A debt-marker changes hands in the back office, and your name appears on a page you never signed.`
-] : [
-`A sealed cargo mark appears in ${town}, but the registry says it was never issued.`,
-`A caravan reaches ${town} with one survivor, no manifest, and dust from a route no one admits using.`,
-`The local alarm bell rings once at the wrong time, then every official pretends it did not.`,
-`A permit clerk is found alive but unable to remember the last two Bellcounts.`,
-`A banned route opens during ${season}, and three factions move before the Watchers can close it.`
-]);S.campaign={seed,archName,archDesc:arch.desc,region,town,pressure,season,factions,activeThreat,law,clock,difficulty,opening,objective:`Investigate the ${activeThreat} without triggering a Compact incident.`,failure:`If unresolved ${clock}, ${town} faces legal lockdown, faction violence, or mana-safety escalation.`,reps:{},npcs:[]};factions.forEach(f=>S.campaign.reps[f]=0);generateNPCs(rand);S.phase="play";S.sessionStarted=false;S.turn=0;S.leads=[];addLog("Campaign Generated",`<b>${archName}</b> begins in ${town}.`);renderAll();showToast("<b>Campaign generated.</b><br>Select an AI model in GM Handoff, then build the packet.")}
+ const region=rp(regionPool);
+ const pressure=rp(Object.keys(DB.pressureBands));
+ const season=rp(Object.keys(DB.seasons));
+ const town=rp(DB.regions[region]);
+ const factions=[...arch.factions].sort(()=>rand()-.5).slice(0,3);
+ const activeThreat=rp(arch.threats);
+ const law=rp(["Low","Moderate","High","Emergency"]);
+ const clock=rp(["next Bellcount","by Dark Bell","before the next Sunturn","within three Bellcounts","before Watch Bell","before the road closes","before the local seal changes hands","before the next patrol rotation"]);
+ const difficulty=calculateDifficulty(pressure,season,law,S.pc);
+
+ const openingPlaces=[
+  "a back office where the lamp keeps guttering blue",
+  "a rain-dark checkpoint outside the town gate",
+  "a private room with perfume fighting the smell of old smoke",
+  "a clinic corridor where nobody has slept",
+  "a sealed storehouse with fresh dust disturbed near the lock",
+  "a caravan yard where the animals refuse to face east",
+  "a guild hall with two ledgers open and one page missing",
+  "a Watcher station where the bell rope has been cut",
+  "a shrine alcove with wax pooled around the wrong symbol",
+  "a ruin-camp mess tent where every cup has gone cold"
+ ];
+ const sensory=[
+  "ozone rides under the ordinary smells of sweat, rain, and lamp oil",
+  "the air tastes metallic whenever anyone says the missing name",
+  "the bells sound slightly late, as if the town itself is hesitating",
+  "clean shadows near the Dead Zone edge make every lie feel louder",
+  "a pressure headache blooms behind the eyes whenever the wind changes",
+  "the ground hums softly, then stops whenever someone looks down",
+  "wet stone, burnt herbs, and old ink cling to the scene",
+  "a faint wrong-cold gathers around sealed doors and covered mirrors"
+ ];
+ const rumors=[
+  "a permit was issued to someone officially dead",
+  "a client paid in coin minted before the Treaty",
+  "a Watcher report vanished between two countersignatures",
+  "a caravan arrived with one extra shadow at dusk",
+  "someone has been buying clean names from desperate people",
+  "an old route reopened without appearing on any map",
+  "a faction courier is hiding among ordinary workers",
+  "a sealed object has started changing temperature with the bells"
+ ];
+ const complications=[
+  "the most helpful witness is lying for a sympathetic reason",
+  "the obvious culprit is already dead",
+  "two factions want the same truth for opposite reasons",
+  "the safest legal answer will ruin an innocent person",
+  "the route out becomes dangerous before the route in makes sense",
+  "someone offers protection that creates a larger debt",
+  "the first piece of evidence is real but planted",
+  "a minor NPC recognizes the character from a past they did not explain"
+ ];
+ const scarcities=[
+  "clean water",
+  "legal time",
+  "trustworthy witnesses",
+  "safe shelter",
+  "medical supplies",
+  "uncorrupted documents",
+  "coin that can be spent openly",
+  "a route that does not cross faction eyes"
+ ];
+ const firstChoices=[
+  "protect the witness or secure the evidence",
+  "obey the local order or move before the seal is filed",
+  "follow the rumor or question the person trying to stop it",
+  "spend coin for speed or save coin for leverage",
+  "use public pressure or keep the matter quiet",
+  "risk a stat check now or gather safer preparation first",
+  "trust a faction contact or test their story",
+  "enter the dangerous place now or wait until the next Bell"
+ ];
+ const opening=archName==="Whore House" ? rp([
+  `In ${town}, the house ledger goes missing before Watch Bell, and three powerful clients suddenly pretend they were never here.`,
+  `In ${town}, a worker vanishes after receiving a patron with a sealed guild token and Dead Zone dust on his boots.`,
+  `The madam orders the doors barred in ${town}, not because of a client, but because someone inside the house is selling names to a faction.`,
+  `A patron is found dead in a private room in ${town} with no wound, no spell trace, and a Vein Watcher badge hidden under the mattress.`,
+  `A debt-marker changes hands in the back office, and your name appears on a page you never signed.`
+ ]) : rp([
+  `A sealed cargo mark appears in ${town}, but the registry says it was never issued.`,
+  `A caravan reaches ${town} with one survivor, no manifest, and dust from a route no one admits using.`,
+  `The local alarm bell rings once at the wrong time, then every official pretends it did not.`,
+  `A permit clerk is found alive but unable to remember the last two Bellcounts.`,
+  `A banned route opens during ${season}, and three factions move before the Watchers can close it.`,
+  `A public notice is replaced overnight with a copy bearing a seal that has not existed for decades.`,
+  `Someone pays for silence using your character's old name, then disappears before the receipt is dry.`,
+  `A child, courier, client, or wounded guard brings a warning that only makes sense if the official map is wrong.`
+ ]);
+ const scenery={openingPlace:rp(openingPlaces),sensory:rp(sensory),rumor:rp(rumors),complication:rp(complications),scarcity:rp(scarcities),firstChoice:rp(firstChoices)};
+ const objective=`Find out why ${scenery.rumor} before ${scenery.scarcity} runs out or becomes controlled by ${factions[0]}.`;
+ const failure=`If unresolved ${clock}, ${town} faces ${rp(["legal lockdown","faction violence","mana-safety escalation","public panic","a false arrest","a sealed route","a Watcher intervention","a debt transfer that cannot be easily reversed"])}.`;
+ S.campaign={seed,archName,archDesc:arch.desc,region,town,pressure,season,factions,activeThreat,law,clock,difficulty,opening,objective,failure,scenery,reps:{},npcs:[],trackerState:{currentLocation:town,currentBell:"Opening Bell",sceneStatus:"Campaign generated, not yet started.",knownObjective:objective,activePressure:[pressure,season,law],visibleConsequences:[]}};
+ factions.forEach(f=>S.campaign.reps[f]=0);
+ generateNPCs(rand);
+ S.phase="play";
+ S.sessionStarted=false;
+ S.turn=0;
+ S.leads=[];
+ addLog("Campaign Generated",`<b>${archName}</b> begins in ${town}.`);
+ renderAll();
+ showToast("<b>Campaign generated.</b><br>Review the GM Handoff and build the packet.","success");
+}
 function calculateDifficulty(pressure,season,law,pc){let score=DB.pressureBands[pressure].risk+DB.seasons[season].risk;if(law==="Moderate")score+=1;if(law==="High")score+=2;if(law==="Emergency")score+=3;if(pc.kind==="Veinborn"&&(pressure==="Major Vein Zone"||season==="Shear"))score+=1;if(pc.kind==="Mundane"&&pressure==="Dead Zone")score-=1;if(pc.race==="Taurakin"&&(season==="Highflow"||season==="Shear"))score-=1;if(pc.race==="Orikarn"&&pressure==="Dead Zone")score-=1;return{score,label:score<=1?"Manageable":score<=4?"Standard":score<=7?"Dangerous":"Severe"}}
 function generateNPCs(rand=Math.random){const rp=a=>a[Math.floor(rand()*a.length)],roles=["faction handler","witness","rival investigator","local authority","companion candidate","hidden antagonist","specialist"],races=Object.keys(DB.races),personalities=["dry and procedural","warm but evasive","blunt and tired","beautifully polite","jumpy and overworked","too calm","angry on behalf of someone else"],agendas=["protect the town","bury evidence","profit from the crisis","prevent a Veinstorm panic","save a relative","frame a rival faction","contain an illegal object"],lies=["where they were at Watch Bell","who signed the permit","what the cargo contained","how much they know about the route","why they fear the Watchers","who they sent a message to"];S.campaign.npcs=[];for(let i=0;i<6;i++){const race=rp(races),kind=DB.races[race].vein==="Forbidden"?"Mundane":rp(["Mundane","Veinborn"]);S.campaign.npcs.push({name:rp(DB.names[race]),race,kind,faction:rp(S.campaign.factions),role:roles[i%roles.length],personality:rp(personalities),agenda:rp(agendas),lie:rp(lies),status:"Unknown"})}}
 
@@ -2172,10 +3308,17 @@ function getCampaignPacket(){
   difficulty_score:c.difficulty?c.difficulty.score:"",
   active_factions:c.factions || [],
   opening_incident:c.opening,
+  opening_place:c.scenery?.openingPlace || "",
+  sensory_hook:c.scenery?.sensory || "",
+  local_rumor:c.scenery?.rumor || "",
+  opening_complication:c.scenery?.complication || "",
+  scarcity_pressure:c.scenery?.scarcity || "",
+  first_meaningful_choice:c.scenery?.firstChoice || "",
   threat:c.activeThreat,
   objective:c.objective,
   failure_condition:c.failure,
   failure_clock:c.clock,
+  tracker_state:c.trackerState || {},
   npc_cast:c.npcs || [],
   faction_reputation:c.reps || {}
  };
@@ -2330,6 +3473,14 @@ The initial cast is only the starting cast. Generate additional NPCs during play
 DIFFICULTY RULE:
 The listed difficulty is the opening pressure only. Change check DCs and overall danger as the situation changes.
 
+Opening Atmosphere:
+- Place: ${campaign.opening_place}
+- Sensory hook: ${campaign.sensory_hook}
+- Local rumor: ${campaign.local_rumor}
+- Opening complication: ${campaign.opening_complication}
+- Scarcity pressure: ${campaign.scarcity_pressure}
+- First meaningful choice: ${campaign.first_meaningful_choice}
+
 Opening Incident:
 ${campaign.opening_incident}
 
@@ -2409,7 +3560,7 @@ Rules for this JSON:
 - Use playerFacingLedgerAdd only for information the player character knows, perceives, confirms, or can reasonably infer.
 - Do not include hidden faction clocks, secret NPC motives, undiscovered lies, or offscreen spoilers in the JSON.
 - If nothing mechanical changed, the JSON may include only chronicleAdd.
-- Keep narration outside the JSON. The JSON is for the HTML Progress Tracker importer.
+- Keep narration outside the JSON. The JSON is for the HTML Campaign Tracker importer.
 - The JSON must be valid JSON: double quotes, no comments, no trailing commas.
 
 BEGIN THE SESSION:
@@ -2478,16 +3629,129 @@ What do you do next?`;
  setChoices([["Follow the strongest lead","Survival",14,"Move toward the next location before opposition reacts."],["Interrogate an NPC","Presence",14,"Choose pressure over patience."],["Analyze evidence","Mind",14,"Turn clues into a real accusation."],["Use or test magic carefully",S.pc.kind==="Veinborn"?"Vein":"Craft",15,"Risk a technical solution."],["Lower heat and regroup","Presence",12,"Reduce suspicion before pushing further."]]);
 }
 function advanceBell(){if(!S.pc)return;addLog("Bell Advanced","Time moves forward by one Bellcount.");S.resources.Fatigue=clamp(S.resources.Fatigue+1,0,S.resources.MaxFatigue);renderPlayPanels()}function rest(){if(!S.resources)return;S.resources.Stress=clamp(S.resources.Stress-2,0,S.resources.MaxStress);S.resources.Fatigue=clamp(S.resources.Fatigue-2,0,S.resources.MaxFatigue);if(S.pc.kind==="Veinborn")S.resources.Veinburn=clamp(S.resources.Veinburn-1,0,S.resources.MaxVeinburn);S.resources.Supplies=clamp(S.resources.Supplies-1,0,99);addLog("Rest","You spend supplies to recover stress, fatigue, and minor magical strain.");renderPlayPanels()}
-function renderCampaignView(){if(S.phase==="progress"&&!progressImported&&!S.progressImported){$("campaignView").innerHTML="Import a progress JSON or GM update to show campaign state.";return} if(!S.campaign){$("campaignView").innerHTML="No campaign generated.";return}const c=S.campaign;$("campaignView").innerHTML=`<b>${c.archName}</b><div class="small">${c.archDesc}</div><hr><div class="kv"><b>Difficulty</b><span>${c.difficulty.label} (${c.difficulty.score})</span></div><div class="kv"><b>Region</b><span>${c.town}, ${c.region}</span></div><div class="kv"><b>Pressure</b><span>${c.pressure}: ${DB.pressureBands[c.pressure].desc}</span></div><div class="kv"><b>Season</b><span>${c.season}: ${DB.seasons[c.season].desc}</span></div><div class="kv"><b>Law</b><span>${c.law}</span></div><div class="kv"><b>Threat</b><span>${c.activeThreat}</span></div><div class="kv"><b>Objective</b><span>${c.objective}</span></div>`}
-function renderTrackers(){if(S.phase==="progress"&&!progressImported&&!S.progressImported){$("trackers").innerHTML="Import progress data to show trackers.";return} if(!S.resources){$("trackers").innerHTML="No active character.";return}const r=S.resources,row=(n,v,m)=>`<div class="detail"><b>${n}</b><span class="badge">${v}/${m}</span><div class="meter"><div class="fill bad" style="width:${m?clamp(v/m*100,0,100):0}%"></div></div></div>`;$("trackers").innerHTML=`${row("Health",r.Health,r.MaxHealth)}${row("Stress",r.Stress,r.MaxStress)}${row("Fatigue",r.Fatigue,r.MaxFatigue)}${S.pc.kind==="Veinborn"?row("Veinburn",r.Veinburn,r.MaxVeinburn):""}${row("Blight Exposure",r.Blight,r.MaxBlight)}${row("Legal Heat",r.LegalHeat,10)}${row("Suspicion",r.Suspicion,10)}<div class="detail"><b>Supplies</b> ${r.Supplies} · <b>Coin</b> ${r.Coin}</div><div class="detail"><b>Inventory</b><div class="usage-list">${renderGearUsageList(sanitizeGearList(r.Inventory||[]))}</div></div><div class="detail"><b>Advancement</b>${renderAdvancement()}</div>`}
+function renderCampaignView(){
+ if(S.phase==="progress"&&!progressImported&&!S.progressImported){$("campaignView").innerHTML="Import a progress JSON or GM update to show campaign state.";return}
+ if(!S.campaign){$("campaignView").innerHTML="No campaign generated or imported yet.";return}
+ const c=S.campaign;
+ const sc=c.scenery||{};
+ $("campaignView").innerHTML=`<b>${escapeHtml(c.archName||"Campaign")}</b><div class="small">${escapeHtml(c.archDesc||"")}</div><hr>
+ <div class="kv"><b>Region</b><span>${escapeHtml(c.town||"—")}, ${escapeHtml(c.region||"—")}</span></div>
+ <div class="kv"><b>Mana Pressure</b><span>${escapeHtml(c.pressure||"—")}: ${c.pressure&&DB.pressureBands[c.pressure]?escapeHtml(DB.pressureBands[c.pressure].desc):""}</span></div>
+ <div class="kv"><b>Season</b><span>${escapeHtml(c.season||"—")}: ${c.season&&DB.seasons[c.season]?escapeHtml(DB.seasons[c.season].desc):""}</span></div>
+ <div class="kv"><b>Law</b><span>${escapeHtml(c.law||"—")}</span></div>
+ <div class="kv"><b>Opening Place</b><span>${escapeHtml(sc.openingPlace||"—")}</span></div>
+ <div class="kv"><b>Sensory Hook</b><span>${escapeHtml(sc.sensory||"—")}</span></div>
+ <div class="kv"><b>Rumor</b><span>${escapeHtml(sc.rumor||"—")}</span></div>
+ <div class="kv"><b>Complication</b><span>${escapeHtml(sc.complication||"—")}</span></div>
+ <div class="kv"><b>Scarcity</b><span>${escapeHtml(sc.scarcity||"—")}</span></div>
+ <div class="kv"><b>First Choice</b><span>${escapeHtml(sc.firstChoice||"—")}</span></div>
+ <div class="kv"><b>Difficulty</b><span>${c.difficulty?`${escapeHtml(c.difficulty.label)} (${c.difficulty.score})`:"Emergent"}</span></div>
+ <div class="kv"><b>Threat</b><span>${escapeHtml(c.activeThreat||"—")}</span></div>
+ <div class="kv"><b>Objective</b><span>${escapeHtml(c.objective||"—")}</span></div>`;
+}
+function renderTrackers(){
+ if(S.phase==="progress"&&!progressImported&&!S.progressImported){$("trackers").innerHTML="Import progress data to show trackers.";return}
+ if(!S.resources){$("trackers").innerHTML="No imported tracker data yet.";return}
+ const r=S.resources;
+ const row=(n,v,m)=>`<div class="detail"><b>${n}</b><span class="badge">${v??0}/${m??0}</span><div class="meter"><div class="fill bad" style="width:${m?clamp((v||0)/m*100,0,100):0}%"></div></div></div>`;
+ const isVeinborn=(S.pc&&S.pc.kind==="Veinborn") || r.MaxVeinburn;
+ const inventory=sanitizeGearList(r.Inventory||[]);
+ $("trackers").innerHTML=`${row("Health",r.Health,r.MaxHealth)}${row("Stress",r.Stress,r.MaxStress)}${row("Fatigue",r.Fatigue,r.MaxFatigue)}${isVeinborn?row("Veinburn",r.Veinburn,r.MaxVeinburn):""}${row("Blight Exposure",r.Blight,r.MaxBlight)}${row("Legal Heat",r.LegalHeat,10)}${row("Suspicion",r.Suspicion,10)}<div class="detail"><b>Supplies</b> ${r.Supplies??0} · <b>Coin</b> ${r.Coin??0}</div><div class="detail"><b>Inventory</b><div class="usage-list">${inventory.length?renderGearUsageList(inventory):"<span class='small'>No inventory imported yet.</span>"}</div></div><div class="detail"><b>Advancement</b>${renderAdvancement()}</div>`;
+}
 function renderNPCs(){if(S.phase==="progress"&&!progressImported&&!S.progressImported){$("npcView").innerHTML="Import progress data to show NPCs.";return} if(!S.campaign){$("npcView").innerHTML="No NPCs generated.";return}$("npcView").innerHTML=S.campaign.npcs.map(n=>`<div class="detail"><b>${n.name}</b><div class="small">${n.race} ${n.kind} · ${n.role} · ${n.faction}</div><div class="small">Agenda: ${n.agenda}</div><div class="small">Likely lie: ${n.lie}</div></div>`).join("")}function renderLog(){if(S.phase==="progress"&&!progressImported&&!S.progressImported){$("log").innerHTML="<div class=\"entry\">Import progress data to show Chronicle.</div>";return}$("log").innerHTML=S.log.map(e=>`<div class="entry"><small>${e.t} · ${e.title}</small>${e.text}</div>`).join("")}function renderPlayPanels(){renderCampaignView();renderTrackers();renderNPCs();renderLog();renderManualEditor();save()}
 
 function characterReady(){
  const v=validateLore(false);
  return !!(v && v.ok && S.pc);
 }
-function goCreation(){
+
+function applyPresetToForm(preset){
+ S.form={...freshState().form,...JSON.parse(JSON.stringify(preset.form))};
+ S.form=normalizeAppearanceInput(S.form);
+ S.form.backstory=backstoryCombined();
+ S.pc=null;S.campaign=null;S.resources=null;S.leads=[];S.turn=0;
+}
+function currentPreset(){
+ const sel=$("presetSelect");
+ return TEST_PRESETS.find(p=>p.id===(sel?sel.value:"")) || TEST_PRESETS[0];
+}
+function renderPresetPreview(){
+ const preset=currentPreset();
+ if(!preset)return;
+ const oldForm=JSON.parse(JSON.stringify(S.form||{}));
+ const oldPc=S.pc;
+ const oldCampaign=S.campaign;
+ applyPresetToForm(preset);
+ const race=S.form.race||"";
+ const role=S.form.kind==="Veinborn"?S.form.discipline:S.form.proficiency;
+ const raceTip=race&&DB.races[race]?DB.races[race].desc:"Race shapes how Eldoria reads your body, prejudice, strengths, and boundaries.";
+ const typeTip=S.form.kind==="Veinborn"
+   ?"Veinborn characters can channel manic radiation through a discipline, but power brings Veinburn risk and political accountability."
+   :"Mundane characters do not channel the Veins. Their survival comes from training, craft, discipline, and social leverage.";
+ const classTip=S.form.className&&DB.classes[S.form.className]?DB.classes[S.form.className].desc:"Class defines the character's practical role and opening skill pattern.";
+ const originTip=S.form.origin&&DB.origins[S.form.origin]?DB.origins[S.form.origin].desc:"Origin describes the social place the character came from. It creates doors, habits, and pressure; not immunity.";
+ if($("presetBrief")){
+   $("presetBrief").innerHTML=`<h3>${escapeHtml(preset.label)}</h3>
+   <div class="campaign-detail-grid">
+    <div class="campaign-info-card tip-box" data-tip="${escapeHtml(raceTip)}"><b>Race</b><br>${escapeHtml(race||"—")}</div>
+    <div class="campaign-info-card tip-box" data-tip="${escapeHtml(typeTip)}"><b>Type</b><br>${escapeHtml(S.form.kind||"—")} ${role?`· ${escapeHtml(role)}`:""}</div>
+    <div class="campaign-info-card tip-box" data-tip="${escapeHtml(classTip)}"><b>Class</b><br>${escapeHtml(S.form.className||"—")}</div>
+    <div class="campaign-info-card tip-box" data-tip="${escapeHtml(originTip)}"><b>Origin</b><br>${escapeHtml(valueText("origin")||"—")}</div>
+   </div>
+   `;
+ }
+ renderDossier("presetDossier");
+ S.form=oldForm;
+ S.pc=oldPc;
+ S.campaign=oldCampaign;
+}
+function beginWelcome(){
+ S=freshState();
+ S.phase="welcome";
+ renderAll(false);
+}
+function startSetup(){
+ S.phase="presetChoice";
+ renderAll();
+}
+function chooseCreateOwn(){
+ S=freshState();
  S.phase="creation";
+ S.step=0;
+ renderAll();
+}
+function choosePreset(){
+ S.phase="presetReview";
+ renderAll();
+ renderPresetPreview();
+}
+function proceedPresetToCampaign(){
+ const preset=currentPreset();
+ if(!preset)return;
+ S=freshState();
+ applyPresetToForm(preset);
+ S.phase="creation";
+ S.step=STEPS.findIndex(s=>s.key==="review");
+ createCharacter();
+ showToast(`<b>Preset selected.</b><br>${escapeHtml(preset.label)}`,"info");
+}
+function editSelectedPreset(){
+ const preset=currentPreset();
+ if(!preset)return;
+ S=freshState();
+ applyPresetToForm(preset);
+ S.phase="creation";
+ S.step=0;
+ showToast(`<b>Preset loaded for editing.</b><br>${escapeHtml(preset.label)}`,"info");
+ renderAll();
+}
+
+function goCreation(){
+ if(!S.pc && !S.form.race){
+   S.phase="presetChoice";
+ }else{
+   S.phase="creation";
+ }
  renderAll();
 }
 function goCampaign(){
@@ -2500,7 +3764,6 @@ function goCampaign(){
  renderAll();
 }
 function goProgress(){ if($("toolsMenu"))$("toolsMenu").classList.remove("show");
- if(!S.pc){showToast("<b>Character required.</b><br>Create or load a character before opening Progress Tracker.");return;}
  S.phase="progress";
  renderAll();
  renderManualEditor();
@@ -2514,10 +3777,21 @@ function goHandoff(){
 }
 
 function renderPhase(){
+ if($("welcomeShell"))$("welcomeShell").classList.toggle("stage-hidden",S.phase!=="welcome");
+ if($("presetChoiceShell"))$("presetChoiceShell").classList.toggle("stage-hidden",S.phase!=="presetChoice");
+ if($("presetReviewShell"))$("presetReviewShell").classList.toggle("stage-hidden",S.phase!=="presetReview");
  $("creationShell").classList.toggle("stage-hidden",S.phase!=="creation");
  $("betweenShell").classList.toggle("stage-hidden",S.phase!=="between");
  $("playShell").classList.toggle("stage-hidden",S.phase!=="play");
  if($("progressShell")) $("progressShell").classList.toggle("stage-hidden",S.phase!=="progress");
+
+ const nav=$("navCreationBtn")?.closest(".guided-nav");
+ if(nav) nav.style.display=["welcome","presetChoice","presetReview"].includes(S.phase)?"none":"flex";
+
+ const creation=$("creationShell");
+ const inCreation=S.phase==="creation";
+ document.body.classList.toggle("has-floating-actions",inCreation);
+ if(creation)creation.classList.toggle("review-mode",inCreation && currentStep().key==="review");
 
  const navC=$("navCreationBtn"), navCamp=$("navCampaignBtn"), navHand=$("navHandoffBtn"), navProg=$("navProgressBtn");
  if(navC&&navCamp&&navHand){
@@ -2530,25 +3804,42 @@ function renderPhase(){
    navHand.disabled=!S.campaign;
    if(navProg) navProg.disabled=false;
  }
-}function renderAll(saveIt=true){validateLore(false);renderPhase();renderPath();renderStep();renderDossier("dossier");renderDossier("dossier2");renderPlayPanels();if(saveIt)save()}
-function resetAll(){localStorage.removeItem("veinfire_rpg_v57");S={version:APP_VERSION,phase:"creation",step:0,form:{race:"Valcian",kind:"Mundane",proficiency:"Martial Arts",discipline:"Elementalism",home:"Ordanthia",origin:"Commoner",background:"Relic Runner",startingGear:"Road Kit",factionTie:"None",flaw:"Debt-bound",goal:"Clear your name",secret:"You moved cargo off-record once"},pc:null,campaign:null,sessionStarted:false,resources:null,log:[],leads:[],turn:0};renderAll(false)}
+}function renderAll(saveIt=true){
+ S.form=normalizeAppearanceInput(S.form);
+ S.form.backstory=backstoryCombined();
+ validateLore(false);
+ renderPhase();
+ if(S.phase==="creation"){
+   renderPath();
+   renderStep();
+   renderDossier("dossier");
+   if($("reviewCreateSlot"))$("reviewCreateSlot").innerHTML=currentStep().key==="review"?`<div class="floating-actions"><button class="secondary" onclick="back()">Back</button><button onclick="createCharacter()">Create Character</button></div>`:"";
+   renderDossier("dossier2");
+ }else if(S.phase==="presetReview"){
+   renderPresetPreview();
+ }else{
+   if($("dossier"))renderDossier("dossier");
+   if($("dossier2"))renderDossier("dossier2");
+ }
+ renderPlayPanels();
+ if(saveIt)save();
+}
+function resetAll(){
+ localStorage.removeItem("veinfire_rpg_v58");
+ S=freshState();
+ S.phase="welcome";
+ renderAll(false);
+}
 
 function initPresetSelect(){
  const sel=$("presetSelect");
  if(!sel)return;
  sel.innerHTML=TEST_PRESETS.map(p=>`<option value="${p.id}">${escapeHtml(PRESET_SHORT_LABELS[p.id]||p.shortLabel||p.label)}</option>`).join("");
+ sel.onchange=()=>renderPresetPreview();
+ renderPresetPreview();
 }
 function loadPreset(){
- const sel=$("presetSelect");
- const preset=TEST_PRESETS.find(p=>p.id===sel.value);
- if(!preset)return;
- S=freshState();
- S.form={...S.form,...JSON.parse(JSON.stringify(preset.form))};
- S.step=0;
- S.phase="creation";
- S.pc=null;S.campaign=null;S.resources=null;S.leads=[];S.turn=0;
- showToast(`<b>Preset loaded.</b><br>${escapeHtml(preset.label)}`);
- renderAll();
+ editSelectedPreset();
 }
 
 
@@ -2682,15 +3973,44 @@ function applyProgressData(data,isFullImport=false){
  }
  if(!S.resources) S.resources={};
  if(data.resources) Object.entries(data.resources).forEach(([k,v])=>{S.resources[k]=v;});
- if(data.inventoryAdd){
+ if(data.inventoryAdd || data.gearAdd){
    if(!S.resources.Inventory) S.resources.Inventory=[];
-   data.inventoryAdd.forEach(x=>{if(!S.resources.Inventory.includes(x))S.resources.Inventory.push(x);});
+   const vals=[...(Array.isArray(data.inventoryAdd)?data.inventoryAdd:(data.inventoryAdd?[data.inventoryAdd]:[])),...(Array.isArray(data.gearAdd)?data.gearAdd:(data.gearAdd?[data.gearAdd]:[]))];
+   vals.forEach(item=>{
+    const name=typeof item==="string"?item:item.name;
+    if(!name)return;
+    const entry=typeof item==="string"?item:item.name;
+    if(!S.resources.Inventory.includes(entry))S.resources.Inventory.push(entry);
+   });
  }
- if(data.inventoryRemove && S.resources.Inventory){
-   S.resources.Inventory=S.resources.Inventory.filter(x=>!data.inventoryRemove.includes(x));
+ if((data.inventoryRemove||data.gearRemove) && S.resources.Inventory){
+   const rem=[...(Array.isArray(data.inventoryRemove)?data.inventoryRemove:(data.inventoryRemove?[data.inventoryRemove]:[])),...(Array.isArray(data.gearRemove)?data.gearRemove:(data.gearRemove?[data.gearRemove]:[]))].map(x=>typeof x==="string"?x:x.name);
+   S.resources.Inventory=S.resources.Inventory.filter(x=>!rem.includes(x));
+ }
+ if(data.skillAdd){
+   if(!S.pc) S.pc={skills:[]};
+   if(!S.pc.skills) S.pc.skills=[];
+   const vals=Array.isArray(data.skillAdd)?data.skillAdd:[data.skillAdd];
+   vals.forEach(skill=>{
+    const name=typeof skill==="string"?skill:skill.name;
+    if(name && !S.pc.skills.includes(name))S.pc.skills.push(name);
+   });
+ }
+ if(data.skillRemove && S.pc?.skills){
+   const rem=(Array.isArray(data.skillRemove)?data.skillRemove:[data.skillRemove]).map(x=>typeof x==="string"?x:x.name);
+   S.pc.skills=S.pc.skills.filter(x=>!rem.includes(x));
+ }
+ if(data.campaignState){
+   if(!S.campaign) S.campaign={npcs:[],reps:{},trackerState:{}};
+   S.campaign.trackerState={...(S.campaign.trackerState||{}),...data.campaignState};
+ }
+ if(data.factionReputation){
+   if(!S.campaign) S.campaign={npcs:[],reps:{}};
+   if(!S.campaign.reps) S.campaign.reps={};
+   Object.entries(data.factionReputation).forEach(([k,v])=>{S.campaign.reps[k]=v;});
  }
  const p=ensureProgression();
- const addList=(key,arr)=>{if(data[key]){const vals=Array.isArray(data[key])?data[key]:[data[key]];vals.forEach(x=>p[arr].push(x));}};
+ const addList=(key,arr)=>{if(data[key]){const vals=Array.isArray(data[key])?data[key]:[data[key]];vals.forEach(x=>p[arr].push(typeof x==="string"?x:JSON.stringify(x)));}};
  addList("permanentGrowthAdd","permanentGrowth");
  addList("conditionalGrowthAdd","conditionalGrowth");
  addList("temporaryEffectsAdd","temporaryEffects");
@@ -2698,14 +4018,22 @@ function applyProgressData(data,isFullImport=false){
  addList("trainingProjectsAdd","trainingProjects");
  addList("storyRewardsAdd","storyRewards");
  addList("playerFacingLedgerAdd","playerFacingLedger");
+ addList("trackerNoteAdd","playerFacingLedger");
  if(data.milestones!==undefined)p.milestones=data.milestones;
  if(data.tier!==undefined)p.tier=data.tier;
  if(data.unspentGrowth!==undefined)p.unspentGrowth=data.unspentGrowth;
  if(data.npcAdd){
-   if(!S.campaign) S.campaign={npcs:[]};
+   if(!S.campaign) S.campaign={npcs:[],reps:{}};
    if(!S.campaign.npcs) S.campaign.npcs=[];
    const vals=Array.isArray(data.npcAdd)?data.npcAdd:[data.npcAdd];
    S.campaign.npcs.push(...vals);
+ }
+ if(data.npcUpdate && S.campaign?.npcs){
+   const vals=Array.isArray(data.npcUpdate)?data.npcUpdate:[data.npcUpdate];
+   vals.forEach(up=>{
+    const npc=S.campaign.npcs.find(n=>n.name===up.name);
+    if(npc)Object.assign(npc,up);
+   });
  }
  if(data.campaignNotesAdd) addLog("Campaign Note",escapeHtml(data.campaignNotesAdd));
  if(data.chronicleAdd) addLog("GM Update",escapeHtml(data.chronicleAdd));
@@ -2750,10 +4078,12 @@ function importGMUpdate(){
 }
 function exportProgressJSON(){
  if(!progressImported&&!S.progressImported){showToast("<b>No progress loaded.</b><br>Import progress data before exporting.");return "";} const data={
+   schemaVersion:"veinfire-progress-save-v2",
    character:S.pc,
    resources:S.resources,
    progression:ensureProgression(),
    campaign:S.campaign,
+   campaignState:S.campaign?.trackerState||{},
    chronicle:S.log
  };
  const text=JSON.stringify(data,null,2);
@@ -2780,11 +4110,35 @@ document.addEventListener("DOMContentLoaded",()=>{load();initCampaignOptions();i
    document.addEventListener("click",()=>toolsMenu.classList.remove("show"));
    toolsMenu.onclick=(e)=>e.stopPropagation();
  }
-$("nextBtn").onclick=next;$("backBtn").onclick=back;$("validateBtn").onclick=()=>{
- const v=validateLore(false);
- if(v.ok) showToast(`<b>Uploaded-docs lore validated.</b><br>No hard conflict found against the embedded v5 rules from this chat.`);
- else showToast(`<b>Not ready.</b><br>${v.problems.slice(0,4).join("<br>")}`);
-};$("randomBtn").onclick=randomize;$("presetBtn").onclick=loadPreset;$("resetBtn").onclick=resetAll;$("genCampaignBtn").onclick=generateCampaign;$("advanceBellBtn").onclick=advanceBell;$("restBtn").onclick=rest;$("buildPacketBtn").onclick=buildGMPacket;$("copyPacketBtn").onclick=copyGMPacket;$("editPacketBtn").onclick=enablePacketEdit;if($("downloadAllCanonBtn"))$("downloadAllCanonBtn").onclick=downloadAllCanonDocs;if($("downloadCanonBtn"))$("downloadCanonBtn").onclick=downloadCanonDocs;$("navCreationBtn").onclick=goCreation;$("navCampaignBtn").onclick=goCampaign;$("navHandoffBtn").onclick=goHandoff;$("navProgressBtn").onclick=goProgress;$("importUpdateBtn").onclick=importGMUpdate;$("importFileBtn").onclick=importProgressFile;$("applyManualBtn").onclick=applyManualEdits;$("exportProgressBtn").onclick=exportProgressJSON;$("downloadSaveBtn").onclick=downloadProgressSave});
+if($("welcomeStartBtn"))$("welcomeStartBtn").onclick=startSetup;
+if($("welcomeTrackerBtn"))$("welcomeTrackerBtn").onclick=goProgress;
+if($("createOwnBtn"))$("createOwnBtn").onclick=chooseCreateOwn;
+if($("choosePresetBtn"))$("choosePresetBtn").onclick=choosePreset;
+if($("presetProceedBtn"))$("presetProceedBtn").onclick=proceedPresetToCampaign;
+if($("presetEditBtn"))$("presetEditBtn").onclick=editSelectedPreset;
+if($("presetBackBtn"))$("presetBackBtn").onclick=startSetup;
+if($("nextBtn"))$("nextBtn").onclick=next;
+if($("backBtn"))$("backBtn").onclick=back;
+if($("randomBtn"))$("randomBtn").onclick=randomize;
+if($("presetBtn"))$("presetBtn").onclick=loadPreset;
+if($("resetBtn"))$("resetBtn").onclick=resetAll;
+if($("genCampaignBtn"))$("genCampaignBtn").onclick=generateCampaign;
+if($("advanceBellBtn"))$("advanceBellBtn").onclick=advanceBell;
+if($("restBtn"))$("restBtn").onclick=rest;
+if($("buildPacketBtn"))$("buildPacketBtn").onclick=buildGMPacket;
+if($("copyPacketBtn"))$("copyPacketBtn").onclick=copyGMPacket;
+if($("editPacketBtn"))$("editPacketBtn").onclick=enablePacketEdit;
+if($("downloadAllCanonBtn"))$("downloadAllCanonBtn").onclick=downloadAllCanonDocs;
+if($("downloadCanonBtn"))$("downloadCanonBtn").onclick=downloadCanonDocs;
+if($("navCreationBtn"))$("navCreationBtn").onclick=goCreation;
+if($("navCampaignBtn"))$("navCampaignBtn").onclick=goCampaign;
+if($("navHandoffBtn"))$("navHandoffBtn").onclick=goHandoff;
+if($("navProgressBtn"))$("navProgressBtn").onclick=goProgress;
+if($("importUpdateBtn"))$("importUpdateBtn").onclick=importGMUpdate;
+if($("importFileBtn"))$("importFileBtn").onclick=importProgressFile;
+if($("applyManualBtn"))$("applyManualBtn").onclick=applyManualEdits;
+if($("exportProgressBtn"))$("exportProgressBtn").onclick=exportProgressJSON;
+if($("downloadSaveBtn"))$("downloadSaveBtn").onclick=downloadProgressSave});
 </script>
 </body>
 </html>
