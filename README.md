@@ -2,7 +2,7 @@
 
 A standalone browser-based character creation, campaign generation, GM handoff, and progress tracking tool for **VEINFIRE / Eldoria**.
 
-Current build: **v5.6 — Forced GitHub Canon**
+Current build: **v5.7 — Guided Navigation & Creation Fixes**
 
 ## What this tool does
 
@@ -21,10 +21,10 @@ The VEINFIRE RPG Engine helps players:
 ## How to use
 
 1. Open `index.html` in a browser.
-2. Go to **Character Creation**.
+2. Go to **Create Character**.
 3. Create a character manually or use **Load Test Preset**.
 4. Complete all required fields.
-5. Go to **Campaign Setup**.
+5. Go to **Generate Campaign**.
 6. Choose a campaign archetype.
 7. Click **Generate Campaign**.
 8. Go to **GM Handoff**.
@@ -34,6 +34,17 @@ The VEINFIRE RPG Engine helps players:
 12. Click **Copy Packet**.
 13. Paste the packet into your AI chat session.
 14. Start playing.
+
+
+## Navigation
+
+The main session flow is:
+
+```text
+Create Character → Generate Campaign → GM Handoff
+```
+
+The **Campaign Tracker** is an optional utility under **Tools ▾**. It is not required to start a session.
 
 ## Canon document flow
 
@@ -46,9 +57,9 @@ If the AI cannot access the GitHub-hosted Markdown canon links, the player shoul
 3. Paste the GM packet.
 4. Tell the AI to start the session.
 
-## Progress Tracker
+## Campaign Tracker
 
-The **Progress Tracker** tab starts blank.
+The **Campaign Tracker** tool starts blank.
 
 To use it:
 

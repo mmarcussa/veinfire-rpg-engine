@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>VEINFIRE RPG Engine v5.6 — Character Creation</title>
+<title>VEINFIRE RPG Engine v5.7 — Character Creation</title>
 <style>
 :root{
   --bg:#080a0d;--panel:#11100d;--gold:#d6b36a;--gold2:#f1d893;--text:#f3ead7;
@@ -553,18 +553,99 @@ input[type="file"]{
   line-height:1.45;
 }
 
+
+.guided-nav{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:18px 0 14px;
+}
+.guided-nav .arrow{
+  color:var(--muted);
+  font-weight:900;
+  padding:0 2px;
+}
+.tools-wrap{
+  position:relative;
+  margin-left:16px;
+}
+.tools-menu{
+  display:none;
+  position:absolute;
+  top:calc(100% + 8px);
+  right:0;
+  min-width:230px;
+  z-index:30;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:rgba(8,8,8,.97);
+  box-shadow:0 16px 40px rgba(0,0,0,.45);
+  padding:8px;
+}
+.tools-menu.show{
+  display:block;
+}
+.tools-menu button{
+  width:100%;
+  margin:0;
+  justify-content:flex-start;
+  text-align:left;
+  box-shadow:none;
+}
+.tools-menu .tool-note{
+  color:var(--muted);
+  font-size:.78rem;
+  line-height:1.35;
+  padding:7px 10px 4px;
+}
+
+
+.alert.accept{
+  border-color:rgba(87,196,122,.72)!important;
+  background:rgba(8,42,25,.72)!important;
+  color:#dfffe7;
+}
+.alert.reject{
+  border-color:rgba(255,120,120,.72)!important;
+  background:rgba(58,12,22,.72)!important;
+  color:#ffe2e2;
+}
+.alert.note{
+  border-color:rgba(244,215,139,.55)!important;
+  background:rgba(40,31,13,.72)!important;
+}
+.appearance-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:12px;
+}
+.appearance-grid textarea{
+  min-height:96px;
+}
+
 @media(max-width:1180px){.shell{grid-template-columns:220px 1fr}.right-panel{grid-column:1/-1}}@media(max-width:800px){.shell,.play-shell,.lore-row{grid-template-columns:1fr}.top{display:block}.option-grid{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}.statbar{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="top"><div><h1>VEINFIRE RPG Engine v5.6</h1><div class="sub">VEINFIRE character creation, lore validation, campaign generation, GitHub-hosted Markdown canon handoff, and progress tracking.</div></div><div class="small"></div></div>
+  <div class="top"><div><h1>VEINFIRE RPG Engine v5.7</h1><div class="sub">Create a VEINFIRE character, generate a lore-grounded campaign seed, and build a GM handoff packet for AI-led play in Eldoria. The engine guides setup only; the live story happens in your chosen AI chat.</div></div><div class="small"></div></div>
 
-  <div class="phase-nav">
-    <button id="navCreationBtn">Character Creation</button>
-    <button id="navCampaignBtn">Campaign Setup</button>
+  <div class="guided-nav">
+    <button id="navCreationBtn">Create Character</button>
+    <span class="arrow">→</span>
+    <button id="navCampaignBtn">Generate Campaign</button>
+    <span class="arrow">→</span>
     <button id="navHandoffBtn">GM Handoff</button>
-    <button id="navProgressBtn">Progress Tracker</button>
+
+    <div class="tools-wrap">
+      <button id="toolsBtn" class="secondary">Tools ▾</button>
+      <div id="toolsMenu" class="tools-menu">
+        <button id="navProgressBtn" class="secondary">Campaign Tracker</button>
+        <div class="tool-note">Optional utility. Import GM updates and review campaign state.</div>
+      </div>
+    </div>
   </div>
 
   <div id="creationShell" class="shell">
@@ -572,7 +653,7 @@ input[type="file"]{
       <button class="secondary" id="presetBtn" style="width:100%;margin-top:8px">Load Test Preset</button>
       <select id="presetSelect" style="margin-top:8px"></select>
       <button class="danger" id="resetBtn" style="width:100%;margin-top:8px">Reset</button></aside>
-    <main class="panel"><div class="center-head"><div><div class="step-kicker" id="stepKicker">Step</div><h2 id="stepTitle">Character Creation</h2><div class="small" id="stepHelp"></div></div><div class="small" id="stepCounter"></div></div><div id="stepContent"></div><div id="validationBox"></div><div class="controls"><button class="secondary" id="backBtn">Back</button><div><button class="secondary" id="validateBtn">Validate</button><button id="nextBtn">Next</button></div></div></main>
+    <main class="panel"><div class="center-head"><div><div class="step-kicker" id="stepKicker">Step</div><h2 id="stepTitle">Create Character</h2><div class="small" id="stepHelp"></div></div><div class="small" id="stepCounter"></div></div><div id="stepContent"></div><div id="validationBox"></div><div class="controls"><button class="secondary" id="backBtn">Back</button><div><button class="secondary" id="validateBtn">Validate</button><button id="nextBtn">Next</button></div></div></main>
     <aside class="panel right-panel"><h2>Character Dossier</h2><div id="dossier"></div></aside>
   </div>
 
@@ -620,7 +701,7 @@ input[type="file"]{
           <li>Paste the packet into the new AI chat.</li>
           <li>Tell the AI: <b>Start the session.</b></li>
           <li>Play by typing what your character does.</li>
-          <li>When the GM gives tracker changes, paste them into the <b>Progress Tracker</b> tab or edit the trackers manually.</li>
+          <li>When the GM gives tracker changes, paste them into the <b>Campaign Tracker</b> tab or edit the trackers manually.</li>
         </ol>
       </div>
 
@@ -1155,7 +1236,7 @@ const STEPS=[
  {key:"review",title:"Review",kind:"review",prompt:"Review the dossier and create your character.",help:"Difficulty emerges from the world and your actions."}
 ];
 
-const APP_VERSION="5.6";
+const APP_VERSION="5.7";
 function freshState(){
  return {
   version:APP_VERSION,
@@ -1215,8 +1296,8 @@ function freshState(){
 }
 let S=freshState();
 function $(id){return document.getElementById(id)};function pick(a){return a[Math.floor(Math.random()*a.length)]};function roll(n=20){return 1+Math.floor(Math.random()*n)};function clamp(n,a,b){return Math.max(a,Math.min(b,n))};function now(){return new Date().toLocaleTimeString()};function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
-function save(){localStorage.setItem("veinfire_rpg_v56",JSON.stringify(S))}function load(){
- try{ localStorage.removeItem("veinfire_rpg_v56"); }catch(e){}
+function save(){localStorage.setItem("veinfire_rpg_v57",JSON.stringify(S))}function load(){
+ try{ localStorage.removeItem("veinfire_rpg_v57"); }catch(e){}
  S=freshState();
 }
 function addLog(title,text){S.log.unshift({t:now(),title,text});renderLog();save()}
@@ -1417,6 +1498,57 @@ function selectedDetail(source,val){
 }
 function renderNotes(key){const notes=SECTION_NOTES[key]||[];if(!notes.length)return "";return `<div class="section-notes"><b>Notes</b><ul>${notes.map(n=>`<li>${n}</li>`).join("")}</ul></div>`}
 
+
+function appearanceValue(){
+ const f=S.form||{};
+ if(typeof f.appearance==="object" && f.appearance!==null)return f.appearance;
+ const raw=typeof f.appearance==="string"?f.appearance:"";
+ return {body:"",face:"",hairEyes:"",clothing:"",marks:"",presence:"",extra:raw};
+}
+function setAppearanceField(key,val){
+ const a=appearanceValue();
+ a[key]=val;
+ S.form.appearance=a;
+}
+function appearanceText(){
+ const a=appearanceValue();
+ const parts=[
+  ["Body / Build",a.body],
+  ["Face / Features",a.face],
+  ["Hair / Eyes",a.hairEyes],
+  ["Clothing / Style",a.clothing],
+  ["Scars / Marks / Tells",a.marks],
+  ["Presence / First Impression",a.presence],
+  ["Extra Details",a.extra]
+ ].filter(x=>String(x[1]||"").trim());
+ return parts.map(([k,v])=>`${k}: ${v}`).join("\n");
+}
+function isAppearanceComplete(){
+ const a=appearanceValue();
+ return ["body","face","hairEyes","clothing","marks","presence"].every(k=>String(a[k]||"").trim().length>=3);
+}
+function renderAppearanceStep(){
+ const a=appearanceValue();
+ return `<div class="detail">
+  <div class="detail-title">Appearance</div>
+  <p>Describe what people can actually notice when your character enters a room. Keep it grounded in body, clothing, marks, movement, and presence rather than destiny or hidden greatness.</p>
+ </div>
+ <div class="appearance-grid">
+  <label>Body / Build <small>Required</small><textarea data-app="body" placeholder="Height, frame, posture, age impression, physical condition.">${escapeHtml(a.body||"")}</textarea></label>
+  <label>Face / Features <small>Required</small><textarea data-app="face" placeholder="Face shape, expression, complexion, distinctive visible traits.">${escapeHtml(a.face||"")}</textarea></label>
+  <label>Hair / Eyes <small>Required</small><textarea data-app="hairEyes" placeholder="Hair, eyes, gaze, grooming, color, texture.">${escapeHtml(a.hairEyes||"")}</textarea></label>
+  <label>Clothing / Style <small>Required</small><textarea data-app="clothing" placeholder="Everyday clothing, armor, fabrics, social tells, travel wear.">${escapeHtml(a.clothing||"")}</textarea></label>
+  <label>Scars / Marks / Tells <small>Required</small><textarea data-app="marks" placeholder="Scars, tattoos, burns, jewelry, gait, nervous habits, race-specific tells.">${escapeHtml(a.marks||"")}</textarea></label>
+  <label>Presence / First Impression <small>Required</small><textarea data-app="presence" placeholder="How strangers read them before they speak.">${escapeHtml(a.presence||"")}</textarea></label>
+ </div>
+ <label>Optional Extra Appearance Details<textarea data-app="extra" placeholder="Anything else the player wants to add.">${escapeHtml(a.extra||"")}</textarea></label>${renderNotes("appearance")}`;
+}
+function bindAppearanceStep(){
+ document.querySelectorAll("[data-app]").forEach(el=>{
+   el.oninput=()=>{setAppearanceField(el.dataset.app,el.value);save();renderDossier();};
+ });
+}
+
 function stepErrors(index){
  const st=STEPS[index], f=S.form, errors=[];
  if(!st || st.key==="review") return errors;
@@ -1424,7 +1556,7 @@ function stepErrors(index){
    const err=qualityCheckField(st.title,f[st.key],"object"); if(err) errors.push(err);
  }
  if(st.key==="appearance"){
-   const err=qualityCheckField(st.title,f[st.key],"appearance"); if(err) errors.push(err);
+   if(!isAppearanceComplete()) errors.push("Appearance needs Body / Build, Face / Features, Hair / Eyes, Clothing / Style, Scars / Marks / Tells, and Presence / First Impression.");
  }
  if(st.key==="backstory"){
    const required=[
@@ -1463,15 +1595,21 @@ function canNavigateTo(index){
  return {ok:true};
 }
 
-function renderPath(){document.getElementById("pathList").innerHTML=STEPS.map((s,i)=>{const val=s.kind==="input"||s.kind==="textarea"?(S.form[s.key]||""):s.key==="review"?"":(S.form[s.key]||"");return `<div class="path-item ${i===S.step?'active':''} ${i<S.step?'done':''}" data-i="${i}"><div class="dot">${i<S.step?'✓':i+1}</div><div><div class="path-title">${s.title}</div><div class="path-val">${escapeHtml(val||"—")}</div></div></div>`}).join("");[...document.querySelectorAll(".path-item")].forEach(el=>el.onclick=()=>{
- const target=Number(el.dataset.i);
- const gate=canNavigateTo(target);
- if(!gate.ok){
-   showToast(`<b>That section is not ready.</b><br>${gate.message}`);
-   return;
- }
- S.step=target;renderAll();
-})}
+function renderPath(){
+ document.getElementById("pathList").innerHTML=STEPS.map((s,i)=>{
+  let val=s.kind==="input"||s.kind==="textarea"?(S.form[s.key]||""):s.key==="review"?"":(S.form[s.key]||"");
+  if(s.key==="appearance")val=appearanceText();
+  const filled=stepErrors(i).length===0 && s.key!=="review";
+  return `<div class="path-item ${i===S.step?'active':''} ${filled?'done':''}" data-i="${i}">
+   <div class="dot">${filled?'✓':i+1}</div>
+   <div><div class="path-title">${s.title}</div><div class="path-val">${escapeHtml(val||"—")}</div></div>
+  </div>`;
+ }).join("");
+ [...document.querySelectorAll(".path-item")].forEach(el=>el.onclick=()=>{
+  S.step=Number(el.dataset.i);
+  renderAll();
+ });
+}
 
 function renderCustomStatPicker(stepKey){
  const plusCount = stepKey==="background" ? 2 : 1;
@@ -1592,8 +1730,20 @@ function renderStep(){
  $("stepCounter").textContent=st.prompt;
  $("backBtn").disabled=S.step===0;
  $("nextBtn").textContent=st.key==="review"?"Create Character":"Next";
+ if($("validateBtn")){
+   $("validateBtn").style.display=st.key==="review"?"inline-flex":"none";
+   $("validateBtn").textContent="Validate Character";
+ }
  let html="";
  const isDialogue=["flaw","goal","secret"].includes(st.key);
+
+ if(st.key==="appearance"){
+   $("stepContent").innerHTML=renderAppearanceStep();
+   bindAppearanceStep();
+   renderValidationBox();
+   return;
+ }
+
  if(st.kind==="input"){
    html=`<label>${st.title}</label><input id="mainInput" value="${escapeHtml(S.form[st.key]||"")}" placeholder="${st.prompt}">${renderNotes(st.key)}`;
  } else if(st.kind==="textarea"){
@@ -1626,7 +1776,7 @@ function renderStep(){
      html+=`<div class="custom-box ${customOn?'':'hidden'}"><label>Custom ${st.title}</label><textarea id="customInput" placeholder="Write your own ${st.title.toLowerCase()} here. The lore validator will check it.">${escapeHtml(S.form[st.key+"Custom"]||"")}</textarea>${["background","factionTie"].includes(st.key)?renderCustomStatPicker(st.key):""}</div>`;
    }
  } else if(st.kind==="review"){
-   html=`<div class="detail"><div class="detail-title">Final Review</div><p>Read the dossier on the right. Press Validate to check every required field and compare custom lore against the embedded rules extracted only from the v5 documents uploaded in this chat. Then create the character.</p></div>${renderNotes("backstory")}`;
+   html=`<div class="detail"><div class="detail-title">Final Review</div><p>Read the dossier on the right. Press Validate Character to check every required field and compare custom lore against the embedded rules extracted from the v5 canon files. Then create the character.</p></div>${renderNotes("backstory")}`;
  }
  $("stepContent").innerHTML=html;
  if(st.kind==="input"||st.kind==="textarea"){
@@ -1678,7 +1828,7 @@ function validateLore(show=true){const f=S.form,problems=[],warnings=[],accepts=
    const err=qualityCheckField(st.title,f[st.key],"object"); if(err) problems.push(err);
  }
  if(st.key==="appearance"){
-   const err=qualityCheckField(st.title,f[st.key],"appearance"); if(err) problems.push(err);
+   if(!isAppearanceComplete()) problems.push("Appearance needs Body / Build, Face / Features, Hair / Eyes, Clothing / Style, Scars / Marks / Tells, and Presence / First Impression.");
  }
  if(st.key==="backstory"){
    const required=[
@@ -1712,7 +1862,7 @@ function validateLore(show=true){const f=S.form,problems=[],warnings=[],accepts=
  if((st.kind==="cards"||st.kind==="cardsCustom")&&!f[st.key])problems.push(`${st.title} must be selected.`);
 }
  if(!f.kind)problems.push("Type must be selected."); if(f.kind==="Veinborn"&&!f.discipline)problems.push("Veinborn characters must choose a discipline."); if(f.kind==="Mundane"&&!f.proficiency)problems.push("Mundane characters must choose a proficiency.");
- const text=[f.name,f.gender,f.className,f.appearance,f.backstory,f.backstoryOrigin,f.backstoryPressure,f.backstoryIncident,f.backstoryTie,f.backstoryReason,f.backstoryOther,f.object,f.originCustom,f.backgroundCustom,f.factionTieCustom,f.flawCustom,f.goalCustom,f.secretCustom].join(" ").toLowerCase();const hard=["chosen one","prophecy chose me","destined savior","demigod","immortal","cannot die","control all mana veins","master of all magic","all disciplines","immune to veinburn","cannot suffer veinburn","last titanforged king","titanforged prince","syr'kai heir","own the silent city","resurrect souls","true resurrection","bring souls back","no cost magic","infinite mana","vein compact does not apply","above the compact","personal major vein","king of all","emperor of all"];hard.forEach(k=>{if(text.includes(k))problems.push(`Canon break / chosen-one pattern detected: “${k}”.`)});
+ const text=[f.name,f.gender,f.className,appearanceText(),f.backstory,f.backstoryOrigin,f.backstoryPressure,f.backstoryIncident,f.backstoryTie,f.backstoryReason,f.backstoryOther,f.object,f.originCustom,f.backgroundCustom,f.factionTieCustom,f.flawCustom,f.goalCustom,f.secretCustom].join(" ").toLowerCase();const hard=["chosen one","prophecy chose me","destined savior","demigod","immortal","cannot die","control all mana veins","master of all magic","all disciplines","immune to veinburn","cannot suffer veinburn","last titanforged king","titanforged prince","syr'kai heir","own the silent city","resurrect souls","true resurrection","bring souls back","no cost magic","infinite mana","vein compact does not apply","above the compact","personal major vein","king of all","emperor of all"];hard.forEach(k=>{if(text.includes(k))problems.push(`Canon break / chosen-one pattern detected: “${k}”.`)});
  if(f.race==="Orikarn"&&f.kind==="Veinborn")problems.push("Orikarn cannot be Veinborn."); if(f.className==="Vein Adept"&&f.kind!=="Veinborn")problems.push("Vein Adept class requires a Veinborn character."); if(f.className==="Whore"&&f.startingGear!=="Whore\'s Kit")warnings.push("Whore class can use any starting gear, but Whore\'s Kit is the most class-aligned package.");  if(f.discipline==="Necromancy"&&text.includes("ghost"))warnings.push("Necromancy may mimic residual patterns, but it is not soul-contact or true resurrection."); if(text.includes("titanforged artifact")||text.includes("ancient relic"))warnings.push("Relic ties are allowed, but starting gear cannot be god-tier or consequence-free."); if(text.includes("noble")||f.origin==="Minor Noble")warnings.push("Status can help socially, but it does not override guild, Watcher, Compact, or border authority."); const canon=docCanonValidate();
  canon.rejections.forEach(x=>problems.push(x));
  canon.warnings.forEach(x=>warnings.push(x));
@@ -1742,8 +1892,7 @@ function next(){
    if(err){ showToast(`<b>${st.title} is not ready.</b><br>${err}`); return; }
  }
  if(st.key==="appearance"){
-   const err=qualityCheckField(st.title,S.form[st.key],"appearance");
-   if(err){ showToast(`<b>${st.title} is not ready.</b><br>${err}`); return; }
+   if(!isAppearanceComplete()){ showToast(`<b>${st.title} is not ready.</b><br>Fill all required appearance boxes before continuing.`); return; }
  }
  if(st.key==="backstory"){
    const required=[
@@ -2001,7 +2150,7 @@ function getCharacterPacket(){
   flaw:valueText("flaw"),
   goal:valueText("goal"),
   secret:valueText("secret"),
-  appearance:f.appearance,
+  appearance:appearanceText(),
   backstory:backstoryCombined ? backstoryCombined() : f.backstory,
   personal_object:f.object,
   stats,
@@ -2350,7 +2499,7 @@ function goCampaign(){
  S.phase="between";
  renderAll();
 }
-function goProgress(){
+function goProgress(){ if($("toolsMenu"))$("toolsMenu").classList.remove("show");
  if(!S.pc){showToast("<b>Character required.</b><br>Create or load a character before opening Progress Tracker.");return;}
  S.phase="progress";
  renderAll();
@@ -2369,18 +2518,20 @@ function renderPhase(){
  $("betweenShell").classList.toggle("stage-hidden",S.phase!=="between");
  $("playShell").classList.toggle("stage-hidden",S.phase!=="play");
  if($("progressShell")) $("progressShell").classList.toggle("stage-hidden",S.phase!=="progress");
+
  const navC=$("navCreationBtn"), navCamp=$("navCampaignBtn"), navHand=$("navHandoffBtn"), navProg=$("navProgressBtn");
  if(navC&&navCamp&&navHand){
    navC.classList.toggle("active",S.phase==="creation");
    navCamp.classList.toggle("active",S.phase==="between");
    navHand.classList.toggle("active",S.phase==="play");
    if(navProg) navProg.classList.toggle("active",S.phase==="progress");
-   navCamp.disabled=false;
+
+   navCamp.disabled=!S.pc;
    navHand.disabled=!S.campaign;
-   if(navProg) navProg.disabled=!S.pc;
+   if(navProg) navProg.disabled=false;
  }
 }function renderAll(saveIt=true){validateLore(false);renderPhase();renderPath();renderStep();renderDossier("dossier");renderDossier("dossier2");renderPlayPanels();if(saveIt)save()}
-function resetAll(){localStorage.removeItem("veinfire_rpg_v56");S={version:APP_VERSION,phase:"creation",step:0,form:{race:"Valcian",kind:"Mundane",proficiency:"Martial Arts",discipline:"Elementalism",home:"Ordanthia",origin:"Commoner",background:"Relic Runner",startingGear:"Road Kit",factionTie:"None",flaw:"Debt-bound",goal:"Clear your name",secret:"You moved cargo off-record once"},pc:null,campaign:null,sessionStarted:false,resources:null,log:[],leads:[],turn:0};renderAll(false)}
+function resetAll(){localStorage.removeItem("veinfire_rpg_v57");S={version:APP_VERSION,phase:"creation",step:0,form:{race:"Valcian",kind:"Mundane",proficiency:"Martial Arts",discipline:"Elementalism",home:"Ordanthia",origin:"Commoner",background:"Relic Runner",startingGear:"Road Kit",factionTie:"None",flaw:"Debt-bound",goal:"Clear your name",secret:"You moved cargo off-record once"},pc:null,campaign:null,sessionStarted:false,resources:null,log:[],leads:[],turn:0};renderAll(false)}
 
 function initPresetSelect(){
  const sel=$("presetSelect");
@@ -2622,7 +2773,14 @@ function downloadProgressSave(){
  URL.revokeObjectURL(url);
 }
 
-document.addEventListener("DOMContentLoaded",()=>{load();initCampaignOptions();initPresetSelect();setupModelButtons();setupCanonModes();renderAll(false);renderManualEditor();$("nextBtn").onclick=next;$("backBtn").onclick=back;$("validateBtn").onclick=()=>{
+document.addEventListener("DOMContentLoaded",()=>{load();initCampaignOptions();initPresetSelect();setupModelButtons();setupCanonModes();renderAll(false);renderManualEditor();
+ const toolsBtn=$("toolsBtn"), toolsMenu=$("toolsMenu");
+ if(toolsBtn&&toolsMenu){
+   toolsBtn.onclick=(e)=>{e.stopPropagation();toolsMenu.classList.toggle("show");};
+   document.addEventListener("click",()=>toolsMenu.classList.remove("show"));
+   toolsMenu.onclick=(e)=>e.stopPropagation();
+ }
+$("nextBtn").onclick=next;$("backBtn").onclick=back;$("validateBtn").onclick=()=>{
  const v=validateLore(false);
  if(v.ok) showToast(`<b>Uploaded-docs lore validated.</b><br>No hard conflict found against the embedded v5 rules from this chat.`);
  else showToast(`<b>Not ready.</b><br>${v.problems.slice(0,4).join("<br>")}`);

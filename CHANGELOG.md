@@ -1,5 +1,25 @@
 # Changelog
 
+## v5.7 — Guided Navigation & Creation Fixes
+
+- Removed the visible process-note sentence under the main navigation.
+- Rewrote the engine description to explain the tool in VEINFIRE/player-facing terms.
+- Character Creation path entries can now be clicked freely for previewing sections.
+- Next/progression remains gated by required fields.
+- Appearance is now split into multiple guided fields instead of one large text box.
+- Removed section-level Validate button from character creation.
+- Validation remains available at the final Review step.
+- Accept and reject alerts now use distinct visual colors.
+
+## v5.7 — Guided Navigation
+
+- Reworked top navigation into the main session flow: Create Character → Generate Campaign → GM Handoff.
+- Moved Campaign Tracker under Tools ▾ so it no longer appears as a required process step.
+- Added a short process note explaining that the tracker is optional.
+- Locked Generate Campaign until a character exists.
+- Locked GM Handoff until a campaign exists.
+- Updated page labels to use clearer player-facing wording.
+
 ## v5.6 — Forced GitHub Canon
 
 - Removed the visible Canon Source Setup download panel from GM Handoff.
