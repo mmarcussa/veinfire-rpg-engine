@@ -1,5 +1,12 @@
 # Changelog
 
+## v5.5 — Markdown Canon Docs
+
+- Updated canon links from `.docx` files to GitHub-hosted `.md` files.
+- GM packet now points AI sessions to Markdown canon files for easier link-reading.
+- Updated canon download/open labels and handoff wording to reference Markdown canon files.
+- Kept manual upload/paste fallback if the AI platform cannot access GitHub-hosted Markdown links.
+
 ## v5.4 — Canon Download Cleanup
 
 - Removed **Open All Download Links**.

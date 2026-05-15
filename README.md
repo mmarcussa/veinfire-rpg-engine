@@ -2,7 +2,7 @@
 
 A standalone browser-based character creation, campaign generation, GM handoff, and progress tracking tool for **VEINFIRE / Eldoria**.
 
-Current build: **v5.4 — Canon Download Cleanup**
+Current build: **v5.5 — Markdown Canon Docs**
 
 ## What this tool does
 
@@ -29,7 +29,7 @@ The VEINFIRE RPG Engine helps players:
 7. Click **Generate Campaign**.
 8. Go to **GM Handoff**.
 9. Select the AI model you want to use.
-10. Use **Download All Canon Docs** or individual document downloads if your AI cannot access the Google Doc links.
+10. Use **Download All Canon Docs** or individual canon file downloads if your AI cannot access the GitHub-hosted Markdown canon links.
 11. Click **Build GM Packet**.
 12. Click **Copy Packet**.
 13. Paste the packet into your AI chat session.
@@ -37,9 +37,9 @@ The VEINFIRE RPG Engine helps players:
 
 ## Canon document flow
 
-The GM packet tells the AI to try the VEINFIRE Google Doc links first.
+The GM packet gives the AI direct links to the GitHub-hosted VEINFIRE Markdown canon files.
 
-If the AI cannot access the links, the player should:
+If the AI cannot access the GitHub-hosted Markdown canon links, the player should:
 
 1. Click **Download All Canon Docs** inside the HTML.
 2. Upload the downloaded files manually to the AI chat.
@@ -59,29 +59,34 @@ To use it:
 
 Manual tracker editing is disabled until progress data has been imported.
 
-## Project Files
+## Files
 
-This repository contains:
+Recommended GitHub structure:
 
-- `index.html` — the VEINFIRE RPG Engine browser tool
-- `README.md` — project overview and usage notes
-- `CHANGELOG.md` — version history
-- `NOTICE.md` — intellectual property and fan-use notice
+```text
+index.html
+README.md
+CHANGELOG.md
+```
 
-## Important Notes
+Only `index.html` is required for GitHub Pages or Netlify hosting, but `README.md` and `CHANGELOG.md` are strongly recommended.
 
-- The HTML tool does not directly call ChatGPT, Gemini, Grok, Claude, or any other AI.
+## Hosting
+
+This is a standalone static HTML project. It does not require a backend.
+
+It can be hosted on:
+
+- GitHub Pages
+- Netlify
+- Vercel
+- itch.io
+- any static web host
+
+## Important notes
+
+- The HTML does not directly call ChatGPT, Gemini, Grok, Claude, or any other AI.
 - The live campaign happens in the AI chat after the GM packet is copied.
-- The HTML is the character creation, campaign generation, GM handoff, and progress tracking panel.
+- The HTML is the character/campaign/control panel.
 - The AI chat is the GM/Narrator.
-- If browser download behavior blocks multiple automatic downloads, use the individual canon download buttons.
-
-## Intellectual Property and Fan Use
-
-VEINFIRE, Eldoria, and all related lore, characters, terminology, factions, races, campaign material, and worldbuilding are original creative works by Kanniti Singsanan. All rights reserved.
-
-Players and fans may use the VEINFIRE RPG Engine for personal, non-commercial gameplay, character creation, campaign generation, fan OCs, fanart, and session participation. Fan creations are welcome, but they do not grant ownership of VEINFIRE or become official canon unless approved by Kanniti Singsanan.
-
-Do not sell, redistribute official lore documents, copy large portions of the source material, claim VEINFIRE as your own, create commercial derivative works, or use VEINFIRE materials for AI training, datasets, or prompt packs without written permission.
-
-See [`NOTICE.md`](NOTICE.md) for the full intellectual property and fan-use notice.
+- Browser download behavior may block multiple automatic downloads. If that happens, use the individual canon download buttons.
