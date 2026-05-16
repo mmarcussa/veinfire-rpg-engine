@@ -1,5 +1,19 @@
 # Changelog
 
+## v6.2 — Raw Canon Links
+
+- Added GM response rules for visible stat checks and dice results.
+- Added compact live STATUS line requirement for Health, Stress, Fatigue, Veinburn, Blight, Supplies, Coin, Legal Heat, and Suspicion.
+- Added danger/strain warning tag guidance for low Health or high-risk resources.
+- Updated GM options wording so suggested actions are clearly optional examples, not fixed choices.
+- Added reminder that players may choose, combine, or ignore listed approaches and type any other action.
+- Updated canon document URLs from GitHub Pages Markdown links to raw GitHub Markdown links.
+- GM packet now instructs the AI GM to open/read the exact raw GitHub URLs directly.
+- GM packet now warns the AI GM not to search the web by document title for canon documents.
+- If raw canon links cannot be accessed, the AI GM must state which canon documents failed and ask the player/session host to paste or upload them manually.
+- Updated README canon-access note for the raw-link workflow.
+- Kept Markdown canon downloads using `.md` filenames.
+
 ## v6.1 — Safety, Tracker Schema, Preset, Background & Review Cleanup
 
 - Added confirmation before actions that discard unfinished character creation work.

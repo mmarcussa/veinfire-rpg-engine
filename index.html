@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>VEINFIRE RPG Engine v6.1 — Character Creation</title>
+<title>VEINFIRE RPG Engine v6.2 — Player Clarity Patch</title>
 <style>
 :root{
   --bg:#080a0d;--panel:#11100d;--gold:#d6b36a;--gold2:#f1d893;--text:#f3ead7;
@@ -2095,7 +2095,7 @@ body.has-floating-actions{padding-bottom:118px!important}
 </head>
 <body>
 <div class="wrap">
-  <div class="top"><div><h1>VEINFIRE RPG Engine v6.1</h1><div class="beta-badge">Beta Prototype</div></div><div class="small"></div></div>
+  <div class="top"><div><h1>VEINFIRE RPG Engine v6.2</h1><div class="beta-badge">Beta Prototype</div></div><div class="small"></div></div>
 
   <div class="guided-nav">
     <button id="navCreationBtn">Create Character</button>
@@ -2483,11 +2483,11 @@ names:{Valcian:["Serit Vale","Mira Thorne","Tavin Rusk","Liora Penn","Darik Halv
 
 
 const CANON_DOC_URLS=[
- {name:"VEINFIRE: Complete Timeline v5",url:"https://mmarcussa.github.io/veinfire-rpg-engine/canon-docs/VEINFIRE_%20Complete%20Timeline%20v5.md",filename:"VEINFIRE_ Complete Timeline v5.md"},
- {name:"VEINFIRE: GM Note v5",url:"https://mmarcussa.github.io/veinfire-rpg-engine/canon-docs/VEINFIRE_%20GM%20Note%20v5.md",filename:"VEINFIRE_ GM Note v5.md"},
- {name:"VEINFIRE: Sensory Descriptions v5",url:"https://mmarcussa.github.io/veinfire-rpg-engine/canon-docs/VEINFIRE_%20Sensory%20Descriptions%20v5.md",filename:"VEINFIRE_ Sensory Descriptions v5.md"},
- {name:"VEINFIRE: Terminology v5",url:"https://mmarcussa.github.io/veinfire-rpg-engine/canon-docs/VEINFIRE_%20Terminology%20v5.md",filename:"VEINFIRE_ Terminology v5.md"},
- {name:"VEINFIRE: Worldbuilding v5",url:"https://mmarcussa.github.io/veinfire-rpg-engine/canon-docs/VEINFIRE_Worldbuilding%20v5.md",filename:"VEINFIRE_Worldbuilding v5.md"}
+ {name:"VEINFIRE: Complete Timeline v5", filename:"VEINFIRE_ Complete Timeline v5.md", url:"https://raw.githubusercontent.com/mmarcussa/veinfire-rpg-engine/refs/heads/main/canon-docs/VEINFIRE_%20Complete%20Timeline%20v5.md"},
+ {name:"VEINFIRE: GM Note v5", filename:"VEINFIRE_ GM Note v5.md", url:"https://raw.githubusercontent.com/mmarcussa/veinfire-rpg-engine/refs/heads/main/canon-docs/VEINFIRE_%20GM%20Note%20v5.md"},
+ {name:"VEINFIRE: Sensory Descriptions v5", filename:"VEINFIRE_ Sensory Descriptions v5.md", url:"https://raw.githubusercontent.com/mmarcussa/veinfire-rpg-engine/refs/heads/main/canon-docs/VEINFIRE_%20Sensory%20Descriptions%20v5.md"},
+ {name:"VEINFIRE: Terminology v5", filename:"VEINFIRE_ Terminology v5.md", url:"https://raw.githubusercontent.com/mmarcussa/veinfire-rpg-engine/refs/heads/main/canon-docs/VEINFIRE_%20Terminology%20v5.md"},
+ {name:"VEINFIRE: Worldbuilding v5", filename:"VEINFIRE_Worldbuilding v5.md", url:"https://raw.githubusercontent.com/mmarcussa/veinfire-rpg-engine/refs/heads/main/canon-docs/VEINFIRE_Worldbuilding%20v5.md"}
 ];
 
 const TEST_PRESETS=[{"id": "jereq_quilmik", "shortLabel": "Jereq Quilmik", "form": {"name": "Jereq Quilmik", "race": "Valcian", "gender": "Male", "kind": "Veinborn", "discipline": "Blood Magic", "proficiency": "", "home": "Ordanthia", "origin": "Minor Noble", "background": "Custom", "backgroundCustom": "Disgraced house-son trained in etiquette, private performance, and the soft politics of noble bedrooms before scandal forced him into paid intimacy.", "backgroundPlus": ["Presence", "Vein"], "backgroundMinus": "Survival", "className": "Whore", "startingGear": "Whore's Kit", "factionTie": "Brothel House", "flaw": "Greedy for lost knowledge", "goal": "Buy freedom from debt", "secret": "Custom", "secretCustom": "Jereq was not merely caught with servants; one of the butlers kept copies of the family’s private letters, and Jereq knows those letters could ruin House Quilmik if they surface.", "appearance": "Jereq is a beautiful Valcian man with dark, carefully oiled hair, soft amber eyes, and a mouth trained to smile before it tells the truth. He wears silk wraps, painted lip color, and a narrow perfume ribbon at his throat, but the old signet mark on his finger is still visible where the family ring used to sit. His posture is graceful in public and restless in private, as if he expects desire, punishment, or opportunity to enter the room at any moment.", "backstoryOrigin": "Jereq Quilmik was born into a minor noble house in Ordanthia, close enough to old ruin-money to be useful but never powerful enough to be untouchable. He learned etiquette, ledgers, family secrets, and the way noble houses turn desire into leverage. The Quilmik name gave him rooms to enter, but never enough freedom to breathe inside them.", "backstoryPressure": "Jereq grew up with a hunger for being wanted, touched, praised, intimidated, and pursued until restraint felt like a locked door. His family treated that hunger as weakness when it embarrassed them and as a tool when it entertained useful guests. By the time he understood the difference between desire and ownership, half the house staff already knew how easily he could be led into danger.", "backstoryIncident": "The scandal came when Jereq was caught fucking two of the household butlers after a private supper where family letters, wine, and old resentments were all too close to the bed. The official story called it moral disgrace, but the true panic was political: one butler had seen correspondence tying House Quilmik to illegal relic brokerage. Rather than risk investigation, the family cast Jereq out and let society believe lust alone had ruined him.", "backstoryTie": "Jereq now works under a Brothel House that sells privacy to guild clerks, minor nobles, salvagers, and faction messengers. The madam protects him because he is profitable, but she also knows his family name can attract dangerous patrons. One missing butler may still be alive, and Jereq does not know whether the man wants rescue, revenge, or payment.", "backstoryReason": "Jereq steps into danger because a client recently whispered the Quilmik name while half-asleep and left behind a route mark connected to the same relic letters that destroyed him. If he finds the letters first, he can buy freedom, ruin his family, or sell the truth to the highest bidder. If someone else finds them, he may become the easiest witness to silence.", "backstoryOther": "Jereq enjoys being underestimated, but hates being pitied. He keeps a careful book of patron habits hidden beneath loose floorboards and marks dangerous clients with perfume codes only other workers understand.", "object": "a cracked Quilmik signet ring with the crest filed nearly smooth"}}, {"id": "maeva_thorne", "shortLabel": "Maeva Thorne", "form": {"name": "Maeva Thorne", "race": "Valcian", "gender": "Female", "kind": "Veinborn", "discipline": "Runic Magic", "proficiency": "", "home": "Ordanthia", "origin": "Guild-born", "background": "Vein Watcher Trainee", "className": "Runehand", "startingGear": "Watcher Kit", "factionTie": "Vein Watchers", "flaw": "Hides symptoms", "goal": "Expose a Compact violation", "secret": "You saw a Watcher falsify a report", "appearance": "Maeva has cropped black hair, ink-stained fingers, and gray eyes that rarely stop measuring doorframes, bells, and exits. Her Watcher coat is too large at the shoulders and patched at one sleeve where a grounding rod once burned through cloth. Fine rune-scars cross her left palm like pale threads, visible only when she flexes her hand.", "backstoryOrigin": "Maeva Thorne was raised in an Ordanthian guild annex where salvage permits and Watcher notices shared the same wall. Her parents copied claims for relic crews and taught her that ink could save a life or bury a death. She learned to read official language before she learned to trust it.", "backstoryPressure": "Maeva's Veinborn talent made her useful to the Watchers, but not important enough to be protected from blame. She began hiding headaches, hand tremors, and heat flashes because trainees who reported too many symptoms were removed from field rotations. The fear of being dismissed made her more dangerous to herself than any enemy intended.", "backstoryIncident": "During a Highflow evacuation drill, Maeva found a Watcher report altered to downgrade a pressure spike near a guild storage yard. The next morning, three workers were dead and the official record blamed faulty private equipment. Maeva kept a copy of the original reading, folded inside a prayer pamphlet she does not believe in.", "backstoryTie": "Her old instructor, Bellwarden Osric Pell, suspects she kept evidence and has tried to warn her without saying so directly. A guild clerk named Sella Vane also knows part of the truth and may sell it if frightened. Maeva does not know which of them she can trust.", "backstoryReason": "Maeva enters the campaign because the same pressure signature has appeared again, this time near a newly sealed route. If the Watchers falsify the warning twice, the next death toll will not be an accident. She needs proof before her own symptoms make her testimony easy to discredit.", "backstoryOther": "Maeva counts Bellcounts with her thumb against her palm when frightened. She dislikes incense because it reminds her of official mourning rooms.", "object": "a folded original pressure reading hidden inside a false prayer pamphlet"}}, {"id": "orruk_deepcut", "shortLabel": "Orruk Deepcut", "form": {"name": "Orruk Deepcut", "race": "Orikarn", "gender": "Male", "kind": "Mundane", "discipline": "", "proficiency": "Runic Craft", "home": "Ordanthia", "origin": "Rural Frontier", "background": "Relic Runner", "className": "Relic Seeker", "startingGear": "Ruin Kit", "factionTie": "Local Salvage Guild", "flaw": "Too loyal to old oaths", "goal": "Recover a stolen relic", "secret": "You know a ruin entrance not on official maps", "appearance": "Orruk is broad even for an Orikarn, with slate-gray skin, deep tool scars along both forearms, and stone-dust permanently caught in the seams of his knuckles. He wears a patched work harness instead of fine armor and keeps broken rune plates tied to it as warning charms. His eyes are dark and steady, and his voice has the slow weight of a door that should not be forced.", "backstoryOrigin": "Orruk Deepcut came from a frontier quarry-settlement on the edge of Ordanthian ruin country, where children learned early that old stone was never empty. His craft-line repaired bridges, sealed unstable chambers, and hauled dead machines out of places richer people claimed after the danger passed. He grew up trusting weight, sound, and fracture more than promises.", "backstoryPressure": "Because Orikarn cannot channel magic, Orruk learned to survive magical spaces by respecting what he could not feel directly. Salvage guilds valued his body and craft but treated him as disposable muscle when relic scholars wanted credit. An oath to his dead mentor still binds him to recover a stolen ward-core taken from a sealed site.", "backstoryIncident": "The theft happened after a guild crew opened a lower passage that was not on any official map. Orruk warned them the floor was wrong, but the crew chief pushed forward under pressure from a private buyer. By dawn, the ward-core was gone, two workers were missing, and the official ledger claimed the chamber had never been entered.", "backstoryTie": "Orruk's mentor, Old Maven Archstone, died sealing the passage and made Orruk swear the lower door would stay closed. A young salvager named Pell keeps begging Orruk to reveal the entrance because her sister may be one of the missing workers. The oath and the living need are now pulling him in opposite directions.", "backstoryReason": "Orruk enters the campaign because the stolen ward-core has begun appearing in rumors tied to fresh accidents. If it is installed incorrectly, it may wake systems the guild does not understand. He needs to recover it before the oath becomes a grave marker for more people.", "backstoryOther": "Orruk distrusts beautiful tools and prefers ugly repairs that can be inspected. He never steps onto old stone without touching it first.", "object": "a cracked measuring chisel inherited from Maven Archstone"}}, {"id": "sable_vey", "shortLabel": "Sable Vey", "form": {"name": "Sable Vey", "race": "Nyxborn", "gender": "Female", "kind": "Mundane", "discipline": "", "proficiency": "Social Leverage", "home": "Kulois", "origin": "Refugee Lineage", "background": "Smuggler", "className": "Silver Tongue", "startingGear": "Smuggler Kit", "factionTie": "Streetwalkers' Mutual", "flaw": "Distrusts authority", "goal": "Map a forbidden route", "secret": "You carry an illegal route mark", "appearance": "Sable Vey wears layered dark cloth, silver-thread cuffs, and a half-veil that softens the line of her mouth without hiding her eyes. Her hair is black with a blue sheen under lamplight, and she paints a small crescent near one cheekbone when she expects trouble. She moves quietly but not timidly, as if every room is a negotiation she entered before anyone noticed.", "backstoryOrigin": "Sable was born in Kulois to a refugee family that survived by changing names before officials could make names dangerous. Her mother traded warnings between clinics, brothels, and smugglers while teaching Sable that a locked door was often safer than an open invitation. Kulois gave her comfort with shadowed rooms and discomfort with anyone who demanded full truth for free.", "backstoryPressure": "Sable's family still owes favors to the network that moved them through a forbidden route during a border purge. The mark she carries is both protection and evidence, useful only while the right people recognize it first. Authority figures make her cautious because every official rescue she has seen came with a ledger attached.", "backstoryIncident": "A client once died after giving Sable a route phrase meant for someone else. The phrase matched an illegal Dead Zone crossing used by workers, fugitives, and smugglers, but the map attached to it was incomplete. Since then, three people who asked about that route have disappeared.", "backstoryTie": "Sable is tied to a Streetwalkers' Mutual that trades bad-client names, safe rooms, and quiet alarms. One older worker, Amma Noct, treats Sable like a daughter and may know more about the forbidden route than she admits. A Kulois clinic clerk also wants the route erased for reasons that sound too rehearsed.", "backstoryReason": "Sable enters the campaign because the same route mark has appeared near the starting incident, cut into wax where no one outside the network should know to place it. If she maps the route first, she can protect the workers using it. If a faction maps it first, every hidden person on it becomes inventory.", "backstoryOther": "Sable never gives the same name twice to someone in uniform. She collects cheap earrings from towns she survives.", "object": "an illegal route mark sewn into the lining of her left sleeve"}}, {"id": "torun_red_horn", "shortLabel": "Torun Red-Horn", "form": {"name": "Torun Red-Horn", "race": "Taurakin", "gender": "Male", "kind": "Veinborn", "discipline": "Elementalism", "proficiency": "", "home": "Glacoria", "origin": "Military Household", "background": "Healer's Aide", "className": "Field Medic", "startingGear": "Medical Kit", "factionTie": "Kulois Medical College", "flaw": "Protective to a fault", "goal": "Find a missing relative", "secret": "You hid early Veinburn symptoms", "appearance": "Torun Red-Horn is tall, heavy-shouldered, and wrapped in cold-weather layers even when the road turns warm. His horns are capped with dull copper bands etched with family deed marks, and one band is cracked from an old fall. His hands are careful despite their size, and faint heat sometimes gathers under his skin when he is exhausted.", "backstoryOrigin": "Torun was raised in Glacoria inside a military household where usefulness was measured by what one could carry, endure, and sacrifice. His family served winter patrols and emergency routes, and children learned splints before songs. He inherited the belief that leaving someone behind is a wound that never closes.", "backstoryPressure": "As a Veinborn Taurakin, Torun could push warmth and force through his body when cold or injury threatened others, but each use carried strain he tried to hide. He became a healer's aide because saving people gave his strength a purpose. It also taught him how often brave people lie about pain.", "backstoryIncident": "His younger cousin vanished during a Blight-edge medical transfer connected to a Kulois research escort. The official report blamed weather and terrain, but Torun saw signs of panic, not accident, in the recovered equipment. He hid his own early Veinburn symptoms during the search because reporting them would have removed him from the route.", "backstoryTie": "Torun has a formal tie to a Kulois Medical College field office that values his endurance and worries about his judgment. A physician named Ilyra Voss knows he is hiding symptoms but has not reported him yet. His clan expects him to return with either his cousin or a name to carve into mourning metal.", "backstoryReason": "Torun enters the campaign because a clue from the new incident matches the missing transfer: the same sedative tincture, the same broken crate mark, and the same silence from Kulois officials. If he waits for permission, the trail will freeze over again. If he pushes too hard, his body may betray him before he finds the truth.", "backstoryOther": "Torun hums old patrol cadences while treating wounds. He gives away his own rations too easily and lies badly when confronted about it.", "object": "a cracked copper horn-band belonging to his missing cousin"}}];
@@ -2895,7 +2895,7 @@ const STEPS=[
  {key:"review",title:"Review",kind:"review",prompt:"Review the dossier and create your character.",help:"Difficulty emerges from the world and your actions."}
 ];
 
-const APP_VERSION="6.1";
+const APP_VERSION="6.2";
 function freshState(){
  return {
   version:APP_VERSION,
@@ -4549,8 +4549,29 @@ function buildGMPacket(){
 
 ${canonSourcePacketBlock()}
 
+
+PLAYER CLARITY RULES:
+- At the top of every live GM response, show a compact STATUS line using the latest known tracker values:
+  STATUS: Health current/max | Stress current/max | Fatigue current/max | Veinburn current/max | Blight current/max | Supplies current | Coin current | Legal Heat current | Suspicion current
+- If a value is unknown, write "?" rather than inventing it.
+- If Health is at or below 35%, Stress/Fatigue/Veinburn/Blight is near maximum, or Legal Heat/Suspicion is dangerously high, add a short warning tag such as [DANGER], [STRAIN], [MAGIC RISK], or [LAW RISK].
+- When the player action requires a stat check, show the check visibly before or during the outcome. Never hide the roll.
+- Stat check format:
+  CHECK: Stat Name — d20 roll + stat modifier = total vs DC/opposition → Success/Partial/Failure
+- Example:
+  CHECK: Presence — 9 + 3 = 12 vs DC 14 → Failure
+- If using an opposed check, show both sides:
+  CHECK: Player Presence 14 vs NPC Mind 16 → Failure
+- After the check, narrate the result with consequences. Do not only say "you fail" or "you succeed"; show what changes in the scene.
+- Do not let player wording auto-force success. A player may declare intent, but the GM decides uncertainty, resistance, risk, check, cost, and outcome.
+- When offering possible actions, label them as optional examples, not fixed choices.
+- Use this heading when helpful:
+  Possible approaches, not limits:
+- Always include a line like: "You can choose one of these, combine them, or type any other action."
+- Never imply the player must pick only from listed options unless the fiction truly traps them into a narrow choice.
+
 CANON SOURCE RULE:
-Use only the selected v5 canon source mode above. Do not rely on older versions, memory, generic fantasy assumptions, outside D&D lore, or unstated assumptions when judging VEINFIRE canon. If a claim is not clearly supported or forbidden by the available v5 canon source, mark it as "Needs Review" instead of treating it as canon.
+Use only the raw GitHub Markdown canon links above. Open/read the exact raw URLs directly; do not search the web for the document titles. Do not rely on older versions, memory, generic fantasy assumptions, outside D&D lore, or unstated assumptions when judging VEINFIRE canon. If a raw link cannot be accessed, say which document failed and ask the player/session host to paste or upload it manually before canon-sensitive play begins. If a claim is not clearly supported or forbidden by the available v5 canon source, mark it as "Needs Review" instead of treating it as canon.
 
 GM STYLE:
 - Narrate in second person.
@@ -4763,6 +4784,28 @@ At the end of any GM response that changes trackers, inventory, NPCs, progressio
 11. End with a playable prompt. Usually end with "What do you do?" or 2-4 meaningful approaches. Do not offer too many choices.
 
 
+
+LIVE RESPONSE FORMAT:
+Use this structure for normal play responses unless the scene requires a very short reply:
+
+STATUS: Health ?/? | Stress ?/? | Fatigue ?/? | Veinburn ?/? | Blight ?/? | Supplies ? | Coin ? | Legal Heat ? | Suspicion ?
+
+Scene:
+2–5 short paragraphs maximum. Keep paragraphs easy to scan.
+
+Check:
+Only include this section if a check happened. Show the roll, stat, modifier, DC/opposition, and result.
+
+Tracker changes:
+Briefly list visible changes such as Health loss, Stress gain, item gained/lost, relationship shift, injury, suspicion, legal heat, or new lead.
+
+Possible approaches, not limits:
+- Optional example action.
+- Optional example action.
+- Optional example action.
+
+You can choose one of these, combine them, or type any other action.
+
 GM_UPDATE_JSON.
 
 Use this exact structure. Omit fields that did not change. Do not put hidden GM-only secrets in playerFacingLedgerAdd. Hidden notes may be kept privately by the GM, but should not be exported to the player-facing tracker unless discovered.
@@ -4869,6 +4912,7 @@ GM_UPDATE_JSON
 Rules for this JSON:
 - schemaVersion must be "veinfire-progress-v3" for live GM updates.
 - If a tracker changes, include the updated total value, not vague prose.
+- Keep the STATUS line accurate by using the latest known tracker values. If a resource changes, include the updated total in the JSON update.
 - Use inventoryAdd and inventoryRemove for item changes. Items are name strings only.
 - Use skillAdd and skillRemove for skill changes. Skills are name strings only.
 - Use injuriesAdd for new lasting harm. Severity must be one of: minor, moderate, severe, magical.
@@ -5341,20 +5385,17 @@ function downloadAllCanonDocs(){
 
 function canonSourcePacketBlock(){
  const urls=CANON_DOC_URLS.map(d=>`- ${d.name}: ${d.url}`).join("\n");
- return `CANON SOURCE SETUP:
-The v5 VEINFIRE canon documents are provided as public GitHub-hosted Markdown canon URLs.
+ return `CANON MODE: RAW GITHUB MARKDOWN LINKS
 
-Before starting the campaign:
-1. Access and read these GitHub-hosted Markdown canon URLs. Markdown is plain text and is the required canon source for this session.
-2. Explicitly confirm whether you can read each document.
-3. Do not start canon-sensitive play until the Markdown canon links have been checked.
-4. Do not pretend you accessed documents you cannot actually read.
-5. Use only these v5 Markdown documents as VEINFIRE canon.
-6. If your platform cannot access/read the GitHub Markdown links, stop and tell the player that manual upload or pasted canon text is required.
-7. If a canon issue is not clearly supported or forbidden by accessible v5 canon, mark it as Needs Review instead of inventing an answer.
+The canon documents below are raw GitHub Markdown files. Open/read these exact raw URLs directly. Do not search the web for the document titles.
 
-Canon GitHub Document URLs:
-${urls}`;
+Required canon documents:
+${urls}
+
+Canon access rule:
+- First, try to open/read the exact raw GitHub Markdown URLs above.
+- If your environment cannot access or read the raw links, do not pretend the canon documents were read.
+- Instead, tell the player/session host exactly which canon documents could not be accessed and ask them to paste or upload those documents manually before canon-sensitive play begins.`;
 }
 
 function setupModelButtons(){

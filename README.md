@@ -1,19 +1,19 @@
 # VEINFIRE RPG Engine
 
-**Current build:** v6.1 — Review Cleanup Patch  
+**Current build:** v6.2 — Raw Canon Links  
 **Status:** Beta prototype
 
 VEINFIRE RPG Engine is a standalone browser-based setup tool for running heavy VEINFIRE / Eldoria RPG sessions with an external AI GM.
 
-The engine helps players:
+The engine helps players create a canon-aware character, choose or edit preset characters, generate a campaign premise, build a structured GM handoff packet, and use a standalone Campaign Tracker for GM update JSON imports.
 
-- create a canon-aware character
-- choose or edit preset characters
-- generate a campaign premise
-- build a structured GM handoff packet
-- use a standalone Campaign Tracker for GM update JSON imports
+## v6.2 canon access note
 
-The live roleplay session happens in the chosen AI chat after the GM packet is copied.
+The GM packet now uses **raw GitHub Markdown URLs** for canon documents instead of GitHub Pages Markdown URLs.
+
+This helps AI GM tools open the exact source text directly instead of searching by document title and possibly finding unrelated results.
+
+If the selected AI model still cannot access the raw links, it should ask the player or session host to paste or upload the canon document text manually before canon-sensitive play begins.
 
 ## How to use
 
@@ -29,21 +29,13 @@ The live roleplay session happens in the chosen AI chat after the GM packet is c
 
 This is a standalone static HTML project. It does not require a backend.
 
-It can be hosted on:
-
-- GitHub Pages
-- Netlify
-- Vercel
-- itch.io
-- any static web host
-
 For GitHub Pages, the main file must be named:
 
 ```text
 index.html
 ```
 
-## Recommended repository structure
+Recommended repository structure:
 
 ```text
 index.html
@@ -52,22 +44,20 @@ CHANGELOG.md
 NOTICE.md
 ```
 
-## Canon documents
-
-The GM packet is designed around GitHub-hosted Markdown canon documents. If an AI model cannot access GitHub links, it should ask the player or session host to paste or upload the needed canon text manually.
-
 ## Important notes
 
 - The HTML does not directly call ChatGPT, Gemini, Grok, Claude, or any other AI.
 - The browser page is the character / campaign / tracker engine.
 - The AI chat is the live GM / Narrator.
 - Campaign Tracker imports should use valid JSON only.
-- The project is still a beta prototype, so testers should report bugs, confusing UI, and broken tracker updates.
+- The project is still a beta prototype.
 
-## Ownership and fan creations
 
-VEINFIRE, Eldoria, related lore, canon material, names, worldbuilding, characters, factions, and setting concepts are owned by the creator.
+## v6.2 player clarity patch
 
-Players and fans may create personal, non-commercial fan works such as fanart, OCs, session notes, and private play materials, as long as they do not claim ownership of the canon IP or present fan material as official canon.
+The GM packet now instructs the AI GM to:
 
-See `NOTICE.md` for more detail.
+- show a compact live status line at the top of normal play responses
+- visibly show stat checks, dice rolls, modifiers, DC/opposition, and success/failure result
+- label suggested actions as optional examples, not fixed choices
+- remind players they may type any action in their own words
