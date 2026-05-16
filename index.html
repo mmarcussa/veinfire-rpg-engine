@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>VEINFIRE RPG Engine v5.8 — Character Creation</title>
+<title>VEINFIRE RPG Engine v5.9 — Character Creation</title>
 <style>
 :root{
   --bg:#080a0d;--panel:#11100d;--gold:#d6b36a;--gold2:#f1d893;--text:#f3ead7;
@@ -1166,12 +1166,37 @@ body.has-floating-actions{padding-bottom:98px}
   margin:0 0 10px!important;
 }
 
+
+/* v5.9 GM behavior and relationship tracker */
+.relationship-meter{margin-top:8px}
+.relationship-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px}
+.relationship-badge{border:1px solid rgba(244,215,139,.55);border-radius:999px;padding:4px 9px;background:rgba(35,27,11,.72);color:#ffe6a3;font-weight:800;font-size:.82rem}
+.relationship-bar{height:8px;min-width:130px;flex:1;border:1px solid rgba(214,179,106,.24);border-radius:999px;background:rgba(0,0,0,.35);overflow:hidden}
+.relationship-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#9e2f2f,#e7c267,#5db978);}
+.npc-card{display:grid;gap:6px}
+.gm-behavior-note{border:1px solid rgba(105,160,216,.45);border-radius:16px;background:rgba(10,22,34,.62);padding:14px;line-height:1.58;margin:12px 0;color:#e8f3ff}
+
+
+/* v5.9 NPC agency / combat / relationship v4 */
+.relationship-track{display:grid;gap:6px;margin-top:8px}
+.relationship-bar{height:10px;border-radius:999px;border:1px solid rgba(214,179,106,.28);background:linear-gradient(90deg,rgba(155,34,38,.75),rgba(90,90,90,.48) 50%,rgba(57,160,92,.75));overflow:hidden;position:relative}
+.relationship-pin{position:absolute;top:-3px;width:4px;height:16px;border-radius:4px;background:#fff4d0;box-shadow:0 0 10px rgba(244,215,139,.9)}
+.relationship-meta{display:flex;justify-content:space-between;gap:8px;font-size:.82rem;color:var(--muted)}
+.npc-card{border:1px solid rgba(214,179,106,.28);border-radius:16px;background:rgba(5,6,8,.68);padding:13px;margin-bottom:10px;line-height:1.48}
+.npc-card h4{margin:0 0 8px;color:var(--gold2)}
+.npc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:8px;margin-top:8px}
+.npc-mini{border:1px solid rgba(214,179,106,.18);border-radius:12px;padding:8px;background:rgba(0,0,0,.28)}
+.npc-mini b{color:#f1d38d}
+.conflict-card,.injury-card{border:1px solid rgba(105,160,216,.42);border-radius:16px;background:rgba(10,22,34,.62);padding:13px;margin:10px 0;line-height:1.55}
+.injury-card{border-color:rgba(255,120,120,.45);background:rgba(48,13,18,.55)}
+.tracker-section-title{margin:14px 0 8px;color:var(--gold2);font-weight:800;letter-spacing:.02em}
+
 @media(max-width:1180px){.shell{grid-template-columns:220px 1fr}.right-panel{grid-column:1/-1}}@media(max-width:800px){.shell,.play-shell,.lore-row{grid-template-columns:1fr}.top{display:block}.option-grid{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}.statbar{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="top"><div><h1>VEINFIRE RPG Engine v5.8</h1></div><div class="small"></div></div>
+  <div class="top"><div><h1>VEINFIRE RPG Engine v5.9</h1></div><div class="small"></div></div>
 
   <div class="guided-nav">
     <button id="navCreationBtn">Create Character</button>
@@ -1324,18 +1349,19 @@ body.has-floating-actions{padding-bottom:98px}
         </div>
         <textarea id="gmUpdateInput" style="min-height:220px" placeholder='Example structured GM update:
 {
-  "schemaVersion": "veinfire-progress-v2",
+  "schemaVersion": "veinfire-progress-v3",
   "campaignState": {
     "currentLocation": "private room above the silk hall",
     "currentBell": "Watch Bell",
     "sceneStatus": "Jereq has a name, but the house ledger is still missing.",
     "knownObjective": "Find who altered the ledger before the patrol arrives.",
-    "activePressure": ["High suspicion", "sealed exits"],
+    "activePressure": ["High suspicion", "sealed exits", "NPC relationship pressure"],
     "visibleConsequences": ["The madam is watching every door."]
   },
   "resources": {"Stress": 2, "Suspicion": 1},
   "inventoryAdd": [{"name": "marked client note", "description": "A folded note with perfume and a false initial.", "use": "May support Presence or Mind checks when confronting a patron."}],
   "playerFacingLedgerAdd": ["Known lead: Vel Sarro is tied to the Red Market Auction."],
+  "npcRelationship": [{"name":"Vel Sarro","value":-1,"label":"Wary","note":"Vel dislikes the pressure but respects that Jereq noticed the false initial."}],
   "chronicleAdd": "Jereq learned a patron name in the private room."
 }'></textarea>
         <div class="controls" style="justify-content:flex-start">
@@ -1850,7 +1876,7 @@ const STEPS=[
  {key:"review",title:"Review",kind:"review",prompt:"Review the dossier and create your character.",help:"Difficulty emerges from the world and your actions."}
 ];
 
-const APP_VERSION="5.8";
+const APP_VERSION="5.9";
 function freshState(){
  return {
   version:APP_VERSION,
@@ -1910,8 +1936,8 @@ function freshState(){
 }
 let S=freshState();
 function $(id){return document.getElementById(id)};function pick(a){return a[Math.floor(Math.random()*a.length)]};function roll(n=20){return 1+Math.floor(Math.random()*n)};function clamp(n,a,b){return Math.max(a,Math.min(b,n))};function now(){return new Date().toLocaleTimeString()};function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
-function save(){localStorage.setItem("veinfire_rpg_v58",JSON.stringify(S))}function load(){
- try{ localStorage.removeItem("veinfire_rpg_v58"); }catch(e){}
+function save(){localStorage.setItem("veinfire_rpg_v59",JSON.stringify(S))}function load(){
+ try{ localStorage.removeItem("veinfire_rpg_v59"); }catch(e){}
  S=freshState();
 }
 function addLog(title,text){S.log.unshift({t:now(),title,text});renderLog();save()}
@@ -3009,7 +3035,7 @@ function defaultProgression(){
 }
 function ensureProgression(){
  if(!S.progression) S.progression=defaultProgression();
- return S.progression;
+ S.progression.injuries=S.progression.injuries||[];S.progression.relationshipLedger=S.progression.relationshipLedger||[];return S.progression;
 }
 function tierBonus(){
  const p=ensureProgression();
@@ -3183,7 +3209,57 @@ function generateCampaign(){
  showToast("<b>Campaign generated.</b><br>Review the GM Handoff and build the packet.","success");
 }
 function calculateDifficulty(pressure,season,law,pc){let score=DB.pressureBands[pressure].risk+DB.seasons[season].risk;if(law==="Moderate")score+=1;if(law==="High")score+=2;if(law==="Emergency")score+=3;if(pc.kind==="Veinborn"&&(pressure==="Major Vein Zone"||season==="Shear"))score+=1;if(pc.kind==="Mundane"&&pressure==="Dead Zone")score-=1;if(pc.race==="Taurakin"&&(season==="Highflow"||season==="Shear"))score-=1;if(pc.race==="Orikarn"&&pressure==="Dead Zone")score-=1;return{score,label:score<=1?"Manageable":score<=4?"Standard":score<=7?"Dangerous":"Severe"}}
-function generateNPCs(rand=Math.random){const rp=a=>a[Math.floor(rand()*a.length)],roles=["faction handler","witness","rival investigator","local authority","companion candidate","hidden antagonist","specialist"],races=Object.keys(DB.races),personalities=["dry and procedural","warm but evasive","blunt and tired","beautifully polite","jumpy and overworked","too calm","angry on behalf of someone else"],agendas=["protect the town","bury evidence","profit from the crisis","prevent a Veinstorm panic","save a relative","frame a rival faction","contain an illegal object"],lies=["where they were at Watch Bell","who signed the permit","what the cargo contained","how much they know about the route","why they fear the Watchers","who they sent a message to"];S.campaign.npcs=[];for(let i=0;i<6;i++){const race=rp(races),kind=DB.races[race].vein==="Forbidden"?"Mundane":rp(["Mundane","Veinborn"]);S.campaign.npcs.push({name:rp(DB.names[race]),race,kind,faction:rp(S.campaign.factions),role:roles[i%roles.length],personality:rp(personalities),agenda:rp(agendas),lie:rp(lies),status:"Unknown"})}}
+
+function relationshipLabel(v){
+ v=Number(v||0);
+ if(v<=-3)return "Enemy";
+ if(v===-2)return "Hostile";
+ if(v===-1)return "Wary";
+ if(v===0)return "Neutral";
+ if(v===1)return "Warm";
+ if(v===2)return "Trusted";
+ return "Bonded";
+}
+function relationshipPercent(v){return clamp(((Number(v||0)+3)/6)*100,0,100)}
+function relationshipExplanation(v){
+ v=Number(v||0);
+ if(v<=-3)return "Will obstruct, betray, or escalate unless forced by stronger leverage.";
+ if(v===-2)return "Actively resistant. Cooperation requires leverage, fear, payment, or a shared threat.";
+ if(v===-1)return "Cautious and suspicious. May help with small things but withholds riskier truth.";
+ if(v===0)return "No strong bond. Reacts mainly to method, evidence, faction pressure, and self-interest.";
+ if(v===1)return "Mildly favorable. More likely to hear the character out or offer small help.";
+ if(v===2)return "Strong trust or attachment. Will take risks, but not abandon self-preservation.";
+ return "Deep loyalty, desire, debt, or bond. May sacrifice, but still has limits and fears.";
+}
+function npcRelationshipHTML(n){
+ const val=Number(n.relationship||0),label=n.relationshipLabel||relationshipLabel(val);
+ return `<div class="relationship-meter"><div class="relationship-row"><span class="relationship-badge">Relationship ${val>0?"+":""}${val} · ${escapeHtml(label)}</span><div class="relationship-bar"><div class="relationship-fill" style="width:${relationshipPercent(val)}%"></div></div></div><div class="small">${escapeHtml(n.knownRelationship||relationshipExplanation(val))}</div></div>`;
+}
+function setNPCRelationship(name,value,note){
+ if(!S.campaign)S.campaign={npcs:[],reps:{}};
+ if(!S.campaign.npcs)S.campaign.npcs=[];
+ let npc=S.campaign.npcs.find(n=>n.name===name);
+ if(!npc){npc={name,race:"Unknown",kind:"Unknown",role:"Known contact",faction:"Unknown",status:"Known",personality:"Unknown"};S.campaign.npcs.push(npc)}
+ npc.relationship=clamp(Number(value||0),-3,3);
+ npc.relationshipLabel=relationshipLabel(npc.relationship);
+ if(note)npc.knownRelationship=note;
+}
+
+function generateNPCs(rand){
+ const c=S.campaign;if(!c)return;
+ const names=["Vel Sarro","Mara Vey","Tovan Kress","Ilyra Dask","Ren Corveth","Sella Morn","Asha Vell","Darik Olt","Nemi Sava","Korr Talven"];
+ const roles=["clerk","witness","enforcer","Watcher aide","smuggler","healer","house accountant","caravan lead","ruin scout","broker"];
+ const wants=["keep their position","protect someone unnamed","leave town before the next Bell","keep a debt hidden","sell one truth safely","avoid official attention","secure shelter","recover a missing object","control the story before it spreads","survive the faction watching them"];
+ const fears=["public blame","faction punishment","legal seizure","Vein exposure","being named by a witness","losing family protection","being abandoned","a debt-marker surfacing","a hidden patron returning","the wrong person hearing the truth"];
+ const boundaries=["will not endanger children","will not betray family without proof","will not speak in public","will not touch banned relics","will not cross a Dead Zone marker","will not name a patron without protection","will not falsify a seal twice","will not risk the workers","will not kill for coin","will not admit fear first"];
+ const stress=["stalls with procedural details","gets sarcastic when scared","over-explains small facts","goes still before lying","tries to leave by changing the subject","answers with questions","threatens rules they cannot enforce","bargains for safety first","turns anger into politeness","reaches for a charm when pressured"];
+ const voices=["precise and clipped","warm words with sharp edges","low, practical, evasive","formal under stress","street-casual and watchful","tired, humane, guarded","smooth and ledger-clean","blunt, road-worn, impatient","soft-spoken but exact","ritual-polished and careful"];
+ c.npcs=[];
+ for(let i=0;i<4;i++){
+  const rel=Math.floor(rand()*5)-2;
+  c.npcs.push(normalizeNpc({name:names[Math.floor(rand()*names.length)],race:Object.keys(DB.races)[Math.floor(rand()*Object.keys(DB.races).length)],kind:rand()>.55?"Veinborn":"Mundane",role:roles[Math.floor(rand()*roles.length)],faction:c.factions?c.factions[i%c.factions.length]:"",public_face:["polite","tired","guarded","smiling","procedural","restless"][Math.floor(rand()*6)],private_self:["afraid","ambitious","ashamed","lonely","angry","protective"][Math.floor(rand()*6)],want:wants[Math.floor(rand()*wants.length)],fear:fears[Math.floor(rand()*fears.length)],boundary:boundaries[Math.floor(rand()*boundaries.length)],leverage:["knows a name","has a key","saw the route","holds a receipt","can identify a seal","knows who lied first"][Math.floor(rand()*6)],relationship:rel,resistance:["Open","Guarded","Afraid","Loyal","Compromised","Hostile"][Math.floor(rand()*6)],mood:["watchful","cornered","busy","frightened","curious","irritated"][Math.floor(rand()*6)],stress_response:stress[Math.floor(rand()*stress.length)],voiceNote:voices[Math.floor(rand()*voices.length)],memory:[`First appears during ${c.archName||"the opening pressure"}.`],status:"present"}));
+ }
+}
 
 function addChat(role,text){
  const log=$("chatLog");
@@ -3349,12 +3425,55 @@ GM STYLE:
 - Ask "What do you do?" after presenting a scene.
 - Call for stat checks only when the outcome is uncertain, risky, opposed, or costly.
 - Use these stats only: Body, Mind, Vein, Presence, Craft, Survival.
-- Track consequences: Health, Stress, Fatigue, Veinburn, Blight Exposure, Supplies, Coin, Legal Heat, Suspicion, Faction Reputation, Leads, Injuries, Inventory.
+- Track consequences: Health, Stress, Fatigue, Veinburn, Blight Exposure, Supplies, Coin, Legal Heat, Suspicion, Faction Reputation, NPC Relationships, Leads, Injuries, Inventory.
 - NPCs are not limited to the initial generated cast. You may introduce new NPCs whenever the situation, location, faction activity, or player action logically calls for them.
 - Difficulty is not fixed. Adjust difficulty dynamically according to campaign situation, leverage, preparation, injuries, faction pressure, terrain, mana pressure, law pressure, and prior consequences.
 - Inventory is a live tracker. Add, remove, damage, conceal, spend, or mark items when the fiction requires it. Do not assume unlimited supplies.
 - Skills are live descriptors, not fixed superpowers. Starting skills and newly gained skills should affect what checks are possible, which stat applies, whether the DC shifts, and what consequences make sense.
 - Gear and inventory are live fictional tools, not automatic success buttons. Starting gear and newly gained gear may grant access, leverage, reduced difficulty, better positioning, or new options. How powerful a skill or item is depends on the current session situation, preparation, risk, opposition, and canon constraints.
+
+
+LIVE SESSION PACING RULES:
+- Default GM replies must be playable, not novel-length.
+- Use 2–5 short paragraphs maximum unless the player explicitly asks for a cinematic description.
+- No paragraph should be longer than 3 sentences.
+- A normal reply should contain: immediate result, one or two sensory/world details, NPC or environment reaction, and a clear prompt.
+- Use bullets only for choices, checks, tracker updates, or consequences.
+- Offer 2–4 meaningful options maximum when options are useful.
+- End most replies with “What do you do?” or a clear player-facing choice.
+
+PLAYER INPUT AUTHORITY RULE:
+- The player controls what their character attempts, says, intends, and visibly does.
+- The player does not control success, NPC decisions, NPC revelations, hidden truths, faction moves, world outcomes, or whether consequences are avoided.
+- If the player declares an outcome inside their action, treat it only as intent.
+- Example: “I interrogate him and he tells me everything” means the character interrogates him and tries to make him talk. It does not mean he talks.
+
+ACTION RESOLUTION RULE:
+For each meaningful action, interpret internally:
+1. Intent: what the player wants.
+2. Method: how the character tries to get it.
+3. Resistance: what could stop it.
+4. Outcome: success, partial success, failure with clue, or escalation.
+Use “Yes, and,” “Yes, but,” “No, but,” and “No, and” outcomes. Do not make failure a dead stop unless the risk was clearly catastrophic.
+
+NPC RESISTANCE AND RELATIONSHIP RULES:
+- NPCs are not information vending machines. They want safety, money, status, revenge, secrecy, belonging, survival, intimacy, or leverage.
+- Important NPCs have resistance states: Open, Guarded, Afraid, Loyal, Compromised, Hostile, or Broken.
+- Before major information is revealed, decide why the NPC would resist, bargain, lie, stall, panic, flee, attack, or offer only partial truth.
+- Track a relationship score between the player character and important NPCs from -3 to +3.
+- Relationship scale: -3 Enemy, -2 Hostile, -1 Wary, 0 Neutral, +1 Warm, +2 Trusted, +3 Bonded.
+- Relationship affects NPC reaction, but never overrides survival, fear, faction loyalty, blackmail, ideology, or canon constraints.
+- Positive relationship may lower social difficulty, increase patience, unlock honesty, or create aid.
+- Negative relationship may raise difficulty, cause lies, delays, refusal, surveillance, betrayal, or escalation.
+- Relationship changes should come from play: promises kept, threats, kindness, payment, rescue, betrayal, intimacy, humiliation, evidence, debt, faction pressure, and consequences.
+- Do not expose hidden NPC motives. Show relationship shifts through behavior and track player-known changes in the tracker JSON.
+
+CHECK PRESENTATION RULE:
+- Call for a check only when the outcome is uncertain, risky, opposed, or costly.
+- When a check is needed, briefly explain why it is uncertain in fiction.
+- Offer 2–4 approaches, each with a method and likely stat.
+- Do not auto-succeed because the player phrased the action confidently.
+- Do not roll automatically unless the player has chosen the approach or the table style explicitly allows it.
 
 CONSEQUENCE AND OUTCOME RULES:
 - Every meaningful action should change something: progress, cost, information, pressure, relationship, resource, position, or future risk.
@@ -3465,7 +3584,7 @@ Active Factions:
 ${(campaign.active_factions||[]).map(x=>`- ${x}`).join("\n")}
 
 Initial NPC Cast:
-${(campaign.npc_cast||[]).map(n=>`- ${n.name}: ${n.race} ${n.kind}, ${n.role}, tied to ${n.faction}. Personality: ${n.personality || "unknown"}. Agenda: ${n.agenda}. Likely lie: ${n.lie}.`).join("\n")}
+${(campaign.npc_cast||[]).map(n=>`- ${n.name}: ${n.race} ${n.kind}, ${n.role}, tied to ${n.faction}. Personality: ${n.personality || "unknown"}. Opening relationship: ${n.relationship>0?"+":""}${n.relationship||0} (${n.relationshipLabel||relationshipLabel(n.relationship||0)}). Resistance: ${n.resistance||"Guarded"}. Agenda: ${n.agenda}. Likely lie: ${n.lie}.`).join("\n")}
 
 NPC RULE:
 The initial cast is only the starting cast. Generate additional NPCs during play when needed, but keep them grounded in the current location, factions, social class, and uploaded-doc canon.
@@ -3485,12 +3604,38 @@ Opening Incident:
 ${campaign.opening_incident}
 
 PROGRESS TRACKER UPDATE FORMAT:
-At the end of any GM response that changes trackers, inventory, NPCs, progression, known ledgers, or chronicle state, include a separate JSON block labeled GM_UPDATE_JSON.
+At the end of any GM response that changes trackers, inventory, NPCs, progression, known ledgers, or chronicle state, include a separate JSON block labeled GM BEHAVIOR, NPC AGENCY, COMBAT, AND PACING RULES
+
+1. Keep responses playable. Default replies are 2-5 short paragraphs. No paragraph should exceed 3 sentences. Do not write walls of text unless the player asks for cinematic prose.
+
+2. Player controls intent, not outcome. The player controls what their character attempts, says, intends, and visibly does. The GM controls success, NPC reactions, hidden truth, resistance, consequences, and whether a check is needed. If the player writes "I interrogate him and he tells me everything," treat it as "the character interrogates him and tries to make him talk."
+
+3. Use Intent -> Method -> Resistance -> Outcome. For every meaningful action, identify the player's intent, their method, what resists it, and the outcome. Use Yes-and, Yes-but, No-but, No-and.
+
+4. NPCs are their own people. Every important NPC has a want, fear, boundary, relationship score, resistance state, memory, stress response, and voice. NPCs are not information vending machines, romance puppets, quest boards, reward dispensers, or exposition tools.
+
+5. Relationship scale is -10 to +10. -10 Nemesis, -9 Hated, -8 Vengeful, -7 Dangerous Enemy, -6 Active Enemy, -5 Hostile, -4 Resentful, -3 Distrustful, -2 Wary, -1 Uneasy, 0 Neutral, +1 Familiar, +2 Cordial, +3 Warm, +4 Friendly, +5 Trusting, +6 Loyal, +7 Devoted, +8 Deep Bond, +9 Unshakable Bond, +10 Life-Bound. Relationship affects behavior, but never removes NPC agency.
+
+6. Relationship changes should be gradual. Minor moment: +/-1. Major moment: +/-2. Defining moment: +/-3. Extreme shift: +/-4 or more is rare.
+
+7. Relationship is separate from resistance. A +6 Loyal NPC can still be Afraid. A -6 Active Enemy can still be Open if they want to boast, bargain, manipulate, or survive. Resistance states: Open, Guarded, Afraid, Loyal, Compromised, Hostile, Broken.
+
+8. Social conflict is not mind control. Persuasion, intimidation, seduction, deception, command, and interrogation can shift an NPC's position, but they do not erase fear, loyalty, knowledge limits, or survival instinct. Reveal information in layers.
+
+9. Combat is positional and consequential. Combat is not only attack -> damage. Track position, range, cover, wounds, stress, fatigue, morale, terrain, mana pressure, bystanders, noise, legal heat, and escape routes. Combat reply format: immediate exchange, position change, cost/risk, next choice.
+
+10. Injury matters. Use injuries when fiction calls for it: minor, moderate, severe, or magical. Injuries should have effect and healing notes when added to tracker.
+
+11. End with a playable prompt. Usually end with "What do you do?" or 2-4 meaningful approaches. Do not offer too many choices.
+
+
+GM_UPDATE_JSON.
 
 Use this exact structure. Omit fields that did not change. Do not put hidden GM-only secrets in playerFacingLedgerAdd. Hidden notes may be kept privately by the GM, but should not be exported to the player-facing tracker unless discovered.
 
 GM_UPDATE_JSON
 {
+  "schemaVersion": "veinfire-progress-v3",
   "resources": {
     "Health": 18,
     "MaxHealth": 18,
@@ -3507,32 +3652,39 @@ GM_UPDATE_JSON
     "LegalHeat": 0,
     "Suspicion": 1
   },
+  "campaignState": {
+    "currentLocation": "specific place the character currently knows",
+    "currentBell": "current bell or approximate time",
+    "sceneStatus": "what is happening now",
+    "knownObjective": "current player-facing objective",
+    "activePressure": ["law pressure, mana pressure, faction pressure, weather, scarcity, relationship pressure, or clock"],
+    "visibleConsequences": ["only consequences the player character can know"]
+  },
   "inventoryAdd": [
-    "item name"
+    {"name": "item name", "description": "player-facing description", "use": "how it can matter in play"}
   ],
-  "inventoryRemove": [
-    "item name"
+  "inventoryRemove": ["item name"],
+  "skillAdd": [
+    {"name": "skill name", "description": "what it represents", "use": "likely stat checks or fictional permission"}
   ],
-  "permanentGrowthAdd": [
-    "Permanent growth description"
+  "skillRemove": ["skill name"],
+  "factionReputation": {
+    "Faction Name": 1
+  },
+  "npcRelationship": [
+    {"name": "NPC Name", "value": 1, "label": "Warm", "note": "Why the relationship changed, player-facing only"}
   ],
-  "conditionalGrowthAdd": [
-    "Conditional bonus description"
+  "relationshipLedgerAdd": [
+    "NPC Name: +1 Warm after the character protected their secret."
   ],
-  "temporaryEffectsAdd": [
-    "Temporary effect description"
-  ],
-  "scarsConsequencesAdd": [
-    "Scar or consequence description"
-  ],
-  "trainingProjectsAdd": [
-    "Training project description"
-  ],
-  "storyRewardsAdd": [
-    "Story reward description"
-  ],
+  "permanentGrowthAdd": ["Permanent growth description"],
+  "conditionalGrowthAdd": ["Conditional bonus description"],
+  "temporaryEffectsAdd": ["Temporary effect description"],
+  "scarsConsequencesAdd": ["Scar or consequence description"],
+  "trainingProjectsAdd": ["Training project description"],
+  "storyRewardsAdd": ["Story reward description"],
   "playerFacingLedgerAdd": [
-    "Known lead, known debt, known complication, visible condition, confirmed faction shift, or other discovered consequence"
+    "Known lead, known debt, known complication, visible condition, confirmed faction shift, discovered relationship shift, or discovered consequence"
   ],
   "milestones": 0,
   "tier": 1,
@@ -3547,17 +3699,35 @@ GM_UPDATE_JSON
       "personality": "Player-facing personality impression",
       "agenda": "Only include if the player has discovered or can reasonably infer it",
       "lie": "Only include if the player has discovered or can reasonably infer it",
+      "resistance": "Open, Guarded, Afraid, Loyal, Compromised, Hostile, or Broken",
+      "relationship": 0,
+      "relationshipLabel": "Neutral",
+      "knownRelationship": "Player-facing reason for the current relationship score",
       "status": "Known status"
     }
   ],
+  "npcUpdate": [
+    {
+      "name": "Existing NPC Name",
+      "status": "new known status",
+      "location": "known location",
+      "note": "player-facing change",
+      "resistance": "updated known resistance if discovered",
+      "relationship": 1,
+      "relationshipLabel": "Warm",
+      "knownRelationship": "player-facing reason"
+    }
+  ],
+  "trackerNoteAdd": ["Any non-secret note the tracker should remember"],
   "campaignNotesAdd": "Known campaign-state note the player can record.",
   "chronicleAdd": "Short summary of what happened this turn."
 }
-
 Rules for this JSON:
 - If a tracker changes, include the updated total value, not vague prose.
 - Use inventoryAdd and inventoryRemove for item changes.
 - Use playerFacingLedgerAdd only for information the player character knows, perceives, confirms, or can reasonably infer.
+- Use npcRelationship for relationship score changes with important NPCs. Values must stay between -3 and +3.
+- Relationship values are player-facing only when the character can reasonably perceive the shift. Otherwise keep the change hidden until it shows through behavior.
 - Do not include hidden faction clocks, secret NPC motives, undiscovered lies, or offscreen spoilers in the JSON.
 - If nothing mechanical changed, the JSON may include only chronicleAdd.
 - Keep narration outside the JSON. The JSON is for the HTML Campaign Tracker importer.
@@ -3649,16 +3819,33 @@ function renderCampaignView(){
  <div class="kv"><b>Threat</b><span>${escapeHtml(c.activeThreat||"—")}</span></div>
  <div class="kv"><b>Objective</b><span>${escapeHtml(c.objective||"—")}</span></div>`;
 }
+
+const RELATIONSHIP_LABELS={"-10":"Nemesis","-9":"Hated","-8":"Vengeful","-7":"Dangerous Enemy","-6":"Active Enemy","-5":"Hostile","-4":"Resentful","-3":"Distrustful","-2":"Wary","-1":"Uneasy","0":"Neutral","1":"Familiar","2":"Cordial","3":"Warm","4":"Friendly","5":"Trusting","6":"Loyal","7":"Devoted","8":"Deep Bond","9":"Unshakable Bond","10":"Life-Bound"};
+function clampRelationship(v){return Math.max(-10,Math.min(10,Number(v)||0));}
+function relationshipLabel(v){return RELATIONSHIP_LABELS[String(clampRelationship(v))]||"Neutral";}
+function relationshipPinLeft(v){return ((clampRelationship(v)+10)/20*100).toFixed(1);}
+function relationshipBarHtml(v){const val=clampRelationship(v);return `<div class="relationship-track"><div class="relationship-bar"><span class="relationship-pin" style="left:calc(${relationshipPinLeft(val)}% - 2px)"></span></div><div class="relationship-meta"><span>-10 Nemesis</span><b>${val>0?"+":""}${val} · ${escapeHtml(relationshipLabel(val))}</b><span>+10 Life-Bound</span></div></div>`;}
+function normalizeNpc(n){if(!n)return n;if(n.relationship===undefined)n.relationship=0;n.relationship=clampRelationship(n.relationship);n.relationshipLabel=relationshipLabel(n.relationship);n.resistance=n.resistance||"Guarded";n.memory=n.memory||[];n.status=n.status||"present";return n;}
+function relationshipDeltaScaleNote(delta){const d=Math.abs(Number(delta)||0);if(d<=1)return"minor shift";if(d===2)return"major shift";if(d===3)return"defining shift";return"extreme shift";}
+
 function renderTrackers(){
  if(S.phase==="progress"&&!progressImported&&!S.progressImported){$("trackers").innerHTML="Import progress data to show trackers.";return}
- if(!S.resources){$("trackers").innerHTML="No imported tracker data yet.";return}
- const r=S.resources;
- const row=(n,v,m)=>`<div class="detail"><b>${n}</b><span class="badge">${v??0}/${m??0}</span><div class="meter"><div class="fill bad" style="width:${m?clamp((v||0)/m*100,0,100):0}%"></div></div></div>`;
- const isVeinborn=(S.pc&&S.pc.kind==="Veinborn") || r.MaxVeinburn;
- const inventory=sanitizeGearList(r.Inventory||[]);
- $("trackers").innerHTML=`${row("Health",r.Health,r.MaxHealth)}${row("Stress",r.Stress,r.MaxStress)}${row("Fatigue",r.Fatigue,r.MaxFatigue)}${isVeinborn?row("Veinburn",r.Veinburn,r.MaxVeinburn):""}${row("Blight Exposure",r.Blight,r.MaxBlight)}${row("Legal Heat",r.LegalHeat,10)}${row("Suspicion",r.Suspicion,10)}<div class="detail"><b>Supplies</b> ${r.Supplies??0} · <b>Coin</b> ${r.Coin??0}</div><div class="detail"><b>Inventory</b><div class="usage-list">${inventory.length?renderGearUsageList(inventory):"<span class='small'>No inventory imported yet.</span>"}</div></div><div class="detail"><b>Advancement</b>${renderAdvancement()}</div>`;
+ if(!S.resources && !S.campaign){$("trackers").innerHTML="No imported tracker data yet.";return}
+ const r=S.resources||{}, row=(n,v,m)=>`<div class="detail"><b>${n}</b><span class="badge">${v??0}/${m??0}</span><div class="meter"><div class="fill bad" style="width:${m?clamp((v||0)/m*100,0,100):0}%"></div></div></div>`;
+ const p=ensureProgression(), state=S.campaign?.trackerState||S.campaign?.campaignState||{}, conflict=state.currentConflict||S.campaign?.combatState||S.combatState, injuries=p.injuries||S.injuries||[];
+ const isVeinborn=(S.pc&&S.pc.kind==="Veinborn")||r.MaxVeinburn, inventory=sanitizeGearList(r.Inventory||[]);
+ const stateHtml=state&&Object.keys(state).length?`<div class="tracker-section-title">Campaign State</div><div class="conflict-card">${state.currentLocation?`<b>Location:</b> ${escapeHtml(state.currentLocation)}<br>`:""}${state.currentBell?`<b>Bell:</b> ${escapeHtml(state.currentBell)}<br>`:""}${state.sceneStatus?`<b>Status:</b> ${escapeHtml(state.sceneStatus)}<br>`:""}${state.knownObjective?`<b>Objective:</b> ${escapeHtml(state.knownObjective)}<br>`:""}${state.activeScenePressure?.length?`<b>Scene Pressure:</b> ${state.activeScenePressure.map(escapeHtml).join(", ")}<br>`:""}${state.visibleConsequences?.length?`<b>Visible Consequences:</b> ${state.visibleConsequences.map(escapeHtml).join(", ")}`:""}</div>`:"";
+ const conflictHtml=conflict?`<div class="tracker-section-title">Current Conflict</div><div class="conflict-card"><b>${escapeHtml(conflict.type||"Conflict")}</b><br>${conflict.stakes?`<b>Stakes:</b> ${escapeHtml(conflict.stakes)}<br>`:""}${conflict.clock?`<b>Clock:</b> ${escapeHtml(conflict.clock)}<br>`:""}${conflict.range?`<b>Range:</b> ${escapeHtml(conflict.range)}<br>`:""}${conflict.position?`<b>Position:</b> ${escapeHtml(conflict.position)}<br>`:""}${conflict.noiseRisk?`<b>Noise Risk:</b> ${escapeHtml(conflict.noiseRisk)}<br>`:""}${conflict.knownRisks?.length?`<b>Known Risks:</b> ${conflict.knownRisks.map(escapeHtml).join(", ")}<br>`:""}${conflict.hazards?.length?`<b>Hazards:</b> ${conflict.hazards.map(escapeHtml).join(", ")}<br>`:""}${conflict.escapeRoutes?.length?`<b>Escape Routes:</b> ${conflict.escapeRoutes.map(escapeHtml).join(", ")}`:""}</div>`:"";
+ const injuryHtml=injuries.length?`<div class="tracker-section-title">Injuries / Lasting Harm</div>${injuries.map(x=>typeof x==="string"?`<div class="injury-card">${escapeHtml(x)}</div>`:`<div class="injury-card"><b>${escapeHtml(x.name||"Injury")}</b> · ${escapeHtml(x.severity||"")}${x.effect?`<br>${escapeHtml(x.effect)}`:""}${x.healing?`<br><span class="small">Healing: ${escapeHtml(x.healing)}</span>`:""}</div>`).join("")}`:"";
+ $("trackers").innerHTML=`${stateHtml}${r.Health!==undefined?row("Health",r.Health,r.MaxHealth):""}${r.Stress!==undefined?row("Stress",r.Stress,r.MaxStress):""}${r.Fatigue!==undefined?row("Fatigue",r.Fatigue,r.MaxFatigue):""}${isVeinborn&&r.Veinburn!==undefined?row("Veinburn",r.Veinburn,r.MaxVeinburn):""}${r.Blight!==undefined?row("Blight Exposure",r.Blight,r.MaxBlight):""}${r.LegalHeat!==undefined?row("Legal Heat",r.LegalHeat,10):""}${r.Suspicion!==undefined?row("Suspicion",r.Suspicion,10):""}<div class="detail"><b>Supplies</b> ${r.Supplies??0} · <b>Coin</b> ${r.Coin??0}</div><div class="detail"><b>Inventory</b><div class="usage-list">${inventory.length?renderGearUsageList(inventory):"<span class='small'>No inventory imported yet.</span>"}</div></div><div class="detail"><b>Advancement</b>${renderAdvancement()}</div>${conflictHtml}${injuryHtml}`;
 }
-function renderNPCs(){if(S.phase==="progress"&&!progressImported&&!S.progressImported){$("npcView").innerHTML="Import progress data to show NPCs.";return} if(!S.campaign){$("npcView").innerHTML="No NPCs generated.";return}$("npcView").innerHTML=S.campaign.npcs.map(n=>`<div class="detail"><b>${n.name}</b><div class="small">${n.race} ${n.kind} · ${n.role} · ${n.faction}</div><div class="small">Agenda: ${n.agenda}</div><div class="small">Likely lie: ${n.lie}</div></div>`).join("")}function renderLog(){if(S.phase==="progress"&&!progressImported&&!S.progressImported){$("log").innerHTML="<div class=\"entry\">Import progress data to show Chronicle.</div>";return}$("log").innerHTML=S.log.map(e=>`<div class="entry"><small>${e.t} · ${e.title}</small>${e.text}</div>`).join("")}function renderPlayPanels(){renderCampaignView();renderTrackers();renderNPCs();renderLog();renderManualEditor();save()}
+function renderNPCs(){
+ const target=$("npcList")||$("npcs")||$("npcCast");if(!target)return;
+ const npcs=(S.campaign?.npcs||[]).map(normalizeNpc);
+ if(S.phase==="progress"&&!progressImported&&!S.progressImported){target.innerHTML="Import progress data to show NPCs.";return}
+ if(!npcs.length){target.innerHTML="No NPCs generated or imported yet.";return}
+ target.innerHTML=npcs.map(n=>`<div class="npc-card"><h4>${escapeHtml(n.name||"Unnamed NPC")}</h4><div class="small">${escapeHtml(n.race||"")} ${n.race&&n.kind?"·":""} ${escapeHtml(n.kind||"")} ${n.role?"· "+escapeHtml(n.role):""}</div>${relationshipBarHtml(n.relationship)}<div class="npc-grid"><div class="npc-mini"><b>Relationship</b><br>${n.relationship>0?"+":""}${n.relationship} · ${escapeHtml(relationshipLabel(n.relationship))}</div><div class="npc-mini"><b>Resistance</b><br>${escapeHtml(n.resistance||"Guarded")}</div><div class="npc-mini"><b>Mood</b><br>${escapeHtml(n.mood||"—")}</div><div class="npc-mini"><b>Status</b><br>${escapeHtml(n.status||"present")}</div><div class="npc-mini"><b>Known Want</b><br>${escapeHtml(n.knownWant||n.want||"Unknown")}</div><div class="npc-mini"><b>Known Fear</b><br>${escapeHtml(n.knownFear||n.fear||"Unknown")}</div><div class="npc-mini"><b>Boundary</b><br>${escapeHtml(n.knownBoundary||n.boundary||"Unknown")}</div><div class="npc-mini"><b>Voice</b><br>${escapeHtml(n.voiceNote||"Distinct voice not yet established")}</div></div>${n.memory&&n.memory.length?`<div class="small" style="margin-top:8px"><b>Memory:</b> ${n.memory.map(escapeHtml).join("; ")}</div>`:""}</div>`).join("");
+}function renderLog(){if(S.phase==="progress"&&!progressImported&&!S.progressImported){$("log").innerHTML="<div class=\"entry\">Import progress data to show Chronicle.</div>";return}$("log").innerHTML=S.log.map(e=>`<div class="entry"><small>${e.t} · ${e.title}</small>${e.text}</div>`).join("")}function renderPlayPanels(){renderCampaignView();renderTrackers();renderNPCs();renderLog();renderManualEditor();save()}
 
 function characterReady(){
  const v=validateLore(false);
@@ -3825,7 +4012,7 @@ function renderPhase(){
  if(saveIt)save();
 }
 function resetAll(){
- localStorage.removeItem("veinfire_rpg_v58");
+ localStorage.removeItem("veinfire_rpg_v59");
  S=freshState();
  S.phase="welcome";
  renderAll(false);
@@ -3962,83 +4149,23 @@ async function importProgressFile(){
  showToast("<b>Progress file imported.</b>");
 }
 function applyProgressData(data,isFullImport=false){
- if(isFullImport){
-   if(data.character) S.pc=data.character;
-   if(data.resources) S.resources=data.resources;
-   if(data.progression) S.progression=data.progression;
-   if(data.campaign) S.campaign=data.campaign;
-   if(data.chronicle) S.log=data.chronicle;
-   markProgressImported();
-   return;
- }
- if(!S.resources) S.resources={};
- if(data.resources) Object.entries(data.resources).forEach(([k,v])=>{S.resources[k]=v;});
- if(data.inventoryAdd || data.gearAdd){
-   if(!S.resources.Inventory) S.resources.Inventory=[];
-   const vals=[...(Array.isArray(data.inventoryAdd)?data.inventoryAdd:(data.inventoryAdd?[data.inventoryAdd]:[])),...(Array.isArray(data.gearAdd)?data.gearAdd:(data.gearAdd?[data.gearAdd]:[]))];
-   vals.forEach(item=>{
-    const name=typeof item==="string"?item:item.name;
-    if(!name)return;
-    const entry=typeof item==="string"?item:item.name;
-    if(!S.resources.Inventory.includes(entry))S.resources.Inventory.push(entry);
-   });
- }
- if((data.inventoryRemove||data.gearRemove) && S.resources.Inventory){
-   const rem=[...(Array.isArray(data.inventoryRemove)?data.inventoryRemove:(data.inventoryRemove?[data.inventoryRemove]:[])),...(Array.isArray(data.gearRemove)?data.gearRemove:(data.gearRemove?[data.gearRemove]:[]))].map(x=>typeof x==="string"?x:x.name);
-   S.resources.Inventory=S.resources.Inventory.filter(x=>!rem.includes(x));
- }
- if(data.skillAdd){
-   if(!S.pc) S.pc={skills:[]};
-   if(!S.pc.skills) S.pc.skills=[];
-   const vals=Array.isArray(data.skillAdd)?data.skillAdd:[data.skillAdd];
-   vals.forEach(skill=>{
-    const name=typeof skill==="string"?skill:skill.name;
-    if(name && !S.pc.skills.includes(name))S.pc.skills.push(name);
-   });
- }
- if(data.skillRemove && S.pc?.skills){
-   const rem=(Array.isArray(data.skillRemove)?data.skillRemove:[data.skillRemove]).map(x=>typeof x==="string"?x:x.name);
-   S.pc.skills=S.pc.skills.filter(x=>!rem.includes(x));
- }
- if(data.campaignState){
-   if(!S.campaign) S.campaign={npcs:[],reps:{},trackerState:{}};
-   S.campaign.trackerState={...(S.campaign.trackerState||{}),...data.campaignState};
- }
- if(data.factionReputation){
-   if(!S.campaign) S.campaign={npcs:[],reps:{}};
-   if(!S.campaign.reps) S.campaign.reps={};
-   Object.entries(data.factionReputation).forEach(([k,v])=>{S.campaign.reps[k]=v;});
- }
- const p=ensureProgression();
- const addList=(key,arr)=>{if(data[key]){const vals=Array.isArray(data[key])?data[key]:[data[key]];vals.forEach(x=>p[arr].push(typeof x==="string"?x:JSON.stringify(x)));}};
- addList("permanentGrowthAdd","permanentGrowth");
- addList("conditionalGrowthAdd","conditionalGrowth");
- addList("temporaryEffectsAdd","temporaryEffects");
- addList("scarsConsequencesAdd","scarsConsequences");
- addList("trainingProjectsAdd","trainingProjects");
- addList("storyRewardsAdd","storyRewards");
- addList("playerFacingLedgerAdd","playerFacingLedger");
- addList("trackerNoteAdd","playerFacingLedger");
- if(data.milestones!==undefined)p.milestones=data.milestones;
- if(data.tier!==undefined)p.tier=data.tier;
- if(data.unspentGrowth!==undefined)p.unspentGrowth=data.unspentGrowth;
- if(data.npcAdd){
-   if(!S.campaign) S.campaign={npcs:[],reps:{}};
-   if(!S.campaign.npcs) S.campaign.npcs=[];
-   const vals=Array.isArray(data.npcAdd)?data.npcAdd:[data.npcAdd];
-   S.campaign.npcs.push(...vals);
- }
- if(data.npcUpdate && S.campaign?.npcs){
-   const vals=Array.isArray(data.npcUpdate)?data.npcUpdate:[data.npcUpdate];
-   vals.forEach(up=>{
-    const npc=S.campaign.npcs.find(n=>n.name===up.name);
-    if(npc)Object.assign(npc,up);
-   });
- }
- if(data.campaignNotesAdd) addLog("Campaign Note",escapeHtml(data.campaignNotesAdd));
- if(data.chronicleAdd) addLog("GM Update",escapeHtml(data.chronicleAdd));
- else addLog("GM Update","Progress update imported.");
- markProgressImported();
+ if(isFullImport){if(data.character)S.pc=data.character;if(data.resources)S.resources=data.resources;if(data.progression)S.progression=data.progression;if(data.campaign)S.campaign=data.campaign;if(data.campaignState){if(!S.campaign)S.campaign={npcs:[],reps:{},trackerState:{}};S.campaign.trackerState=data.campaignState;}if(data.combatState){if(!S.campaign)S.campaign={npcs:[],reps:{},trackerState:{}};S.campaign.combatState=data.combatState;}if(data.chronicle)S.log=data.chronicle;(S.campaign?.npcs||[]).forEach(normalizeNpc);markProgressImported();return;}
+ if(!S.resources)S.resources={}; if(data.resources)Object.entries(data.resources).forEach(([k,v])=>{S.resources[k]=v;});
+ if(data.inventoryAdd||data.gearAdd){if(!S.resources.Inventory)S.resources.Inventory=[];[...(Array.isArray(data.inventoryAdd)?data.inventoryAdd:(data.inventoryAdd?[data.inventoryAdd]:[])),...(Array.isArray(data.gearAdd)?data.gearAdd:(data.gearAdd?[data.gearAdd]:[]))].forEach(item=>{const name=typeof item==="string"?item:item.name;if(name&&!S.resources.Inventory.includes(name))S.resources.Inventory.push(name);});}
+ if((data.inventoryRemove||data.gearRemove)&&S.resources.Inventory){const rem=[...(Array.isArray(data.inventoryRemove)?data.inventoryRemove:(data.inventoryRemove?[data.inventoryRemove]:[])),...(Array.isArray(data.gearRemove)?data.gearRemove:(data.gearRemove?[data.gearRemove]:[]))].map(x=>typeof x==="string"?x:x.name);S.resources.Inventory=S.resources.Inventory.filter(x=>!rem.includes(x));}
+ if(data.skillAdd){if(!S.pc)S.pc={skills:[]};if(!S.pc.skills)S.pc.skills=[];(Array.isArray(data.skillAdd)?data.skillAdd:[data.skillAdd]).forEach(skill=>{const name=typeof skill==="string"?skill:skill.name;if(name&&!S.pc.skills.includes(name))S.pc.skills.push(name);});}
+ if(data.skillRemove&&S.pc?.skills){const rem=(Array.isArray(data.skillRemove)?data.skillRemove:[data.skillRemove]).map(x=>typeof x==="string"?x:x.name);S.pc.skills=S.pc.skills.filter(x=>!rem.includes(x));}
+ if(data.campaignState){if(!S.campaign)S.campaign={npcs:[],reps:{},trackerState:{}};S.campaign.trackerState={...(S.campaign.trackerState||{}),...data.campaignState};}
+ if(data.combatState){if(!S.campaign)S.campaign={npcs:[],reps:{},trackerState:{}};S.campaign.combatState={...(S.campaign.combatState||{}),...data.combatState};S.combatState=S.campaign.combatState;}
+ if(data.factionReputation){if(!S.campaign)S.campaign={npcs:[],reps:{}};if(!S.campaign.reps)S.campaign.reps={};Object.entries(data.factionReputation).forEach(([k,v])=>{S.campaign.reps[k]=v;});}
+ const p=ensureProgression(), addList=(key,arr)=>{if(data[key]){(Array.isArray(data[key])?data[key]:[data[key]]).forEach(x=>p[arr].push(typeof x==="string"?x:JSON.stringify(x)));}};
+ ["permanentGrowthAdd","conditionalGrowthAdd","temporaryEffectsAdd","scarsConsequencesAdd","trainingProjectsAdd","storyRewardsAdd","playerFacingLedgerAdd","trackerNoteAdd","relationshipLedgerAdd"].forEach((k)=>addList(k,k==="relationshipLedgerAdd"?"relationshipLedger":k==="trackerNoteAdd"?"playerFacingLedger":k.replace("Add","")));
+ if(data.injuriesAdd)(Array.isArray(data.injuriesAdd)?data.injuriesAdd:[data.injuriesAdd]).forEach(x=>p.injuries.push(x));
+ if(data.milestones!==undefined)p.milestones=data.milestones;if(data.tier!==undefined)p.tier=data.tier;if(data.unspentGrowth!==undefined)p.unspentGrowth=data.unspentGrowth;
+ if(data.npcAdd){if(!S.campaign)S.campaign={npcs:[],reps:{}};if(!S.campaign.npcs)S.campaign.npcs=[];(Array.isArray(data.npcAdd)?data.npcAdd:[data.npcAdd]).forEach(n=>S.campaign.npcs.push(normalizeNpc(n)));}
+ if(data.npcUpdate){if(!S.campaign)S.campaign={npcs:[],reps:{}};if(!S.campaign.npcs)S.campaign.npcs=[];(Array.isArray(data.npcUpdate)?data.npcUpdate:[data.npcUpdate]).forEach(up=>{let npc=S.campaign.npcs.find(n=>n.name===up.name);if(!npc){npc={name:up.name||"Unnamed NPC",relationship:0,resistance:"Guarded",memory:[]};S.campaign.npcs.push(npc);}if(up.memoryAdd){npc.memory=npc.memory||[];(Array.isArray(up.memoryAdd)?up.memoryAdd:[up.memoryAdd]).forEach(m=>npc.memory.push(m));}Object.assign(npc,up);if(up.relationship!==undefined)npc.relationship=clampRelationship(up.relationship);normalizeNpc(npc);});}
+ if(data.npcRelationship){if(!S.campaign)S.campaign={npcs:[],reps:{}};if(!S.campaign.npcs)S.campaign.npcs=[];Object.entries(data.npcRelationship).forEach(([name,chg])=>{let npc=S.campaign.npcs.find(n=>n.name===name);if(!npc){npc={name,relationship:0,resistance:"Guarded",memory:[]};S.campaign.npcs.push(npc);}const old=clampRelationship(npc.relationship||0), next=chg.newValue!==undefined?clampRelationship(chg.newValue):clampRelationship(old+(Number(chg.delta)||0));npc.relationship=next;npc.relationshipLabel=relationshipLabel(next);npc.memory=npc.memory||[];if(chg.reason)npc.memory.push(`Relationship ${next-old>=0?"+":""}${next-old} (${relationshipDeltaScaleNote(next-old)}): ${chg.reason}`);normalizeNpc(npc);});}
+ if(data.campaignNotesAdd)addLog("Campaign Note",escapeHtml(data.campaignNotesAdd)); if(data.chronicleAdd)addLog("GM Update",escapeHtml(data.chronicleAdd)); else addLog("GM Update","Progress update imported."); markProgressImported();
 }
 
 function renderManualEditor(){
@@ -4078,7 +4205,7 @@ function importGMUpdate(){
 }
 function exportProgressJSON(){
  if(!progressImported&&!S.progressImported){showToast("<b>No progress loaded.</b><br>Import progress data before exporting.");return "";} const data={
-   schemaVersion:"veinfire-progress-save-v2",
+   schemaVersion:"veinfire-progress-save-v4",
    character:S.pc,
    resources:S.resources,
    progression:ensureProgression(),

@@ -1,103 +1,131 @@
 # VEINFIRE RPG Engine
 
-A standalone browser-based character creation, campaign generation, GM handoff, and progress tracking tool for **VEINFIRE / Eldoria**.
+A standalone browser-based setup engine for **VEINFIRE / Eldoria** RPG sessions.
 
-Current build: **v5.8 — Campaign, Name & Appearance Patch**
+Current build: **v5.9 — NPC Agency, Combat & Relationship v4**
 
-## What this tool does
+## What this engine is
 
-The VEINFIRE RPG Engine helps players:
+The VEINFIRE RPG Engine helps players prepare for a VEINFIRE campaign with an AI GM.
 
-- create a character through a structured, freely browsable character creation path
-- validate character details against VEINFIRE canon rules
-- choose race, gender, type, discipline/proficiency, class, origin, background, gear, faction tie, flaw, goal, secret, appearance, backstory, and personal object
-- load preset test characters
-- generate a procedural campaign setup
-- prepare a GM handoff packet for AI-assisted play
-- download canon documents for the GM session
-- track campaign progress through imported GM updates
-- maintain inventory, resources, advancement, NPCs, chronicle, and consequence ledgers
+It is used to:
 
-## How to use
+- create a canon-aware VEINFIRE character
+- choose or edit preset characters
+- generate a campaign opening
+- build a structured GM handoff packet
+- support AI-led play in ChatGPT, Claude, Gemini, Grok, or another AI chat
+- import GM updates into the Campaign Tracker
+- track NPCs, relationships, injuries, inventory, consequences, advancement, and campaign state
 
-1. Open `index.html` in a browser.
-2. Go to **Create Character**.
-3. Create a character manually or use **Load Test Preset**.
-4. Complete all required fields.
-5. Go to **Generate Campaign**.
-6. Choose a campaign archetype.
-7. Click **Generate Campaign**.
-8. Go to **GM Handoff**.
-9. Select the AI model you want to use.
-10. Use **Download All Canon Docs** or individual canon file downloads if your AI cannot access the GitHub-hosted Markdown canon links.
-11. Click **Build GM Packet**.
-12. Click **Copy Packet**.
-13. Paste the packet into your AI chat session.
-14. Start playing.
+The engine is not the live GM. The live campaign happens in the AI chat after the GM packet is copied.
 
-
-## Navigation
-
-The main session flow is:
+## Main player flow
 
 ```text
-Create Character → Generate Campaign → GM Handoff
+Welcome → Character Setup → Generate Campaign → GM Handoff
 ```
 
-The **Campaign Tracker** is an optional utility under **Tools ▾**. It is not required to start a session.
+The player can either:
 
-## Canon document flow
+1. create their own character, or
+2. choose a preset character, then either proceed directly or edit the preset first.
 
-The GM packet gives the AI direct links to the GitHub-hosted VEINFIRE Markdown canon files.
-
-If the AI cannot access the GitHub-hosted Markdown canon links, the player should:
-
-1. Click **Download All Canon Docs** inside the HTML.
-2. Upload the downloaded files manually to the AI chat.
-3. Paste the GM packet.
-4. Tell the AI to start the session.
+After the campaign is generated, the player builds the GM packet, copies it, and pastes it into their chosen AI chat.
 
 ## Campaign Tracker
 
-The **Campaign Tracker** tool starts blank.
+The **Campaign Tracker** is a standalone tool under **Tools**.
 
-To use it:
+It is not required to create a character or start a campaign.
 
-1. Export or request a structured `GM_UPDATE_JSON` block from the AI GM.
-2. Paste the JSON into **Import GM Update**.
-3. Click **Import GM Update**.
-4. The tracker will update resources, inventory, progression, NPCs, chronicle entries, and ledgers.
+The tracker can import structured GM updates and display:
 
-Manual tracker editing is disabled until progress data has been imported.
+- current campaign state
+- current conflict
+- resources
+- inventory
+- advancement
+- NPC cast
+- NPC relationship scores
+- NPC resistance states
+- injuries
+- relationship ledger
+- chronicle entries
+- visible consequences
 
-## Files
+## v5.9 NPC / Combat / Tracker Update
 
-Recommended GitHub structure:
+This build improves live-session behavior and tracker compatibility.
+
+NPC relationships now use a **-10 to +10** scale:
 
 ```text
-index.html
-README.md
-CHANGELOG.md
+-10 Nemesis
+ -9 Hated
+ -8 Vengeful
+ -7 Dangerous Enemy
+ -6 Active Enemy
+ -5 Hostile
+ -4 Resentful
+ -3 Distrustful
+ -2 Wary
+ -1 Uneasy
+  0 Neutral
+ +1 Familiar
+ +2 Cordial
+ +3 Warm
+ +4 Friendly
+ +5 Trusting
+ +6 Loyal
+ +7 Devoted
+ +8 Deep Bond
+ +9 Unshakable Bond
++10 Life-Bound
 ```
 
-Only `index.html` is required for GitHub Pages or Netlify hosting, but `README.md` and `CHANGELOG.md` are strongly recommended.
+The GM packet now includes stronger rules for:
 
-## Hosting
+- shorter, playable AI responses
+- player intent versus outcome control
+- NPC agency
+- NPC resistance
+- social conflict
+- combat positioning
+- injuries
+- relationship memory
+- consequence tracking
 
-This is a standalone static HTML project. It does not require a backend.
+The tracker now supports:
 
-It can be hosted on:
+```text
+veinfire-progress-v4
+```
 
-- GitHub Pages
-- Netlify
-- Vercel
-- itch.io
-- any static web host
+This schema supports NPC relationship updates, combat state, current conflict, injuries, relationship ledgers, and expanded NPC memory.
 
-## Important notes
+## Canon source
 
-- The HTML does not directly call ChatGPT, Gemini, Grok, Claude, or any other AI.
-- The live campaign happens in the AI chat after the GM packet is copied.
-- The HTML is the character/campaign/control panel.
-- The AI chat is the GM/Narrator.
-- Browser download behavior may block multiple automatic downloads. If that happens, use the individual canon download buttons.
+The GM packet points the AI GM to the GitHub-hosted VEINFIRE Markdown canon files.
+
+The AI GM is instructed to read the canon files before beginning canon-sensitive play. If the AI platform cannot access the links, it should ask the player or GM/session host to provide the required canon text manually.
+
+## Project files
+
+This repository contains:
+
+- `index.html` — the VEINFIRE RPG Engine
+- `README.md` — project overview and usage notes
+- `CHANGELOG.md` — version history
+- `NOTICE.md` — intellectual property and fan-use notice
+- `canon-docs/` — VEINFIRE canon files used by the GM packet
+
+## Intellectual Property and Fan Use
+
+VEINFIRE, Eldoria, and all related lore, characters, terminology, factions, races, campaign material, and worldbuilding are original creative works by Kanniti Singsanan. All rights reserved.
+
+Players and fans may use the VEINFIRE RPG Engine for personal, non-commercial gameplay, character creation, campaign generation, fan OCs, fanart, and session participation. Fan creations are welcome, but they do not grant ownership of VEINFIRE or become official canon unless approved by Kanniti Singsanan.
+
+Do not sell, redistribute official lore documents, copy large portions of the source material, claim VEINFIRE as your own, create commercial derivative works, or use VEINFIRE materials for AI training, datasets, or prompt packs without written permission.
+
+See [`NOTICE.md`](NOTICE.md) for the full intellectual property and fan-use notice.

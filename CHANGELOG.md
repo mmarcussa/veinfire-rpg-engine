@@ -1,5 +1,36 @@
 # Changelog
 
+## v5.9 — NPC Agency, Combat & Relationship v4
+
+- Expanded NPC relationship scale from -3/+3 to -10/+10.
+- Added relationship labels from Nemesis to Life-Bound.
+- Added relationship clamping and relationship bar UI support.
+- Added gradual relationship-shift rules to the GM packet.
+- Strengthened NPC agency rules: wants, fears, boundaries, leverage, memory, stress response, and voice.
+- Clearly separated relationship from resistance.
+- Added social conflict rules so persuasion, intimidation, seduction, deception, and interrogation do not become mind control.
+- Added combat behavior rules covering position, range, cover, terrain, morale, noise, legal heat, bystanders, escape routes, injuries, and consequences.
+- Added injury tracking support.
+- Updated GM_UPDATE_JSON to schemaVersion `veinfire-progress-v4`.
+- Tracker import now supports currentConflict, combatState, injuriesAdd, relationshipLedgerAdd, expanded npcUpdate, memoryAdd, and -10/+10 npcRelationship updates.
+- Tracker display now supports relationship bars, NPC mood/status/wants/fears/boundaries/voice, current conflict, and injuries.
+- Progress save export now uses `veinfire-progress-save-v4`.
+
+## v5.9 — GM Behavior & Relationship Tracker
+
+- Added GM packet rules to prevent wall-of-text replies.
+- Added live-session pacing rules: 2–5 short paragraphs, short paragraphs, and 2–4 options maximum.
+- Added player input authority rules: players control intent/actions, not outcomes, NPC reactions, hidden truth, or world results.
+- Added action resolution guidance: Intent → Method → Resistance → Outcome.
+- Added Yes/And, Yes/But, No/But, and No/And outcome framing.
+- Added NPC resistance rules so NPCs can bargain, stall, lie, flee, panic, or resist instead of instantly complying.
+- Added NPC relationship score tracking from -3 Enemy to +3 Bonded.
+- Added relationship display to the NPC tracker.
+- Initial generated NPCs now include opening relationship score, relationship label, and resistance state.
+- Updated GM_UPDATE_JSON to veinfire-progress-v3.
+- Tracker import now supports npcRelationship, relationshipLedgerAdd, npcUpdate relationship changes, resistance updates, and relationship notes.
+- Progress save export now uses veinfire-progress-save-v3.
+
 ## v5.8 — Campaign, Name & Appearance Patch
 
 - Evened out Campaign Generator spacing.
