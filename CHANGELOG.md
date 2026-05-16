@@ -1,5 +1,29 @@
 # Changelog
 
+## v6.1 — Safety, Relationship Cleanup & Model Persistence
+
+- Added explicit preset trope mapping for all preset characters.
+- Simplified preset dropdown labeling so it no longer relies on personal-name regex guessing.
+- Fixed Torun Red-Horn displaying his personal name instead of `Field Medic` in the preset dropdown.
+- Removed fragile Watcher/Bell regex classification from preset trope labeling.
+- Cleaned preset trope labeling so dropdown names no longer depend on removed `label` fields.
+- Cleaned duplicated selected-model assignment in `load()`.
+- `createCharacter()` now returns success/failure and supports silent success mode.
+- Preset proceed flow now stops if character validation fails.
+- Restored missing preset guards for edit/proceed flows.
+- Removed old orphaned relationship helper functions from the previous `-3/+3` scale.
+- Removed advisory `label` field from `npcRelationship` GM packet examples because labels are derived from relationship value.
+- Replaced unused clear-state helper with shared reset helper used by create-own and preset flows.
+- Added confirmation guard before actions that discard unfinished character creation work.
+- `Create My Own` now asks before wiping an unfinished character.
+- Preset edit/proceed actions now also ask before replacing unfinished character work.
+- Relationship examples now match the `-10` to `+10` scale.
+- Importer no longer lets an explicit stale relationship label override the derived label.
+- Removed old `-3/+3` relationship helper code that could become a future trap.
+- Persisted selected AI model in save state.
+- Restored selected AI model button highlight after reload/render.
+- Removed dead `beginWelcome()` code.
+
 ## v6.0 — Class Gear System / Critical Fixes
 
 - Removed the separate Starting Gear selection step from Character Creation.
@@ -30,25 +54,17 @@
 - Updated `npcRelationship` import to accept both array and object formats.
 - Aligned the GM packet relationship schema with the readable array format.
 - Corrected relationship scale wording to `-10 to +10`.
-- Copy confirmation now uses the selected AI model instead of hardcoding ChatGPT.
+- Copy confirmation uses the selected AI model instead of hardcoding ChatGPT.
 - Added a dedicated `name` validation mode so short names like Kai, Eli, or Sam are accepted.
-- Removed `renderAll()` backstory mutation; backstory is now derived when creating/building character data.
+- Removed `renderAll()` backstory mutation.
 - Removed duplicate `class="toast"` attribute.
 - Consolidated random dice button helper logic.
-- Added canonical global floating action bar CSS block for future maintenance.
-- Cleaned the changelog so each version has one consolidated entry.
 
 ## v5.9 — NPC Agency, Combat & Relationship v4
 
 - Added GM behavior rules to reduce wall-of-text replies.
-- Added response pacing rules:
-  - 2–5 short paragraphs by default
-  - maximum 3 sentences per paragraph
-  - 2–4 options maximum when options are useful
-  - end with “What do you do?” or a clear playable prompt
-- Added Player Input Authority Rule:
-  - player controls intent/action
-  - GM controls outcome, NPC reaction, hidden truth, resistance, and consequences
+- Added response pacing rules.
+- Added Player Input Authority Rule.
 - Added Intent → Method → Resistance → Outcome action resolution.
 - Added Yes/And, Yes/But, No/But, No/And outcome framing.
 - Added NPC resistance rules so NPCs do not instantly comply.
@@ -56,38 +72,12 @@
 - Added relationship labels from Nemesis to Life-Bound.
 - Added relationship clamping and relationship bar UI support.
 - Added gradual relationship-shift rules to the GM packet.
-- Strengthened NPC agency rules:
-  - wants
-  - fears
-  - boundaries
-  - leverage
-  - memory
-  - stress response
-  - voice
+- Strengthened NPC agency rules.
 - Clearly separated relationship from resistance.
-- Added social conflict rules so persuasion, intimidation, seduction, deception, and interrogation do not become mind control.
-- Added combat behavior rules covering:
-  - position
-  - range
-  - cover
-  - terrain
-  - morale
-  - noise
-  - legal heat
-  - bystanders
-  - escape routes
-  - injuries
-  - consequences
+- Added social conflict rules.
+- Added combat behavior rules.
 - Added injury tracking support.
 - Updated GM_UPDATE_JSON to schemaVersion `veinfire-progress-v4`.
-- Tracker import supports:
-  - currentConflict
-  - combatState
-  - injuriesAdd
-  - relationshipLedgerAdd
-  - expanded npcUpdate
-  - memoryAdd
-  - `npcRelationship` using `-10` to `+10`
 - Progress save export uses `veinfire-progress-save-v4`.
 
 ## v5.8 — Welcome Flow, Creation Polish & Tracker Foundation
@@ -99,177 +89,28 @@
 - Added options to proceed directly from preset or edit preset details first.
 - Improved Character Creation navigation.
 - Removed per-section Validate buttons.
-- Moved validation/status into Creation Path completion checks.
-- Added required `*` indicators instead of explicit REQUIRED labels.
 - Added guided Appearance section with multiple boxes.
-- Added dice randomizers for:
-  - Custom Origin
-  - Custom Background
-  - Custom Faction Tie
-  - Backstory
-  - Appearance
-- Expanded randomization datasets.
-- Added tooltips for preset preview sections.
-- Improved Review page behavior.
+- Added dice randomizers and expanded randomization datasets.
 - Improved Campaign Generator readability.
-- Expanded campaign generation combinations:
-  - opening place
-  - sensory hook
-  - local rumor
-  - opening complication
-  - scarcity pressure
-  - first meaningful choice
 - Improved Campaign Tracker standalone behavior.
-- Updated tracker import/export foundations.
-- Added `veinfire-progress-v2` and later tracker compatibility work during the v5.8 cycle.
 
 ## v5.7 — Guided Navigation
 
-- Reworked top navigation into the main flow:
-  - Create Character
-  - Generate Campaign
-  - GM Handoff
+- Reworked top navigation into the main flow.
 - Moved Campaign Tracker under Tools.
-- Clarified that Campaign Tracker is a standalone tool, not part of the main play-start process.
-- Removed confusing main-session-flow explanatory text.
-- Improved player-facing engine description.
-- Allowed players to click around Creation Path sections more freely.
-- Removed Validate buttons from each Character Creation section.
-- Added Creation Path checkmark/status logic.
-- Improved alert color handling:
-  - success = green
-  - preset/info = blue
-  - rejection/error = red
+- Clarified tracker as standalone tool.
+- Improved alert color handling.
 
 ## v5.6 — Forced GitHub Canon
 
 - Removed visible Canon Source Setup from GM Handoff.
 - Updated GM packet to assume GitHub canon access by default.
-- GM packet instructs the AI GM to read GitHub-hosted Markdown canon links before starting.
-- Added fallback instruction: if the AI model cannot access the links, it must ask the player/session host to provide the canon text manually.
-- Removed unnecessary player-facing Google Docs download instructions after canon moved to GitHub.
-- Removed outdated canon-link panels from the GM Handoff UI.
+- Added manual fallback if AI cannot access links.
 
-## v5.5 — Markdown Canon Docs
+## v5.5 and earlier
 
-- Updated canon document workflow from `.docx` to GitHub-hosted `.md` files.
-- Updated GM packet wording to reference Markdown canon files.
-- Confirmed Markdown is easier for AI chat access than `.docx`.
-- Updated canon references to v5.5 after repo upload.
-- Maintained manual upload/paste fallback if the AI platform cannot access GitHub links.
-- Canon files expected in repo:
-  - `VEINFIRE_ Complete Timeline v5.5.md`
-  - `VEINFIRE_ GM Note v5.5.md`
-  - `VEINFIRE_ Sensory Descriptions v5.5.md`
-  - `VEINFIRE_ Terminology v5.5.md`
-  - `VEINFIRE_Worldbuilding v5.5.md`
-
-## v5.4 — Public Repo Cleanup
-
-- Prepared public-facing GitHub materials.
-- Added README.
-- Added CHANGELOG.
-- Added NOTICE/IP and fan-use language.
-- Clarified that players and fans may make personal, non-commercial fan creations.
-- Clarified that fan creations do not transfer ownership or become canon unless approved.
-- Removed old setup/hosting guidance from the public README after it became irrelevant.
-- Added repo/project structure guidance during setup phase.
-
-## v5.3 — GitHub / Netlify Hosting Preparation
-
-- Prepared the engine for GitHub Pages hosting.
-- Prepared the engine for Netlify hosting.
-- Clarified that a custom domain is optional.
-- Discussed hosting canon docs in the GitHub repo.
-- Moved away from relying on Google Docs as the main canon source.
-- Clarified that AI chat cannot reliably fetch and upload documents into a session automatically.
-- Added instructions for AI models to use links when possible and ask for manual canon text when not possible.
-
-## v5.2 — Canon Docs Download / Link Workflow
-
-- Added canon document link/download workflow concepts.
-- Added multi-download support attempts.
-- Removed extra Google Doc collapsible sections after canon workflow changed.
-- Simplified How to Play steps around canon document access.
-- Removed irrelevant “Canon Google Doc URLs” panels from GM Handoff once the approach changed.
-
-## v5.1 — GM Handoff Simplification
-
-- Simplified GM Handoff so it initially shows only the necessary player-facing controls.
-- GM Session Packet remains hidden until the player selects an AI model and clicks Build GM Packet.
-- Added AI model choices:
-  - ChatGPT
-  - Gemini
-  - Grok
-  - Claude
-- Made GM Session Packet locked by default.
-- Added edit confirmation behavior for packet editing.
-- Moved Campaign State, Advanced Trackers, NPC Cast, Chronicle, and similar material into tracker/tool concepts instead of the primary GM Handoff panel.
-- Added Import GM Update / manual tracker editor concepts.
-
-## v5.0 — GM Packet and Tracker Compatibility
-
-- Added GM packet structure for AI-led play sessions.
-- Added tracker JSON structure alignment with GM packet expectations.
-- Added rules telling the GM to maintain tracker-compatible JSON updates.
-- Added support concepts for:
-  - Campaign State
-  - Advanced Trackers
-  - NPC Cast
-  - Chronicle
-  - Progress Tracker imports
-- Clarified what is shown to the player versus what is tracked silently.
-- Added consequence/outcome rules for actions.
-- Clarified that outcomes should be presented after actions resolve, not before.
-- Added player-facing steps for copying the GM packet into a new AI chat.
-
-## v4.9 — Browser Stability / UI Fixes
-
-- Fixed blank-browser-load issue from earlier HTML version.
-- Adjusted GM Handoff panel layout.
-- Removed irrelevant warning text from Review.
-- Fixed Dossier spacing issues.
-- Centered menu/panel placement.
-- Removed Summary Mode from GM Handoff.
-- Simplified canon download/open-link buttons.
-
-## v4.x — Campaign Handoff and Tracker Foundations
-
-- Added campaign archetype generation.
-- Added campaign seed support.
-- Added GM Handoff packet generation.
-- Added early Progress Tracker import/export concepts.
-- Added campaign-state display.
-- Added NPC cast display.
-- Added skill and gear usage descriptions.
-- Added advancement and consequence systems.
-- Added GM update JSON concept.
-
-## v3.x — Campaign Setup and Presets
-
-- Added random campaign setup.
-- Added campaign navigation.
-- Added campaign premise generation.
-- Added gender, classes, and starting skills.
-- Added Whore class support.
-- Added preset main characters.
-- Added preset loading workflow.
-- Added Character Dossier preview concepts.
-- Added class/stat/skill package handling.
-
-## v2.x — Character Creation Foundations
-
-- Built BG3-style character creation flow.
-- Added lore validation concepts.
-- Added uploaded-docs-only canon validator logic.
-- Added race/type/class/background/origin/flaw/goal/secret/name structure.
-- Added structured backstory and character dossier foundations.
-- Added early Review step.
-- Added basic visual layout for Creation Path.
-
-## v1.x — Early Prototype
-
-- Created first standalone HTML prototype for VEINFIRE RPG setup.
-- Established the engine as a browser-based character/campaign setup tool.
-- Began separating engine UI from live AI GM play.
-- Established the idea that the AI chat session runs the live campaign after receiving a structured packet.
+- Updated canon links to GitHub-hosted Markdown files.
+- Added public repo/hosting materials.
+- Added GM Handoff improvements.
+- Added progress tracker foundations.
+- Added campaign setup, presets, and character creation foundations.

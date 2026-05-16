@@ -2,7 +2,7 @@
 
 A beta prototype standalone browser-based setup engine for **VEINFIRE / Eldoria** RPG sessions.
 
-Current build: **v6.0 — Class Gear System / Critical Fixes**
+Current build: **v6.1 — Safety, Relationship Cleanup & Model Persistence**
 
 ## What this engine is
 
@@ -90,3 +90,8 @@ Players and fans may use the VEINFIRE RPG Engine for personal, non-commercial ga
 Do not sell, redistribute official lore documents, copy large portions of the source material, claim VEINFIRE as your own, create commercial derivative works, or use VEINFIRE materials for AI training, datasets, or prompt packs without written permission.
 
 See [`NOTICE.md`](NOTICE.md) for the full intellectual property and fan-use notice.
+
+
+## v6.1 Safety Patch
+
+This build protects unfinished character creation work from accidental replacement, cleans up relationship scale drift from the v5.9/v6.0 transition, and persists the selected AI model across saves/renders.
