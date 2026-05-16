@@ -1,97 +1,73 @@
 # VEINFIRE RPG Engine
 
-A beta prototype standalone browser-based setup engine for **VEINFIRE / Eldoria** RPG sessions.
+**Current build:** v6.1 — Review Cleanup Patch  
+**Status:** Beta prototype
 
-Current build: **v6.1 — Safety, Relationship Cleanup & Model Persistence**
+VEINFIRE RPG Engine is a standalone browser-based setup tool for running heavy VEINFIRE / Eldoria RPG sessions with an external AI GM.
 
-## What this engine is
+The engine helps players:
 
-The VEINFIRE RPG Engine helps players prepare for a VEINFIRE campaign with an AI GM.
-
-It is used to:
-
-- create a canon-aware VEINFIRE character
+- create a canon-aware character
 - choose or edit preset characters
-- generate a campaign opening
+- generate a campaign premise
 - build a structured GM handoff packet
-- support AI-led play in ChatGPT, Claude, Gemini, Grok, or another AI chat
-- import GM updates into the Campaign Tracker
-- track NPCs, relationships, injuries, inventory, consequences, advancement, and campaign state
+- use a standalone Campaign Tracker for GM update JSON imports
 
-The engine is not the live GM. The live campaign happens in the AI chat after the GM packet is copied.
+The live roleplay session happens in the chosen AI chat after the GM packet is copied.
 
-## Main player flow
+## How to use
 
-```text
-Welcome → Character Setup → Generate Campaign → GM Handoff
-```
+1. Open the hosted page.
+2. Start from the Welcome screen.
+3. Choose whether to create your own character, resume character creation, or use a preset.
+4. Generate a campaign.
+5. Build the GM packet.
+6. Copy the GM packet into your chosen AI chat.
+7. Use the Campaign Tracker if your GM provides tracker update JSON.
 
-The player can either create their own character or choose a preset character, then proceed directly or edit the preset first.
+## Hosting
 
-## v6.0 Class Gear System
+This is a standalone static HTML project. It does not require a backend.
 
-Starting Gear is no longer a separate player-selected step.
+It can be hosted on:
 
-Starting inventory now comes from:
+- GitHub Pages
+- Netlify
+- Vercel
+- itch.io
+- any static web host
 
-```text
-Class Gear + Personal Object
-```
-
-Class defines the practical tools the character has at the beginning of play. The Personal Object remains separate because it carries emotional, narrative, or personal weight rather than functioning as a normal equipment package.
-
-## Campaign Tracker
-
-The **Campaign Tracker** is a standalone tool under **Tools**.
-
-It can import structured GM updates and display:
-
-- current campaign state
-- current conflict
-- resources
-- inventory
-- advancement
-- NPC cast
-- NPC relationship scores
-- NPC resistance states
-- injuries
-- relationship ledger
-- chronicle entries
-- visible consequences
-
-The tracker supports:
+For GitHub Pages, the main file must be named:
 
 ```text
-veinfire-progress-v4
+index.html
 ```
 
-## Canon source
+## Recommended repository structure
 
-The GM packet points the AI GM to the GitHub-hosted VEINFIRE Markdown canon files.
+```text
+index.html
+README.md
+CHANGELOG.md
+NOTICE.md
+```
 
-The AI GM is instructed to read the canon files before beginning canon-sensitive play. If the AI platform cannot access the links, it should ask the player or GM/session host to provide the required canon text manually.
+## Canon documents
 
-## Project files
+The GM packet is designed around GitHub-hosted Markdown canon documents. If an AI model cannot access GitHub links, it should ask the player or session host to paste or upload the needed canon text manually.
 
-This repository contains:
+## Important notes
 
-- `index.html` — the VEINFIRE RPG Engine
-- `README.md` — project overview and usage notes
-- `CHANGELOG.md` — version history
-- `NOTICE.md` — intellectual property and fan-use notice
-- `canon-docs/` — VEINFIRE canon files used by the GM packet
+- The HTML does not directly call ChatGPT, Gemini, Grok, Claude, or any other AI.
+- The browser page is the character / campaign / tracker engine.
+- The AI chat is the live GM / Narrator.
+- Campaign Tracker imports should use valid JSON only.
+- The project is still a beta prototype, so testers should report bugs, confusing UI, and broken tracker updates.
 
-## Intellectual Property and Fan Use
+## Ownership and fan creations
 
-VEINFIRE, Eldoria, and all related lore, characters, terminology, factions, races, campaign material, and worldbuilding are original creative works by Kanniti Singsanan. All rights reserved.
+VEINFIRE, Eldoria, related lore, canon material, names, worldbuilding, characters, factions, and setting concepts are owned by the creator.
 
-Players and fans may use the VEINFIRE RPG Engine for personal, non-commercial gameplay, character creation, campaign generation, fan OCs, fanart, and session participation. Fan creations are welcome, but they do not grant ownership of VEINFIRE or become official canon unless approved by Kanniti Singsanan.
+Players and fans may create personal, non-commercial fan works such as fanart, OCs, session notes, and private play materials, as long as they do not claim ownership of the canon IP or present fan material as official canon.
 
-Do not sell, redistribute official lore documents, copy large portions of the source material, claim VEINFIRE as your own, create commercial derivative works, or use VEINFIRE materials for AI training, datasets, or prompt packs without written permission.
-
-See [`NOTICE.md`](NOTICE.md) for the full intellectual property and fan-use notice.
-
-
-## v6.1 Safety Patch
-
-This build protects unfinished character creation work from accidental replacement, cleans up relationship scale drift from the v5.9/v6.0 transition, and persists the selected AI model across saves/renders.
+See `NOTICE.md` for more detail.

@@ -2259,16 +2259,44 @@ body.has-floating-actions{padding-bottom:118px!important}
   "campaignState": {
     "currentLocation": "private room above the silk hall",
     "currentBell": "Watch Bell",
-    "sceneStatus": "Jereq has a name, but the house ledger is still missing.",
+    "sceneStatus": "Vel is guarded and the ledger is still missing.",
     "knownObjective": "Find who altered the ledger before the patrol arrives.",
-    "activePressure": ["High suspicion", "sealed exits", "NPC relationship pressure"],
+    "activePressure": ["High suspicion", "sealed exits"],
     "visibleConsequences": ["The madam is watching every door."]
   },
-  "resources": {"Stress": 2, "Suspicion": 1},
-  "inventoryAdd": [{"name": "marked client note", "description": "A folded note with perfume and a false initial.", "use": "May support Presence or Mind checks when confronting a patron."}],
-  "playerFacingLedgerAdd": ["Known lead: Vel Sarro is tied to the Red Market Auction."],
-  "npcRelationship": [{"name":"Vel Sarro","value":-1,"note":"Vel dislikes the pressure but respects that Jereq noticed the false initial."}],
-  "chronicleAdd": "Jereq learned a patron name in the private room."
+  "combatState": {
+    "type": "social confrontation",
+    "stakes": "Vel may reveal a useful name or alert the house.",
+    "clock": "before the patrol reaches the second floor",
+    "range": "close",
+    "position": "private office doorway",
+    "noiseRisk": "raised voices may draw staff",
+    "knownRisks": ["public threat may reduce relationship", "too much noise raises suspicion"],
+    "hazards": [],
+    "escapeRoutes": ["back stairs", "main hall"]
+  },
+  "inventoryAdd": ["marked client note"],
+  "skillAdd": ["Pillow-Talk Extraction"],
+  "injuriesAdd": [
+    {"name": "split lip", "severity": "minor", "effect": "May affect delicate social scenes until cleaned.", "healing": "Clean with water and rest."}
+  ],
+  "npcRelationship": [
+    {"name": "Vel Sarro", "value": -1, "note": "The player threatened him while he was already afraid."}
+  ],
+  "npcUpdate": [
+    {
+      "name": "Vel Sarro",
+      "relationship": -1,
+      "relationshipLabel": "Uneasy",
+      "resistance": "Afraid",
+      "status": "present",
+      "memoryAdd": ["The player blocked the office door and pressured him directly."]
+    }
+  ],
+  "relationshipLedgerAdd": ["Vel Sarro: -1 Uneasy after being threatened in public."],
+  "playerFacingLedgerAdd": ["Vel is afraid of someone inside the house."],
+  "trackerNoteAdd": ["The ledger is still missing."],
+  "chronicleAdd": "Vel did not reveal the buyer, but his fear confirmed that someone inside the house can punish him."
 }'></textarea>
         <div class="controls" style="justify-content:flex-start">
           <button id="importUpdateBtn">Import GM Update</button>
@@ -2789,7 +2817,7 @@ function docCanonValidate(){
  const text=[
    f.name,f.gender,f.className,appearanceText(),f.backstory,f.backstoryOrigin,f.backstoryPressure,f.backstoryIncident,f.backstoryTie,f.backstoryReason,f.backstoryOther,f.object,
    f.originCustom,f.backgroundCustom,f.factionTieCustom,f.flawCustom,f.goalCustom,f.secretCustom,
-   valueText("origin"),valueText("background"),valueText("factionTie"),valueText("goal"),valueText("secret")
+   valueText("origin"),backgroundText(),valueText("factionTie"),valueText("goal"),valueText("secret")
  ].join(" ").toLowerCase();
  const rejections=[], warnings=[], reviews=[], accepts=[];
  for(const rule of CANON_DOC_RULES){
@@ -2908,20 +2936,7 @@ function freshState(){
   lastValidation:null,
   lastCanonReport:null,
   progressImported:false,
-  progression:{
-    tier:1,
-    milestones:0,
-    milestonesNeeded:3,
-    unspentGrowth:0,
-    permanentGrowth:[],
-    conditionalGrowth:[],
-    temporaryEffects:[],
-    scarsConsequences:[],
-    trainingProjects:[],
-    storyRewards:[],
-    playerFacingLedger:[],
-    hiddenGMLedger:[]
-  }
+  progression:defaultProgression()
  };
 }
 let S=freshState();
@@ -2934,7 +2949,7 @@ function save(){localStorage.setItem("veinfire_rpg_v60",JSON.stringify(S))}funct
      const base=freshState();
      S={...base,...parsed};
      S.form={...base.form,...(parsed.form||{})};
-     if(S.form)S.form=normalizeAppearanceInput(S.form);
+     if(S.form){S.form=normalizeAppearanceInput(S.form);normalizeBackgroundSelection(S.form);}
      if(S.campaign?.npcs)S.campaign.npcs.forEach(n=>{if(typeof normalizeNpc==="function")normalizeNpc(n);});
 
      // Startup rule:
@@ -2955,7 +2970,12 @@ function save(){localStorage.setItem("veinfire_rpg_v60",JSON.stringify(S))}funct
    S.phase="welcome";
  }
 }
-function addLog(title,text){S.log.unshift({t:now(),title,text});renderLog();save()}
+function addLog(title,text){
+ S.log.unshift({t:now(),title:String(title||""),text:String(text||"")});
+ if(S.log.length>500)S.log.length=500;
+ renderLog();
+ save();
+}
 function currentStep(){return STEPS[S.step]||STEPS[0]}function sumMods(base,mods){let o={...base};Object.entries(mods||{}).forEach(([k,v])=>o[k]=(o[k]||0)+v);return o}
 function setVal(key,val){
  S.form[key]=val;
@@ -3481,17 +3501,7 @@ function randomizeCustomFactionTie(btn){
  renderAll();
  showToast("<b>Faction tie rolled.</b><br>You can edit the tie and stat choices before continuing.","success");
 }
-function randomButton(kind,inline=false){
- const map={
-  origin:`randomizeCustomOrigin(this)`,
-  background:`randomizeCustomBackground(this)`,
-  factionTie:`randomizeCustomFactionTie(this)`,
-  backstory:`randomizeBackstory(this)`,
-  appearance:`randomizeAppearance(this)`
- };
- const btn=`<button type="button" class="dice-btn secondary" title="Randomize this section" onclick="${map[kind]}">🎲</button>`;
- return inline?btn:`<div class="creation-random-header">${btn}</div>`;
-}
+
 
 function randomButton(kind){
  const map={
@@ -3917,6 +3927,20 @@ function renderStep(){
  renderValidationBox();
 }
 function valueText(key){const v=S.form[key]||"";return v==="Custom"?(S.form[key+"Custom"]||""):v}
+function backgroundText(){
+ const f=S.form||{};
+ if(f.background==="Custom")return f.backgroundCustom||"";
+ if(f.background && DB.backgrounds && DB.backgrounds[f.background])return f.background;
+ if(f.background && DB.origins && DB.origins[f.background])return f.backgroundCustom||"";
+ return f.background||"";
+}
+function normalizeBackgroundSelection(form){
+ if(!form)return form;
+ if(form.background && DB.origins && DB.origins[form.background] && !(DB.backgrounds&&DB.backgrounds[form.background])){
+   form.background=form.backgroundCustom?"Custom":"";
+ }
+ return form;
+}
 
 function qualityCheckField(label, value, mode="text"){
  const text=String(value||"").trim();
@@ -4020,7 +4044,7 @@ function next(){
  const st=currentStep();
  const v=validateLore(false);
  if(st.key==="name"){
-   const err=qualityCheckField(st.title,S.form[st.key],st.key==="name"?"name":"object");
+   const err=qualityCheckField(st.title,S.form[st.key],"object");
    if(err){ showToast(`<b>${st.title} is not ready.</b><br>${err}`); return; }
  }
  if(st.key==="appearance"){
@@ -4042,7 +4066,7 @@ function next(){
    if(err){ showToast(`<b>${st.title} is not ready.</b><br>${err}`); return; }
  }
  if(st.key==="object"){
-   const err=qualityCheckField(st.title,S.form[st.key],st.key==="name"?"name":"object");
+   const err=qualityCheckField(st.title,S.form[st.key],"object");
    if(err){ showToast(`<b>${st.title} is not ready.</b><br>${err}`); return; }
  }
  if((st.kind==="cards"||st.kind==="cardsCustom")&&!S.form[st.key]){ showToast(`<b>${st.title} is required.</b><br>Choose one option before continuing.`); return; }
@@ -4092,7 +4116,7 @@ function renderDossier(target="dossier"){
   <div class="selection-row"><b>Gender</b><span>${escapeHtml(f.gender||"—")}</span></div>
   <div class="selection-row"><b>Homeland</b><span>${escapeHtml(f.home||"")}</span></div>
   <div class="selection-row"><b>Origin</b><span>${escapeHtml(valueText("origin")||"—")}</span></div>
-  <div class="selection-row"><b>Background</b><span>${escapeHtml(valueText("background")||"—")}</span></div>
+  <div class="selection-row"><b>Background</b><span>${escapeHtml(backgroundText()||"—")}</span></div>
   <div class="selection-row"><b>Class</b><span>${escapeHtml(f.className||"—")}</span></div>
   <div class="selection-row"><b>Faction</b><span>${escapeHtml(valueText("factionTie")||"—")}</span></div>
   <div class="selection-row"><b>Type</b><span>${escapeHtml(f.kind||"—")}</span></div>
@@ -4123,12 +4147,18 @@ function defaultProgression(){
   temporaryEffects:[],
   scarsConsequences:[],
   trainingProjects:[],
-  storyRewards:[]
+  storyRewards:[],
+  playerFacingLedger:[],
+  hiddenGMLedger:[],
+  injuries:[],
+  relationshipLedger:[]
  };
 }
 function ensureProgression(){
  if(!S.progression) S.progression=defaultProgression();
- S.progression.injuries=S.progression.injuries||[];S.progression.relationshipLedger=S.progression.relationshipLedger||[];return S.progression;
+ const lists=["permanentGrowth","conditionalGrowth","temporaryEffects","scarsConsequences","trainingProjects","storyRewards","playerFacingLedger","hiddenGMLedger","injuries","relationshipLedger"];
+ lists.forEach(k=>{ S.progression[k]=S.progression[k]||[]; });
+ return S.progression;
 }
 function tierBonus(){
  const p=ensureProgression();
@@ -4190,7 +4220,7 @@ function createCharacter(silent=false){
    MaxEncumbrance:10+stats.Body*3
  };
  S.phase="between";
- addLog("Character Created",`<b>${escapeHtml(f.name)}</b> is ready.`);
+ addLog("Character Created",`${f.name} is ready.`);
  renderAll();
  if(!silent)showToast(`<b>Character created.</b><br>${escapeHtml(f.name)} is ready for campaign generation.`,"success");
  return true;
@@ -4459,7 +4489,7 @@ function getCharacterPacket(){
   discipline_or_proficiency:role,
   homeland:f.home,
   origin:valueText("origin"),
-  background:valueText("background"),
+  background:backgroundText(),
   class_name:f.className,
   class_gear:gear.filter(x=>x!==f.object),
   faction_tie:valueText("factionTie"),
@@ -4741,20 +4771,13 @@ GM_UPDATE_JSON
 {
   "schemaVersion": "veinfire-progress-v3",
   "resources": {
-    "Health": 18,
-    "MaxHealth": 18,
-    "Stress": 1,
-    "MaxStress": 10,
-    "Fatigue": 0,
-    "MaxFatigue": 8,
-    "Veinburn": 0,
-    "MaxVeinburn": 10,
-    "Blight": 0,
-    "MaxBlight": 8,
-    "Supplies": 6,
-    "Coin": 21,
-    "LegalHeat": 0,
-    "Suspicion": 1
+    "Health": 18, "MaxHealth": 18,
+    "Stress": 1, "MaxStress": 10,
+    "Fatigue": 0, "MaxFatigue": 8,
+    "Veinburn": 0, "MaxVeinburn": 10,
+    "Blight": 0, "MaxBlight": 8,
+    "Supplies": 6, "Coin": 21,
+    "LegalHeat": 0, "Suspicion": 1
   },
   "campaignState": {
     "currentLocation": "specific place the character currently knows",
@@ -4764,14 +4787,29 @@ GM_UPDATE_JSON
     "activePressure": ["law pressure, mana pressure, faction pressure, weather, scarcity, relationship pressure, or clock"],
     "visibleConsequences": ["only consequences the player character can know"]
   },
-  "inventoryAdd": [
-    {"name": "item name", "description": "player-facing description", "use": "how it can matter in play"}
-  ],
+  "combatState": {
+    "type": "conflict type, e.g. infiltration, duel, chase, social confrontation",
+    "stakes": "what is at risk",
+    "clock": "remaining time or turns",
+    "range": "close, medium, or distant",
+    "position": "tactical position description",
+    "noiseRisk": "how loud the situation has become",
+    "knownRisks": ["risks the player has perceived"],
+    "hazards": ["environmental hazards in play"],
+    "escapeRoutes": ["routes the player has noticed"]
+  },
+  "inventoryAdd": ["marked client note", "perfume vial"],
   "inventoryRemove": ["item name"],
-  "skillAdd": [
-    {"name": "skill name", "description": "what it represents", "use": "likely stat checks or fictional permission"}
-  ],
+  "skillAdd": ["Pillow-Talk Extraction"],
   "skillRemove": ["skill name"],
+  "injuriesAdd": [
+    {
+      "name": "shoulder gash",
+      "severity": "minor | moderate | severe | magical",
+      "effect": "what it does mechanically or fictionally",
+      "healing": "what is required to recover"
+    }
+  ],
   "factionReputation": {
     "Faction Name": 1
   },
@@ -4779,7 +4817,7 @@ GM_UPDATE_JSON
     {"name": "NPC Name", "value": 1, "note": "Why the relationship changed, player-facing only"}
   ],
   "relationshipLedgerAdd": [
-    "NPC Name: +1 Warm after the character protected their secret."
+    "NPC Name: +1 Familiar after the character protected their secret."
   ],
   "permanentGrowthAdd": ["Permanent growth description"],
   "conditionalGrowthAdd": ["Conditional bonus description"],
@@ -4790,6 +4828,7 @@ GM_UPDATE_JSON
   "playerFacingLedgerAdd": [
     "Known lead, known debt, known complication, visible condition, confirmed faction shift, discovered relationship shift, or discovered consequence"
   ],
+  "trackerNoteAdd": ["Any non-secret note the tracker should remember"],
   "milestones": 0,
   "tier": 1,
   "unspentGrowth": 0,
@@ -4819,19 +4858,25 @@ GM_UPDATE_JSON
       "resistance": "updated known resistance if discovered",
       "relationship": 1,
       "relationshipLabel": "Familiar",
-      "knownRelationship": "player-facing reason"
+      "knownRelationship": "player-facing reason",
+      "memoryAdd": ["new memory entry the NPC carries"]
     }
   ],
-  "trackerNoteAdd": ["Any non-secret note the tracker should remember"],
   "campaignNotesAdd": "Known campaign-state note the player can record.",
   "chronicleAdd": "Short summary of what happened this turn."
 }
+
 Rules for this JSON:
+- schemaVersion must be "veinfire-progress-v3" for live GM updates.
 - If a tracker changes, include the updated total value, not vague prose.
-- Use inventoryAdd and inventoryRemove for item changes.
+- Use inventoryAdd and inventoryRemove for item changes. Items are name strings only.
+- Use skillAdd and skillRemove for skill changes. Skills are name strings only.
+- Use injuriesAdd for new lasting harm. Severity must be one of: minor, moderate, severe, magical.
 - Use playerFacingLedgerAdd only for information the player character knows, perceives, confirms, or can reasonably infer.
-- Use npcRelationship for relationship score changes with important NPCs. Values must stay between -10 and +10.
+- Use npcRelationship for relationship score changes. Values must stay between -10 and +10. Relationship labels are derived automatically from the value; do not include a "label" field — it will be ignored.
+- Relationship labels follow this scale: -10 Nemesis, -9 Hated, -8 Vengeful, -7 Dangerous Enemy, -6 Active Enemy, -5 Hostile, -4 Resentful, -3 Distrustful, -2 Wary, -1 Uneasy, 0 Neutral, 1 Familiar, 2 Cordial, 3 Warm, 4 Friendly, 5 Trusting, 6 Loyal, 7 Devoted, 8 Deep Bond, 9 Unshakable Bond, 10 Life-Bound.
 - Relationship values are player-facing only when the character can reasonably perceive the shift. Otherwise keep the change hidden until it shows through behavior.
+- Use combatState only when the scene has shifted into active conflict. Omit it during ordinary scenes.
 - Do not include hidden faction clocks, secret NPC motives, undiscovered lies, or offscreen spoilers in the JSON.
 - If nothing mechanical changed, the JSON may include only chronicleAdd.
 - Keep narration outside the JSON. The JSON is for the HTML Campaign Tracker importer.
@@ -4938,7 +4983,7 @@ function renderTrackers(){
  const r=S.resources||{}, row=(n,v,m)=>`<div class="detail"><b>${n}</b><span class="badge">${v??0}/${m??0}</span><div class="meter"><div class="fill bad" style="width:${m?clamp((v||0)/m*100,0,100):0}%"></div></div></div>`;
  const p=ensureProgression(), state=S.campaign?.trackerState||S.campaign?.campaignState||{}, conflict=state.currentConflict||S.campaign?.combatState||S.combatState, injuries=p.injuries||S.injuries||[];
  const isVeinborn=(S.pc&&S.pc.kind==="Veinborn")||r.MaxVeinburn, inventory=sanitizeGearList(r.Inventory||[]);
- const stateHtml=state&&Object.keys(state).length?`<div class="tracker-section-title">Campaign State</div><div class="conflict-card">${state.currentLocation?`<b>Location:</b> ${escapeHtml(state.currentLocation)}<br>`:""}${state.currentBell?`<b>Bell:</b> ${escapeHtml(state.currentBell)}<br>`:""}${state.sceneStatus?`<b>Status:</b> ${escapeHtml(state.sceneStatus)}<br>`:""}${state.knownObjective?`<b>Objective:</b> ${escapeHtml(state.knownObjective)}<br>`:""}${state.activeScenePressure?.length?`<b>Scene Pressure:</b> ${state.activeScenePressure.map(escapeHtml).join(", ")}<br>`:""}${state.visibleConsequences?.length?`<b>Visible Consequences:</b> ${state.visibleConsequences.map(escapeHtml).join(", ")}`:""}</div>`:"";
+ const stateHtml=state&&Object.keys(state).length?`<div class="tracker-section-title">Campaign State</div><div class="conflict-card">${state.currentLocation?`<b>Location:</b> ${escapeHtml(state.currentLocation)}<br>`:""}${state.currentBell?`<b>Bell:</b> ${escapeHtml(state.currentBell)}<br>`:""}${state.sceneStatus?`<b>Status:</b> ${escapeHtml(state.sceneStatus)}<br>`:""}${state.knownObjective?`<b>Objective:</b> ${escapeHtml(state.knownObjective)}<br>`:""}${state.activePressure?.length?`<b>Scene Pressure:</b> ${state.activePressure.map(escapeHtml).join(", ")}<br>`:""}${state.visibleConsequences?.length?`<b>Visible Consequences:</b> ${state.visibleConsequences.map(escapeHtml).join(", ")}`:""}</div>`:"";
  const conflictHtml=conflict?`<div class="tracker-section-title">Current Conflict</div><div class="conflict-card"><b>${escapeHtml(conflict.type||"Conflict")}</b><br>${conflict.stakes?`<b>Stakes:</b> ${escapeHtml(conflict.stakes)}<br>`:""}${conflict.clock?`<b>Clock:</b> ${escapeHtml(conflict.clock)}<br>`:""}${conflict.range?`<b>Range:</b> ${escapeHtml(conflict.range)}<br>`:""}${conflict.position?`<b>Position:</b> ${escapeHtml(conflict.position)}<br>`:""}${conflict.noiseRisk?`<b>Noise Risk:</b> ${escapeHtml(conflict.noiseRisk)}<br>`:""}${conflict.knownRisks?.length?`<b>Known Risks:</b> ${conflict.knownRisks.map(escapeHtml).join(", ")}<br>`:""}${conflict.hazards?.length?`<b>Hazards:</b> ${conflict.hazards.map(escapeHtml).join(", ")}<br>`:""}${conflict.escapeRoutes?.length?`<b>Escape Routes:</b> ${conflict.escapeRoutes.map(escapeHtml).join(", ")}`:""}</div>`:"";
  const injuryHtml=injuries.length?`<div class="tracker-section-title">Injuries / Lasting Harm</div>${injuries.map(x=>typeof x==="string"?`<div class="injury-card">${escapeHtml(x)}</div>`:`<div class="injury-card"><b>${escapeHtml(x.name||"Injury")}</b> · ${escapeHtml(x.severity||"")}${x.effect?`<br>${escapeHtml(x.effect)}`:""}${x.healing?`<br><span class="small">Healing: ${escapeHtml(x.healing)}</span>`:""}</div>`).join("")}`:"";
  $("trackers").innerHTML=`${stateHtml}${r.Health!==undefined?row("Health",r.Health,r.MaxHealth):""}${r.Stress!==undefined?row("Stress",r.Stress,r.MaxStress):""}${r.Fatigue!==undefined?row("Fatigue",r.Fatigue,r.MaxFatigue):""}${isVeinborn&&r.Veinburn!==undefined?row("Veinburn",r.Veinburn,r.MaxVeinburn):""}${r.Blight!==undefined?row("Blight Exposure",r.Blight,r.MaxBlight):""}${r.LegalHeat!==undefined?row("Legal Heat",r.LegalHeat,10):""}${r.Suspicion!==undefined?row("Suspicion",r.Suspicion,10):""}<div class="detail"><b>Supplies</b> ${r.Supplies??0} · <b>Coin</b> ${r.Coin??0}</div><div class="detail"><b>Inventory</b><div class="usage-list">${inventory.length?renderGearUsageList(inventory):"<span class='small'>No inventory imported yet.</span>"}</div></div><div class="detail"><b>Advancement</b>${renderAdvancement()}</div>${conflictHtml}${injuryHtml}`;
@@ -4949,7 +4994,10 @@ function renderNPCs(){
  if(S.phase==="progress"&&!progressImported&&!S.progressImported){target.innerHTML="Import progress data to show NPCs.";return}
  if(!npcs.length){target.innerHTML="No NPCs generated or imported yet.";return}
  target.innerHTML=npcs.map(n=>`<div class="npc-card"><h4>${escapeHtml(n.name||"Unnamed NPC")}</h4><div class="small">${escapeHtml(n.race||"")} ${n.race&&n.kind?"·":""} ${escapeHtml(n.kind||"")} ${n.role?"· "+escapeHtml(n.role):""}</div>${relationshipBarHtml(n.relationship)}<div class="npc-grid"><div class="npc-mini"><b>Relationship</b><br>${n.relationship>0?"+":""}${n.relationship} · ${escapeHtml(relationshipLabel(n.relationship))}</div><div class="npc-mini"><b>Resistance</b><br>${escapeHtml(n.resistance||"Guarded")}</div><div class="npc-mini"><b>Mood</b><br>${escapeHtml(n.mood||"—")}</div><div class="npc-mini"><b>Status</b><br>${escapeHtml(n.status||"present")}</div><div class="npc-mini"><b>Known Want</b><br>${escapeHtml(n.knownWant||n.want||"Unknown")}</div><div class="npc-mini"><b>Known Fear</b><br>${escapeHtml(n.knownFear||n.fear||"Unknown")}</div><div class="npc-mini"><b>Boundary</b><br>${escapeHtml(n.knownBoundary||n.boundary||"Unknown")}</div><div class="npc-mini"><b>Voice</b><br>${escapeHtml(n.voiceNote||"Distinct voice not yet established")}</div></div>${n.memory&&n.memory.length?`<div class="small" style="margin-top:8px"><b>Memory:</b> ${n.memory.map(escapeHtml).join("; ")}</div>`:""}</div>`).join("");
-}function renderLog(){if(S.phase==="progress"&&!progressImported&&!S.progressImported){$("log").innerHTML="<div class=\"entry\">Import progress data to show Chronicle.</div>";return}$("log").innerHTML=S.log.map(e=>`<div class="entry"><small>${e.t} · ${e.title}</small>${e.text}</div>`).join("")}function renderPlayPanels(){renderCampaignView();renderTrackers();renderNPCs();renderLog();renderManualEditor();save()}
+}function renderLog(){
+ if(!$("log"))return;
+ $("log").innerHTML=S.log.map(e=>`<div class="entry"><small>${escapeHtml(e.t)} · ${escapeHtml(e.title)}</small>${escapeHtml(e.text)}</div>`).join("");
+}function renderPlayPanels(){renderCampaignView();renderTrackers();renderNPCs();renderLog();renderManualEditor();save()}
 
 function characterReady(){
  const v=validateLore(false);
@@ -4959,6 +5007,7 @@ function characterReady(){
 function applyPresetToForm(preset){
  S.form={...freshState().form,...JSON.parse(JSON.stringify(preset.form))};
  S.form=normalizeAppearanceInput(S.form);
+ normalizeBackgroundSelection(S.form);
  S.form.backstory=backstoryCombined();
  S.pc=null;S.campaign=null;S.resources=null;S.leads=[];S.turn=0;
 }
@@ -5162,6 +5211,7 @@ function resumeCharacterCreation(){
 }
 
 function renderAll(saveIt=true){
+ if(S&&S.form)normalizeBackgroundSelection(S.form);
  S.form=normalizeAppearanceInput(S.form);
  validateLore(false);
  renderPhase();
@@ -5236,7 +5286,7 @@ function initPresetSelect(){
  const sel=$("presetSelect");
  if(!sel)return;
  const list=orderedPresetList();
- sel.innerHTML=list.map(p=>`<option value="${p.id}">${escapeHtml(presetTropeLabel(p))}</option>`).join("");
+ sel.innerHTML=list.map(p=>`<option value="${escapeHtml(p.id)}">${escapeHtml(presetTropeLabel(p))}</option>`).join("");
  sel.onchange=()=>renderPresetPreview();
  renderPresetPreview();
 }
@@ -5270,7 +5320,7 @@ function downloadAllCanonDocs(){
  $("canonDownloadPanel").classList.add("show");
  const queue=[...CANON_DOC_URLS];
  let index=0;
- function next(){
+ function triggerNext(){
    if(index>=queue.length){
      showToast("<b>Download sequence started.</b><br>If fewer than 5 files downloaded, enable multiple downloads for this page and try again.");
      return;
@@ -5278,15 +5328,15 @@ function downloadAllCanonDocs(){
    const d=queue[index++];
    const a=document.createElement("a");
    a.href=canonDocDownloadUrl(d);
-   a.download=`${d.name.replace(/[^a-z0-9]+/gi,"_")}.docx`;
+   a.download=d.filename || `${d.name.replace(/[^a-z0-9]+/gi,"_")}.md`;
    a.target="_blank";
    a.rel="noopener";
    document.body.appendChild(a);
    a.click();
    a.remove();
-   setTimeout(next,850);
+   setTimeout(triggerNext,850);
  }
- next();
+ triggerNext();
 }
 
 function canonSourcePacketBlock(){
@@ -5368,9 +5418,25 @@ async function importProgressFile(){
  showToast("<b>Progress file imported.</b>");
 }
 function applyProgressData(data,isFullImport=false){
+ const v=String(data?.schemaVersion||"");
+ if(v && !v.startsWith("veinfire-progress")){
+   showToast(`<b>Unknown schema version.</b><br>"${escapeHtml(v)}" is not recognized. Import aborted.`,"error");
+   return;
+ }
  if(isFullImport){if(data.character)S.pc=data.character;if(data.resources)S.resources=data.resources;if(data.progression)S.progression=data.progression;if(data.campaign)S.campaign=data.campaign;if(data.campaignState){if(!S.campaign)S.campaign={npcs:[],reps:{},trackerState:{}};S.campaign.trackerState=data.campaignState;}if(data.combatState){if(!S.campaign)S.campaign={npcs:[],reps:{},trackerState:{}};S.campaign.combatState=data.combatState;}if(data.chronicle)S.log=data.chronicle;(S.campaign?.npcs||[]).forEach(normalizeNpc);markProgressImported();return;}
  if(!S.resources)S.resources={}; if(data.resources)Object.entries(data.resources).forEach(([k,v])=>{S.resources[k]=v;});
- if(data.inventoryAdd||data.gearAdd){if(!S.resources.Inventory)S.resources.Inventory=[];[...(Array.isArray(data.inventoryAdd)?data.inventoryAdd:(data.inventoryAdd?[data.inventoryAdd]:[])),...(Array.isArray(data.gearAdd)?data.gearAdd:(data.gearAdd?[data.gearAdd]:[]))].forEach(item=>{const name=typeof item==="string"?item:item.name;if(name&&!S.resources.Inventory.includes(name))S.resources.Inventory.push(name);});}
+ if(data.inventoryAdd||data.gearAdd){
+  if(!S.resources.Inventory)S.resources.Inventory=[];
+  const incoming=[
+    ...(Array.isArray(data.inventoryAdd)?data.inventoryAdd:(data.inventoryAdd?[data.inventoryAdd]:[])),
+    ...(Array.isArray(data.gearAdd)?data.gearAdd:(data.gearAdd?[data.gearAdd]:[]))
+  ];
+  incoming.forEach(item=>{
+    const name=typeof item==="string"?item:item.name;
+    if(!name)return;
+    if(!S.resources.Inventory.includes(name))S.resources.Inventory.push(name);
+  });
+}
  if((data.inventoryRemove||data.gearRemove)&&S.resources.Inventory){const rem=[...(Array.isArray(data.inventoryRemove)?data.inventoryRemove:(data.inventoryRemove?[data.inventoryRemove]:[])),...(Array.isArray(data.gearRemove)?data.gearRemove:(data.gearRemove?[data.gearRemove]:[]))].map(x=>typeof x==="string"?x:x.name);S.resources.Inventory=S.resources.Inventory.filter(x=>!rem.includes(x));}
  if(data.skillAdd){if(!S.pc)S.pc={skills:[]};if(!S.pc.skills)S.pc.skills=[];(Array.isArray(data.skillAdd)?data.skillAdd:[data.skillAdd]).forEach(skill=>{const name=typeof skill==="string"?skill:skill.name;if(name&&!S.pc.skills.includes(name))S.pc.skills.push(name);});}
  if(data.skillRemove&&S.pc?.skills){const rem=(Array.isArray(data.skillRemove)?data.skillRemove:[data.skillRemove]).map(x=>typeof x==="string"?x:x.name);S.pc.skills=S.pc.skills.filter(x=>!rem.includes(x));}
@@ -5382,7 +5448,22 @@ function applyProgressData(data,isFullImport=false){
  if(data.injuriesAdd)(Array.isArray(data.injuriesAdd)?data.injuriesAdd:[data.injuriesAdd]).forEach(x=>p.injuries.push(x));
  if(data.milestones!==undefined)p.milestones=data.milestones;if(data.tier!==undefined)p.tier=data.tier;if(data.unspentGrowth!==undefined)p.unspentGrowth=data.unspentGrowth;
  if(data.npcAdd){if(!S.campaign)S.campaign={npcs:[],reps:{}};if(!S.campaign.npcs)S.campaign.npcs=[];(Array.isArray(data.npcAdd)?data.npcAdd:[data.npcAdd]).forEach(n=>S.campaign.npcs.push(normalizeNpc(n)));}
- if(data.npcUpdate){if(!S.campaign)S.campaign={npcs:[],reps:{}};if(!S.campaign.npcs)S.campaign.npcs=[];(Array.isArray(data.npcUpdate)?data.npcUpdate:[data.npcUpdate]).forEach(up=>{let npc=S.campaign.npcs.find(n=>n.name===up.name);if(!npc){npc={name:up.name||"Unnamed NPC",relationship:0,resistance:"Guarded",memory:[]};S.campaign.npcs.push(npc);}if(up.memoryAdd){npc.memory=npc.memory||[];(Array.isArray(up.memoryAdd)?up.memoryAdd:[up.memoryAdd]).forEach(m=>npc.memory.push(m));}Object.assign(npc,up);if(up.relationship!==undefined)npc.relationship=clampRelationship(up.relationship);normalizeNpc(npc);});}
+ if(data.npcUpdate){
+  if(!S.campaign)S.campaign={npcs:[],reps:{}};
+  if(!S.campaign.npcs)S.campaign.npcs=[];
+  (Array.isArray(data.npcUpdate)?data.npcUpdate:[data.npcUpdate]).forEach(up=>{
+    let npc=S.campaign.npcs.find(n=>n.name===up.name);
+    if(!npc){npc={name:up.name||"Unnamed NPC",relationship:0,resistance:"Guarded",memory:[]};S.campaign.npcs.push(npc);}
+    if(up.memoryAdd){
+      npc.memory=npc.memory||[];
+      (Array.isArray(up.memoryAdd)?up.memoryAdd:[up.memoryAdd]).forEach(m=>npc.memory.push(m));
+    }
+    const {memoryAdd, ...rest}=up;
+    Object.assign(npc,rest);
+    if(up.relationship!==undefined)npc.relationship=clampRelationship(up.relationship);
+    normalizeNpc(npc);
+  });
+}
  if(data.npcRelationship){
    if(!S.campaign)S.campaign={npcs:[],reps:{}};
    if(!S.campaign.npcs)S.campaign.npcs=[];
@@ -5439,8 +5520,13 @@ function importGMUpdate(){
    showToast("<b>Structured JSON required.</b><br>For tracker updates, ask the GM to provide a JSON update block.");
    return;
  }
- applyProgressData(data,false);
- showToast("<b>GM update imported.</b>");
+ try{
+   applyProgressData(data,false);
+   showToast("<b>GM update imported.</b>");
+ }catch(e){
+   console.error("Import failed:",e);
+   showToast(`<b>Import error.</b><br>${escapeHtml(e.message||"Unknown error")}. Tracker state may be partially updated.`,"error");
+ }
 }
 function exportProgressJSON(){
  if(!progressImported&&!S.progressImported){showToast("<b>No progress loaded.</b><br>Import progress data before exporting.");return "";} const data={
@@ -5486,9 +5572,6 @@ if($("presetEditBtn"))$("presetEditBtn").onclick=editSelectedPreset;
 if($("presetBackBtn"))$("presetBackBtn").onclick=startSetup;
 if($("nextBtn"))$("nextBtn").onclick=next;
 if($("backBtn"))$("backBtn").onclick=back;
-if($("randomBtn"))$("randomBtn").onclick=randomize;
-if($("presetBtn"))$("presetBtn").onclick=loadPreset;
-if($("resetBtn"))$("resetBtn").onclick=resetAll;
 if($("genCampaignBtn"))$("genCampaignBtn").onclick=generateCampaign;
 if($("advanceBellBtn"))$("advanceBellBtn").onclick=advanceBell;
 if($("restBtn"))$("restBtn").onclick=rest;
