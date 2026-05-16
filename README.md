@@ -1,8 +1,8 @@
 # VEINFIRE RPG Engine
 
-A standalone browser-based setup engine for **VEINFIRE / Eldoria** RPG sessions.
+A beta prototype standalone browser-based setup engine for **VEINFIRE / Eldoria** RPG sessions.
 
-Current build: **v5.9 — NPC Agency, Combat & Relationship v4**
+Current build: **v6.0 — Class Gear System / Critical Fixes**
 
 ## What this engine is
 
@@ -26,20 +26,25 @@ The engine is not the live GM. The live campaign happens in the AI chat after th
 Welcome → Character Setup → Generate Campaign → GM Handoff
 ```
 
-The player can either:
+The player can either create their own character or choose a preset character, then proceed directly or edit the preset first.
 
-1. create their own character, or
-2. choose a preset character, then either proceed directly or edit the preset first.
+## v6.0 Class Gear System
 
-After the campaign is generated, the player builds the GM packet, copies it, and pastes it into their chosen AI chat.
+Starting Gear is no longer a separate player-selected step.
+
+Starting inventory now comes from:
+
+```text
+Class Gear + Personal Object
+```
+
+Class defines the practical tools the character has at the beginning of play. The Personal Object remains separate because it carries emotional, narrative, or personal weight rather than functioning as a normal equipment package.
 
 ## Campaign Tracker
 
 The **Campaign Tracker** is a standalone tool under **Tools**.
 
-It is not required to create a character or start a campaign.
-
-The tracker can import structured GM updates and display:
+It can import structured GM updates and display:
 
 - current campaign state
 - current conflict
@@ -54,55 +59,11 @@ The tracker can import structured GM updates and display:
 - chronicle entries
 - visible consequences
 
-## v5.9 NPC / Combat / Tracker Update
-
-This build improves live-session behavior and tracker compatibility.
-
-NPC relationships now use a **-10 to +10** scale:
-
-```text
--10 Nemesis
- -9 Hated
- -8 Vengeful
- -7 Dangerous Enemy
- -6 Active Enemy
- -5 Hostile
- -4 Resentful
- -3 Distrustful
- -2 Wary
- -1 Uneasy
-  0 Neutral
- +1 Familiar
- +2 Cordial
- +3 Warm
- +4 Friendly
- +5 Trusting
- +6 Loyal
- +7 Devoted
- +8 Deep Bond
- +9 Unshakable Bond
-+10 Life-Bound
-```
-
-The GM packet now includes stronger rules for:
-
-- shorter, playable AI responses
-- player intent versus outcome control
-- NPC agency
-- NPC resistance
-- social conflict
-- combat positioning
-- injuries
-- relationship memory
-- consequence tracking
-
-The tracker now supports:
+The tracker supports:
 
 ```text
 veinfire-progress-v4
 ```
-
-This schema supports NPC relationship updates, combat state, current conflict, injuries, relationship ledgers, and expanded NPC memory.
 
 ## Canon source
 

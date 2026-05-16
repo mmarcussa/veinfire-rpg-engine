@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>VEINFIRE RPG Engine v5.9 — Character Creation</title>
+<title>VEINFIRE RPG Engine v6.0 — Character Creation</title>
 <style>
 :root{
   --bg:#080a0d;--panel:#11100d;--gold:#d6b36a;--gold2:#f1d893;--text:#f3ead7;
@@ -1191,12 +1191,911 @@ body.has-floating-actions{padding-bottom:98px}
 .injury-card{border-color:rgba(255,120,120,.45);background:rgba(48,13,18,.55)}
 .tracker-section-title{margin:14px 0 8px;color:var(--gold2);font-weight:800;letter-spacing:.02em}
 
+
+/* v6.0 skill icon reveal + gear tooltip cleanup */
+.skill-icon-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(96px,1fr));
+  gap:10px;
+  margin-top:10px;
+}
+.skill-icon-card{
+  border:1px solid rgba(214,179,106,.34);
+  border-radius:16px;
+  background:rgba(0,0,0,.32);
+  padding:11px 8px;
+  cursor:pointer;
+  text-align:center;
+  min-height:92px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease;
+}
+.skill-icon-card:hover{
+  transform:translateY(-1px);
+  border-color:rgba(244,215,139,.75);
+  background:rgba(42,30,10,.58);
+}
+.skill-icon-card.active{
+  border-color:rgba(244,215,139,.86);
+  background:rgba(54,38,12,.68);
+  box-shadow:0 0 0 1px rgba(244,215,139,.18) inset;
+}
+.skill-icon-placeholder{
+  width:40px;
+  height:40px;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:1px solid rgba(244,215,139,.46);
+  background:radial-gradient(circle at 35% 25%,rgba(244,215,139,.38),rgba(6,6,8,.78));
+  font-weight:900;
+  color:#f7df9a;
+  letter-spacing:.02em;
+}
+.skill-icon-name{
+  font-weight:800;
+  color:#f4e7c5;
+  font-size:.86rem;
+  line-height:1.18;
+}
+.skill-reveal-box{
+  margin-top:12px;
+  border:1px solid rgba(105,160,216,.45);
+  border-radius:16px;
+  background:rgba(10,22,34,.72);
+  padding:14px;
+  line-height:1.6;
+  min-height:78px;
+}
+.skill-reveal-box b{
+  color:#9fc7ff;
+}
+.gear-chip-wrap{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:flex-start;
+}
+.gear-chip{
+  width:auto!important;
+  max-width:260px;
+  min-height:auto!important;
+  height:auto!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  line-height:1.2!important;
+  padding:8px 11px!important;
+  white-space:normal!important;
+  vertical-align:top;
+}
+.gear-chip.tip-box[data-tip]:hover::after{
+  min-height:0!important;
+  height:auto!important;
+  max-height:220px!important;
+  overflow:auto;
+  width:max-content;
+  max-width:340px!important;
+  white-space:normal;
+  line-height:1.42;
+  padding:10px 12px!important;
+}
+.usage-list .gear-chip{
+  margin:0;
+}
+
+
+/* v6.0 compact skill action icons, help popups, beta footer polish */
+.beta-badge{
+  display:inline-flex;
+  margin-top:8px;
+  padding:5px 10px;
+  border:1px solid rgba(105,160,216,.55);
+  border-radius:999px;
+  background:rgba(10,28,48,.72);
+  color:#b9ddff;
+  font-weight:800;
+  font-size:.78rem;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+.site-footer{
+  max-width:1500px;
+  margin:24px auto 18px;
+  padding:14px 22px;
+  color:var(--muted);
+  border-top:1px solid rgba(214,179,106,.22);
+  font-size:.86rem;
+  text-align:center;
+  line-height:1.5;
+}
+.section-heading-row{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.help-btn{
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  padding:0;
+  min-width:0;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(10,28,48,.84)!important;
+  border-color:rgba(105,160,216,.72)!important;
+  color:#b9ddff!important;
+  box-shadow:none!important;
+  font-weight:900;
+}
+.help-modal{
+  position:fixed;
+  inset:0;
+  z-index:120;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,.62);
+  padding:24px;
+}
+.help-modal.show{display:flex}
+.help-window{
+  width:min(680px,92vw);
+  max-height:80vh;
+  overflow:auto;
+  border:1px solid rgba(105,160,216,.72);
+  border-radius:20px;
+  background:linear-gradient(180deg,rgba(14,31,52,.96),rgba(6,10,18,.98));
+  box-shadow:0 24px 70px rgba(0,0,0,.65);
+  padding:20px;
+  color:#e8f4ff;
+}
+.help-window h3{
+  color:#9fc7ff;
+  margin:0 0 10px;
+}
+.help-window .close-help{
+  float:right;
+  margin-left:12px;
+}
+.skill-action-area{
+  width:min(420px,100%);
+  margin:12px auto 0;
+  border:1px solid rgba(214,179,106,.3);
+  border-radius:16px;
+  background:rgba(0,0,0,.24);
+  padding:12px;
+}
+.skill-action-title{
+  text-align:center;
+  color:var(--gold2);
+  font-weight:800;
+  margin-bottom:10px;
+}
+.skill-icon-grid{
+  display:flex!important;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:9px;
+}
+.skill-icon-card{
+  width:74px!important;
+  min-height:74px!important;
+  padding:7px 6px!important;
+  border-radius:14px!important;
+}
+.skill-icon-placeholder{
+  width:34px!important;
+  height:34px!important;
+  border-radius:12px!important;
+  font-size:.82rem!important;
+}
+.skill-icon-name{
+  font-size:.72rem!important;
+  line-height:1.08!important;
+}
+.skill-reveal-box{
+  margin-top:10px!important;
+  min-height:0!important;
+  padding:11px!important;
+  font-size:.88rem;
+}
+.two-col-choice-layout{
+  display:grid;
+  grid-template-columns:minmax(240px,.75fr) minmax(320px,1.25fr);
+  gap:16px;
+  align-items:start;
+}
+.two-col-choice-layout .option-grid{
+  grid-template-columns:1fr!important;
+}
+.choice-detail-panel{
+  border:1px solid rgba(214,179,106,.36);
+  border-radius:18px;
+  background:rgba(22,17,9,.72);
+  padding:18px;
+  line-height:1.62;
+  min-height:220px;
+}
+.choice-detail-panel .custom-box{
+  margin-top:14px;
+}
+.description-panel{
+  border-color:rgba(214,179,106,.36)!important;
+  background:rgba(22,17,9,.72)!important;
+  color:var(--text)!important;
+}
+.floating-actions,
+#reviewCreateSlot .floating-actions{
+  min-width:260px;
+  min-height:58px;
+  padding:10px 12px!important;
+  border-radius:999px!important;
+}
+#reviewCreateSlot .floating-actions button{
+  min-width:112px;
+}
+.toast.error{
+  border-color:rgba(255,120,120,.75)!important;
+  background:rgba(62,14,24,.96)!important;
+  color:#ffe2e2!important;
+}
+.toast.success{
+  border-color:rgba(87,196,122,.75)!important;
+  background:rgba(8,48,26,.96)!important;
+  color:#dfffe7!important;
+}
+.toast.info{
+  border-color:rgba(105,160,216,.75)!important;
+  background:rgba(10,31,52,.96)!important;
+  color:#e8f4ff!important;
+}
+@media(max-width:900px){
+  .two-col-choice-layout{grid-template-columns:1fr}
+}
+
+
+/* v6.0 skill action toggle patch */
+.skill-action-area{
+  width:min(360px,100%);
+  margin:12px auto 0;
+  border:1px solid rgba(214,179,106,.3);
+  border-radius:16px;
+  background:rgba(0,0,0,.24);
+  padding:12px;
+}
+.skill-action-title{
+  text-align:center;
+  color:var(--gold2);
+  font-weight:800;
+  margin-bottom:10px;
+}
+.skill-icon-grid{
+  display:flex!important;
+  justify-content:center;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.skill-icon-card{
+  width:72px!important;
+  height:72px!important;
+  min-height:72px!important;
+  padding:6px!important;
+  border-radius:14px!important;
+}
+.skill-icon-card .skill-icon-name{
+  display:none!important;
+}
+.skill-icon-placeholder{
+  width:42px!important;
+  height:42px!important;
+  border-radius:13px!important;
+  font-size:.9rem!important;
+}
+.skill-reveal-box{
+  display:none;
+  margin-top:12px!important;
+  min-height:0!important;
+  padding:12px!important;
+  font-size:.9rem;
+  border-color:rgba(105,160,216,.45)!important;
+  background:rgba(10,22,34,.72)!important;
+}
+.skill-reveal-box.show{
+  display:block;
+}
+.skill-icon-card.active{
+  border-color:rgba(244,215,139,.9)!important;
+  background:rgba(54,38,12,.72)!important;
+  box-shadow:0 0 0 1px rgba(244,215,139,.2) inset,0 0 16px rgba(244,215,139,.18);
+}
+
+
+/* v6.0 skill section divider layout */
+.skill-action-area{
+  width:100%!important;
+  margin:16px 0 0!important;
+  border:0!important;
+  border-top:1px solid rgba(214,179,106,.35)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  padding:16px 0 0!important;
+}
+.skill-action-title{
+  display:none!important;
+}
+.skill-icon-grid{
+  display:grid!important;
+  grid-template-columns:repeat(auto-fit,minmax(92px,1fr))!important;
+  justify-content:stretch!important;
+  align-items:stretch!important;
+  gap:12px!important;
+}
+.skill-icon-card{
+  width:100%!important;
+  height:88px!important;
+  min-height:88px!important;
+  padding:10px!important;
+  border-radius:16px!important;
+}
+.skill-icon-placeholder{
+  width:44px!important;
+  height:44px!important;
+}
+.skill-reveal-box{
+  margin-top:14px!important;
+  width:100%!important;
+}
+
+
+/* v6.0 mockup-style skills and gear panel */
+.skill-action-area{
+  width:100%!important;
+  margin:18px 0 0!important;
+  border:0!important;
+  border-top:1px solid rgba(214,179,106,.35)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  padding:16px 0 0!important;
+}
+.skill-action-title{
+  display:block!important;
+  text-align:center;
+  color:var(--gold2);
+  font-weight:900;
+  font-size:1.05rem;
+  margin:0 0 12px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.skill-icon-grid{
+  display:flex!important;
+  justify-content:center!important;
+  align-items:center!important;
+  flex-wrap:wrap!important;
+  gap:22px!important;
+  margin-bottom:0!important;
+}
+.skill-icon-card{
+  width:auto!important;
+  height:auto!important;
+  min-height:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.skill-icon-card:hover{
+  transform:translateY(-1px);
+  background:transparent!important;
+  border:0!important;
+}
+.skill-icon-card.active{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+.skill-icon-card .skill-icon-name{
+  display:none!important;
+}
+.skill-icon-placeholder{
+  width:58px!important;
+  height:58px!important;
+  border-radius:14px!important;
+  border:1px solid rgba(244,215,139,.52)!important;
+  background:radial-gradient(circle at 35% 25%,rgba(244,215,139,.42),rgba(12,10,7,.88))!important;
+  box-shadow:0 10px 22px rgba(0,0,0,.38), inset 0 0 10px rgba(244,215,139,.16)!important;
+  font-size:1.05rem!important;
+  font-weight:900;
+}
+.skill-icon-card.active .skill-icon-placeholder{
+  border-color:rgba(244,215,139,.95)!important;
+  box-shadow:0 0 0 2px rgba(244,215,139,.20),0 0 18px rgba(244,215,139,.32), inset 0 0 12px rgba(244,215,139,.24)!important;
+}
+.skill-reveal-box{
+  display:none;
+  margin:16px auto 0!important;
+  width:min(620px,100%)!important;
+  min-height:0!important;
+  padding:14px 16px!important;
+  border:1px solid rgba(214,179,106,.34)!important;
+  border-radius:16px!important;
+  background:rgba(22,17,9,.72)!important;
+  line-height:1.55;
+}
+.skill-reveal-box.show{
+  display:block;
+}
+.class-gear-panel{
+  margin-top:22px;
+  border-top:1px solid rgba(214,179,106,.35);
+  padding-top:18px;
+}
+.class-gear-title{
+  color:var(--gold2);
+  font-weight:900;
+  font-size:1.05rem;
+  margin-bottom:14px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.class-gear-layout{
+  display:grid;
+  grid-template-columns:minmax(180px,.72fr) minmax(280px,1.28fr);
+  gap:20px;
+  align-items:start;
+}
+.class-gear-list{
+  display:grid;
+  gap:8px;
+}
+.class-gear-item{
+  border:0;
+  background:transparent;
+  color:var(--text);
+  text-align:left;
+  padding:6px 4px;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  box-shadow:none!important;
+  border-radius:8px;
+  font-weight:700;
+}
+.class-gear-item::before{
+  content:"•";
+  color:var(--gold2);
+  font-size:1.25rem;
+  line-height:1;
+}
+.class-gear-item:hover{
+  background:rgba(244,215,139,.08)!important;
+}
+.class-gear-item.active{
+  background:rgba(244,215,139,.13)!important;
+  color:#ffe7a8;
+}
+.class-gear-detail{
+  border:0;
+  border-left:1px solid rgba(105,160,216,.42);
+  padding:4px 0 4px 18px;
+  min-height:120px;
+  line-height:1.6;
+  color:#dcefff;
+}
+.class-gear-detail.empty{
+  color:var(--muted);
+  font-style:italic;
+}
+.class-gear-detail b{
+  color:#9fc7ff;
+}
+@media(max-width:800px){
+  .class-gear-layout{grid-template-columns:1fr}
+  .class-gear-detail{border-left:0;border-top:1px solid rgba(105,160,216,.42);padding:14px 0 0}
+}
+
+
+/* v6.0 preset page and skill/gear heading polish */
+.skill-action-title,
+.class-gear-title{
+  font-family:Georgia,serif!important;
+  font-size:1.45rem!important;
+  font-weight:900!important;
+  letter-spacing:0!important;
+  text-transform:none!important;
+  color:var(--gold2)!important;
+}
+.skill-action-title{
+  text-align:center!important;
+}
+.class-gear-title{
+  text-align:left!important;
+}
+.preset-review-shell .preset-preview-grid{
+  display:block!important;
+}
+.preset-review-shell #presetBrief{
+  display:none!important;
+}
+.preset-review-shell .right-panel{
+  width:min(920px,100%);
+  margin:18px auto 0!important;
+}
+.preset-review-shell .right-panel h2{
+  font-size:2.05rem;
+}
+.preset-action-bar{
+  position:sticky;
+  bottom:0;
+  z-index:60;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin-top:16px;
+  padding:10px;
+  border:1px solid rgba(214,179,106,.34);
+  border-radius:18px;
+  background:rgba(9,8,6,.92);
+  backdrop-filter:blur(10px);
+  box-shadow:0 -12px 36px rgba(0,0,0,.42);
+}
+.preset-action-right{
+  display:flex;
+  gap:10px;
+  justify-content:flex-end;
+  flex-wrap:wrap;
+}
+.preset-action-bar button{
+  min-width:118px;
+}
+.preset-action-right button:first-child{
+  min-width:170px;
+}
+.preset-action-right button:last-child{
+  min-width:260px;
+}
+@media(max-width:760px){
+  .preset-action-bar{
+    align-items:stretch;
+    flex-direction:column;
+  }
+  .preset-action-right{
+    justify-content:stretch;
+  }
+  .preset-action-bar button,
+  .preset-action-right button{
+    width:100%;
+  }
+}
+
+
+/* v6.0 dossier labels + help/floating action polish */
+.help-btn{
+  width:22px!important;
+  height:22px!important;
+  min-width:22px!important;
+  font-size:.78rem!important;
+  line-height:1!important;
+  padding:0!important;
+  border-radius:50%!important;
+  vertical-align:middle;
+}
+.section-heading-row{
+  gap:6px!important;
+}
+.floating-actions,
+#reviewCreateSlot .floating-actions,
+.floating-actions.review-actions{
+  position:fixed!important;
+  left:50%!important;
+  bottom:22px!important;
+  transform:translateX(-50%)!important;
+  z-index:90!important;
+  display:flex!important;
+  gap:12px!important;
+  justify-content:center!important;
+  align-items:center!important;
+  min-width:260px!important;
+  min-height:58px!important;
+  padding:10px 12px!important;
+  border:1px solid rgba(214,179,106,.42)!important;
+  border-radius:999px!important;
+  background:rgba(9,8,6,.90)!important;
+  backdrop-filter:blur(10px);
+  box-shadow:0 18px 50px rgba(0,0,0,.5)!important;
+}
+.floating-actions button,
+#reviewCreateSlot .floating-actions button,
+.floating-actions.review-actions button{
+  min-width:112px!important;
+}
+body.has-floating-actions{
+  padding-bottom:98px!important;
+}
+
 @media(max-width:1180px){.shell{grid-template-columns:220px 1fr}.right-panel{grid-column:1/-1}}@media(max-width:800px){.shell,.play-shell,.lore-row{grid-template-columns:1fr}.top{display:block}.option-grid{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}.statbar{grid-template-columns:repeat(3,1fr)}}
+
+/* v6.0 FINAL floating action bar normalization */
+body.veinfire-creation-active{
+  padding-bottom:118px!important;
+}
+#creationShell .floating-actions.veinfire-step-actions,
+#creationShell .floating-actions.review-actions{
+  position:fixed!important;
+  left:50%!important;
+  right:auto!important;
+  bottom:22px!important;
+  top:auto!important;
+  transform:translateX(-50%)!important;
+  z-index:9999!important;
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:12px!important;
+  width:auto!important;
+  min-width:286px!important;
+  max-width:calc(100vw - 32px)!important;
+  min-height:58px!important;
+  margin:0!important;
+  padding:10px 12px!important;
+  border:1px solid rgba(214,179,106,.46)!important;
+  border-radius:999px!important;
+  background:rgba(9,8,6,.92)!important;
+  backdrop-filter:blur(10px)!important;
+  box-shadow:0 18px 50px rgba(0,0,0,.55)!important;
+}
+#creationShell .floating-actions.veinfire-step-actions button,
+#creationShell .floating-actions.review-actions button{
+  min-width:112px!important;
+  height:40px!important;
+  margin:0!important;
+  border-radius:14px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+#creationShell .floating-actions.veinfire-step-actions #nextBtn,
+#creationShell .floating-actions.review-actions button:last-child{
+  min-width:132px!important;
+}
+#creationShell.review-mode main.panel{
+  opacity:0!important;
+  padding:0!important;
+  border-width:0!important;
+  overflow:hidden!important;
+  pointer-events:none!important;
+}
+#creationShell.review-mode .right-panel{
+  padding-bottom:110px!important;
+}
+@media(max-width:560px){
+  #creationShell .floating-actions.veinfire-step-actions,
+  #creationShell .floating-actions.review-actions{
+    left:16px!important;
+    right:16px!important;
+    bottom:14px!important;
+    transform:none!important;
+    width:auto!important;
+    min-width:0!important;
+  }
+  #creationShell .floating-actions.veinfire-step-actions button,
+  #creationShell .floating-actions.review-actions button{
+    flex:1 1 0!important;
+    min-width:0!important;
+  }
+}
+
+
+/* v6.0 HARD FIX: single global Character Creation action bar */
+#creationShell .floating-actions,
+#creationShell .controls:has(#backBtn),
+#creationShell .controls:has(#nextBtn),
+#reviewCreateSlot{
+  display:none!important;
+}
+.creation-action-bar{
+  position:fixed!important;
+  left:50%!important;
+  bottom:22px!important;
+  transform:translateX(-50%)!important;
+  z-index:2147483000!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:12px!important;
+  width:auto!important;
+  min-width:286px!important;
+  max-width:calc(100vw - 32px)!important;
+  min-height:58px!important;
+  margin:0!important;
+  padding:10px 12px!important;
+  border:1px solid rgba(214,179,106,.46)!important;
+  border-radius:999px!important;
+  background:rgba(9,8,6,.94)!important;
+  backdrop-filter:blur(10px)!important;
+  box-shadow:0 18px 50px rgba(0,0,0,.58)!important;
+}
+.creation-action-bar.stage-hidden{
+  display:none!important;
+}
+.creation-action-bar button{
+  min-width:112px!important;
+  height:40px!important;
+  margin:0!important;
+  border-radius:14px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+.creation-action-bar #creationActionNext{
+  min-width:132px!important;
+}
+body.veinfire-creation-active,
+body.has-floating-actions{
+  padding-bottom:118px!important;
+}
+@media(max-width:560px){
+  .creation-action-bar{
+    left:16px!important;
+    right:16px!important;
+    bottom:14px!important;
+    transform:none!important;
+    width:auto!important;
+    min-width:0!important;
+  }
+  .creation-action-bar button{
+    flex:1 1 0!important;
+    min-width:0!important;
+  }
+}
+
+
+/* v6.0 longer global floating action bar */
+.creation-action-bar{
+  min-width:520px!important;
+  width:min(620px,calc(100vw - 48px))!important;
+  justify-content:space-between!important;
+  padding:12px 18px!important;
+}
+.creation-action-bar button{
+  min-width:160px!important;
+  height:42px!important;
+}
+.creation-action-bar #creationActionNext{
+  min-width:190px!important;
+}
+@media(max-width:620px){
+  .creation-action-bar{
+    left:16px!important;
+    right:16px!important;
+    bottom:14px!important;
+    transform:none!important;
+    width:auto!important;
+    min-width:0!important;
+    padding:10px!important;
+  }
+  .creation-action-bar button{
+    min-width:0!important;
+    flex:1 1 0!important;
+  }
+}
+
+
+/* v6.0 canonical global action bar styles */
+.creation-action-bar{
+  position:fixed!important;
+  left:50%!important;
+  bottom:22px!important;
+  transform:translateX(-50%)!important;
+  z-index:2147483000!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  min-width:520px!important;
+  width:min(620px,calc(100vw - 48px))!important;
+  min-height:58px!important;
+  margin:0!important;
+  padding:12px 18px!important;
+  border:1px solid rgba(214,179,106,.46)!important;
+  border-radius:999px!important;
+  background:rgba(9,8,6,.94)!important;
+  backdrop-filter:blur(10px)!important;
+  box-shadow:0 18px 50px rgba(0,0,0,.58)!important;
+}
+.creation-action-bar.stage-hidden{display:none!important}
+.creation-action-bar button{
+  min-width:160px!important;
+  height:42px!important;
+  margin:0!important;
+  border-radius:14px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+.creation-action-bar #creationActionNext{min-width:190px!important}
+body.veinfire-creation-active,
+body.has-floating-actions{padding-bottom:118px!important}
+@media(max-width:620px){
+  .creation-action-bar{
+    left:16px!important;
+    right:16px!important;
+    bottom:14px!important;
+    transform:none!important;
+    width:auto!important;
+    min-width:0!important;
+    padding:10px!important;
+  }
+  .creation-action-bar button{
+    min-width:0!important;
+    flex:1 1 0!important;
+  }
+}
+
+/* v6.0 resume creation + iconless dialogue options */
+.dialogue-choice-card{
+  min-height:auto!important;
+  justify-content:flex-start!important;
+  text-align:left!important;
+  align-items:flex-start!important;
+  padding:13px 14px!important;
+}
+.dialogue-choice-card b{
+  font-size:.98rem;
+}
+.resume-choice-card{
+  border-color:rgba(105,160,216,.65)!important;
+  background:linear-gradient(180deg,rgba(15,35,58,.78),rgba(5,7,10,.72))!important;
+}
+.resume-choice-card h3{
+  color:#b9ddff!important;
+}
+
+
+/* v6.0 return-to-begin and campaign action alignment */
+.creation-head-actions{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:8px;
+}
+.small-action{
+  min-width:0!important;
+  height:auto!important;
+  padding:7px 11px!important;
+  border-radius:12px!important;
+  font-size:.82rem!important;
+}
+#betweenShell .controls{
+  justify-content:flex-end!important;
+}
+#genCampaignBtn{
+  min-width:190px;
+}
+@media(max-width:700px){
+  .creation-head-actions{
+    align-items:flex-start;
+    margin-top:10px;
+  }
+}
+
 </style>
 </head>
 <body>
 <div class="wrap">
-  <div class="top"><div><h1>VEINFIRE RPG Engine v5.9</h1></div><div class="small"></div></div>
+  <div class="top"><div><h1>VEINFIRE RPG Engine v6.0</h1><div class="beta-badge">Beta Prototype</div></div><div class="small"></div></div>
 
   <div class="guided-nav">
     <button id="navCreationBtn">Create Character</button>
@@ -1238,6 +2137,11 @@ body.has-floating-actions{padding-bottom:98px}
       <h2>How do you want to begin?</h2>
       <p>You can build a character from scratch, or start from a prepared VEINFIRE character. Presets are already filled and can skip straight to campaign generation, but you can still edit them first.</p>
       <div class="choice-grid">
+        <div id="resumeCreationCard" class="choice-card resume-choice-card stage-hidden">
+          <h3>Resume Character Creation</h3>
+          <p>Continue the unfinished character currently saved in this browser.</p>
+          <button id="resumeCreationBtn" class="secondary">Resume</button>
+        </div>
         <div class="choice-card">
           <h3>Create your own character</h3>
           <p>Walk through the full Creation Path and fill every part yourself.</p>
@@ -1259,20 +2163,22 @@ body.has-floating-actions{padding-bottom:98px}
       <label>Preset Character</label>
       <select id="presetSelect"></select>
       <div class="preset-preview-grid" style="margin-top:14px">
-        <div class="preset-brief" id="presetBrief"></div>
+        <div class="preset-brief" id="presetBrief" hidden></div>
         <div class="panel right-panel" style="margin:0"><h2>Character Dossier</h2><div id="presetDossier"></div></div>
       </div>
-      <div class="controls" style="justify-content:flex-start">
-        <button id="presetProceedBtn">Proceed to Campaign Generator</button>
-        <button id="presetEditBtn" class="secondary">Edit This Character</button>
+      <div class="preset-action-bar">
         <button id="presetBackBtn" class="secondary">Back</button>
+        <div class="preset-action-right">
+          <button id="presetEditBtn" class="secondary">Edit This Character</button>
+          <button id="presetProceedBtn">Proceed to Campaign Generator</button>
+        </div>
       </div>
     </section>
   </div>
 
   <div id="creationShell" class="shell">
     <aside class="panel"><h2>Creation Path</h2><div class="path" id="pathList"></div></aside>
-    <main class="panel"><div class="center-head"><div><div class="step-kicker" id="stepKicker">Step</div><h2 id="stepTitle">Create Character</h2><div class="small" id="stepHelp"></div></div><div class="small" id="stepCounter"></div></div><div id="stepContent"></div><div id="validationBox"></div><div class="controls"><button class="secondary" id="backBtn">Back</button><div><button id="nextBtn">Next</button></div></div></main>
+    <main class="panel"><div class="center-head"><div><div class="step-kicker" id="stepKicker">Step</div><h2 id="stepTitle">Create Character</h2><div class="small" id="stepHelp"></div></div><div class="creation-head-actions"><button id="backToBeginBtn" class="secondary small-action" type="button">Back to Begin</button><div class="small" id="stepCounter"></div></div></div><div id="stepContent"></div><div id="validationBox"></div><div class="controls"><button class="secondary" id="backBtn">Back</button><div><button id="nextBtn">Next</button></div></div></main>
     <aside class="panel right-panel"><h2>Character Dossier</h2><div id="reviewCreateSlot"></div><div id="dossier"></div></aside>
   </div>
 
@@ -1293,7 +2199,7 @@ body.has-floating-actions{padding-bottom:98px}
 
       <div id="archetypeDesc" class="campaign-copy-card"></div>
 
-      <div class="controls">
+      <div class="controls" style="justify-content:flex-end">
         <button id="genCampaignBtn">Generate Campaign</button>
       </div>
     </main>
@@ -1395,7 +2301,26 @@ body.has-floating-actions{padding-bottom:98px}
     </aside>
   </div>
 </div>
-<div id="toast" class="toast" class="toast"></div>
+<div id="toast" class="toast"></div>
+
+
+  <div id="creationActionBar" class="creation-action-bar stage-hidden" aria-label="Character creation actions">
+    <button id="creationActionBack" class="secondary" type="button">Back</button>
+    <button id="creationActionNext" type="button">Next</button>
+  </div>
+
+  <footer class="site-footer">
+    © 2026 Kanniti Singsanan. VEINFIRE, Eldoria, and all related lore are original creative works. All rights reserved. Personal, non-commercial play and fan creation are welcome under the project notice.
+  </footer>
+
+
+<div id="helpModal" class="help-modal" role="dialog" aria-modal="true">
+  <div class="help-window">
+    <button id="closeHelpBtn" class="secondary close-help">Close</button>
+    <h3 id="helpTitle">Help</h3>
+    <div id="helpBody"></div>
+  </div>
+</div>
 
 <script>
 const DB={
@@ -1418,15 +2343,15 @@ genders:{
 },
 
 classes:{
- "Wayfarer":{icon:"WY",desc:"A road-tested survivor built for travel, pursuit, and staying alive when maps stop being honest. Wayfarers are not simply wanderers; they are people who know how weather, rumors, terrain, and fear move across a region. They fit campaigns about missing caravans, forbidden routes, and dangerous crossings.",mods:{Survival:1,Presence:-1},skills:["Route Reading","Camp Discipline","Hazard Sense"]},
- "Bladebound":{icon:"BB",desc:"A disciplined fighter whose body remembers violence before the mind finishes naming it. Bladebound characters may be soldiers, duelists, guards, pit fighters, or self-taught survivors, but their strength comes from practice rather than destiny. They fit scenes where standing ground matters.",mods:{Body:1,Mind:-1},skills:["Weapon Pressure","Guard Stance","Battlefield Nerve"]},
- "Vein Adept":{icon:"VA",desc:"A trained or half-trained Veinborn specialist who survives by understanding the cost of power. A Vein Adept is not a master; they are someone dangerous enough to matter and vulnerable enough to fear overreach. This class only makes full sense for Veinborn characters.",mods:{Vein:1,Body:-1},skills:["Pressure Reading","Controlled Channeling","Veinburn Awareness"],requires:"Veinborn"},
- "Runehand":{icon:"RH",desc:"A technical operator trained around marks, seals, arrays, devices, and the geometry of consequence. Runehands may channel magic if Veinborn or handle rune craft as Mundanes, but either way they know that a wrong line can become a wound. They fit investigations, ruins, devices, and sabotage.",mods:{Craft:1,Survival:-1},skills:["Rune Inspection","Circuit Logic","Careful Hands"]},
- "Silver Tongue":{icon:"ST",desc:"A social operator who survives through speech, timing, lies, charm, etiquette, and pressure. Silver Tongues can be negotiators, courtesans, informants, clerks, fixers, or performers. They fit intrigue, brothel-house campaigns, guild politics, and any scene where one sentence can change the danger.",mods:{Presence:1,Body:-1},skills:["Read the Room","Bargain Pressure","Mask Intent"]},
- "Field Medic":{icon:"FM",desc:"A practical healer, triage worker, or body-wise survivor who knows how quickly heroics become bleeding. Field Medics do not erase consequences; they buy time, reduce panic, and recognize symptoms before others admit danger. They fit Blight, Veinburn, war, and expedition campaigns.",mods:{Mind:1,Presence:-1},skills:["Triage","Symptom Reading","Steady Hands"]},
- "Relic Seeker":{icon:"RS",desc:"A ruin-facing explorer trained to notice old stone, old greed, and the difference between treasure and bait. Relic Seekers are useful around Ordanthian claims, Titanforged remnants, and guild salvage politics. They fit artifact campaigns where knowledge can be as dangerous as theft.",mods:{Mind:1,Body:-1},skills:["Artifact Caution","Ruin Etiquette","Claim Sense"]},
- "House Worker":{icon:"HW",desc:"A worker shaped by intimate labor, house politics, patron management, and survival inside an establishment where secrets are currency. This class is built for brothel-house campaigns, but can also fit informants, performers, and social survivors from other settings. It centers agency, leverage, safety, reputation, and the ability to read desire without surrendering power.",mods:{Presence:1,Survival:-1},skills:["Patron Reading","House Rumors","Boundary Sense"]},
- "Whore":{icon:"WH",desc:"A sex worker whose survival depends on desire, boundaries, negotiation, performance, and the careful reading of patrons before private doors close. This class is adult-oriented and built for campaigns involving brothel-house politics, transactional intimacy, blackmail, debt, safety, and reputation. It does not force explicit scenes; instead, it gives the character tools for consent management, erotic performance, patron leverage, and survival in a house where secrets are currency.",mods:{Presence:2,Body:-1,Mind:-1},skills:["Erotic Performance","Patron Arousal Reading","Consent and Boundary Control","Pillow-Talk Extraction","Aftercare Awareness"]}
+ "Wayfarer":{icon:"WY",desc:"A road-tested survivor built for travel, pursuit, and staying alive when maps stop being honest. Wayfarers are not simply wanderers; they are people who know how weather, rumors, terrain, and fear move across a region. They fit campaigns about missing caravans, forbidden routes, and dangerous crossings.",mods:{Survival:1,Presence:-1},skills:["Route Reading","Camp Discipline","Hazard Sense"],gear:["travel cloak","water skin","rations x3","utility knife","cord"]},
+ "Bladebound":{icon:"BB",desc:"A disciplined fighter whose body remembers violence before the mind finishes naming it. Bladebound characters may be soldiers, duelists, guards, pit fighters, or self-taught survivors, but their strength comes from practice rather than destiny. They fit scenes where standing ground matters.",mods:{Body:1,Mind:-1},skills:["Weapon Pressure","Guard Stance","Battlefield Nerve"],gear:["medium weapon","backup knife","reinforced coat","whetstone","bandage roll"]},
+ "Vein Adept":{icon:"VA",desc:"A trained or half-trained Veinborn specialist who survives by understanding the cost of power. A Vein Adept is not a master; they are someone dangerous enough to matter and vulnerable enough to fear overreach. This class only makes full sense for Veinborn characters.",mods:{Vein:1,Body:-1},skills:["Pressure Reading","Controlled Channeling","Veinburn Awareness"],gear:["channeling focus","grounding charm","pressure tabs","burn salve","rune-marked gloves"],requires:"Veinborn"},
+ "Runehand":{icon:"RH",desc:"A technical operator trained around marks, seals, arrays, devices, and the geometry of consequence. Runehands may channel magic if Veinborn or handle rune craft as Mundanes, but either way they know that a wrong line can become a wound. They fit investigations, ruins, devices, and sabotage.",mods:{Craft:1,Survival:-1},skills:["Rune Inspection","Circuit Logic","Careful Hands"],gear:["rune chalk","brass calipers","seal scraper","grounding rod","wax tablets"]},
+ "Silver Tongue":{icon:"ST",desc:"A social operator who survives through speech, timing, lies, charm, etiquette, and pressure. Silver Tongues can be negotiators, courtesans, informants, clerks, fixers, or performers. They fit intrigue, brothel-house campaigns, guild politics, and any scene where one sentence can change the danger.",mods:{Presence:1,Body:-1},skills:["Read the Room","Bargain Pressure","Mask Intent"],gear:["fine scarf","forged invitation","hidden coin purse","perfume vial","blackmail note"]},
+ "Field Medic":{icon:"FM",desc:"A practical healer, triage worker, or body-wise survivor who knows how quickly heroics become bleeding. Field Medics do not erase consequences; they buy time, reduce panic, and recognize symptoms before others admit danger. They fit Blight, Veinburn, war, and expedition campaigns.",mods:{Mind:1,Presence:-1},skills:["Triage","Symptom Reading","Steady Hands"],gear:["burn salve","triage cloth","splints","clean needle","sedative tincture"]},
+ "Relic Seeker":{icon:"RS",desc:"A ruin-facing explorer trained to notice old stone, old greed, and the difference between treasure and bait. Relic Seekers are useful around Ordanthian claims, Titanforged remnants, and guild salvage politics. They fit artifact campaigns where knowledge can be as dangerous as theft.",mods:{Mind:1,Body:-1},skills:["Artifact Caution","Ruin Etiquette","Claim Sense"],gear:["rope","chalk","lamp","dust mask","probe rod"]},
+ "House Worker":{icon:"HW",desc:"A worker shaped by intimate labor, house politics, patron management, and survival inside an establishment where secrets are currency. This class is built for brothel-house campaigns, but can also fit informants, performers, and social survivors from other settings. It centers agency, leverage, safety, reputation, and the ability to read desire without surrendering power.",mods:{Presence:1,Survival:-1},skills:["Patron Reading","House Rumors","Boundary Sense"],gear:["house token","ledger scrap","perfume ribbon","quiet shoes","boundary pin"]},
+ "Whore":{icon:"WH",desc:"A sex worker whose survival depends on desire, boundaries, negotiation, performance, and the careful reading of patrons before private doors close. This class is adult-oriented and built for campaigns involving brothel-house politics, transactional intimacy, blackmail, debt, safety, and reputation. It does not force explicit scenes; instead, it gives the character tools for consent management, erotic performance, patron leverage, and survival in a house where secrets are currency.",mods:{Presence:2,Body:-1,Mind:-1},skills:["Erotic Performance","Patron Arousal Reading","Consent and Boundary Control","Pillow-Talk Extraction","Aftercare Awareness"],gear:["perfumed oil","painted lip tin","client token","hidden coin purse","hairpin blade","clean silk wrap"]}
 },
 homes:{
  Ordanthia:{icon:"Or",desc:"Ruin-rich artifact country of ledgers, claims, old stone, and dangerous discoveries.",mods:{Craft:1,Survival:-1}},
@@ -1621,6 +2546,51 @@ function gearChip(name){
  return `<span class="tag compact-chip${longClass}">${escapeHtml(name)}<span class="compact-tip"><b>${escapeHtml(name)}</b><br>${escapeHtml(u.desc)}<br><br><b>Use:</b> ${escapeHtml(u.check)}</span></span>`;
 }
 
+
+function skillIconLabel(name){
+ const cleaned=String(name||"?").replace(/[^A-Za-z]/g,"");
+ return (cleaned.slice(0,2)||"?").toUpperCase();
+}
+function skillDetailText(name){
+ const u=skillUsage(name);
+ return {desc:u.desc||"A learned capability that creates fictional permission in the right scene.", check:u.check||"The GM chooses the stat/check based on the method, risk, and situation."};
+}
+function renderSkillIconGrid(skills,scope){
+ if(!skills||!skills.length)return `<span class="small">No skills listed.</span>`;
+ return `<div class="skill-action-area">
+  <div class="skill-action-title">Skills</div>
+  <div class="skill-icon-grid">${skills.map((s)=>`<button type="button" class="skill-icon-card" title="${escapeHtml(s)}" data-skill-scope="${escapeHtml(scope)}" data-skill-name="${escapeHtml(s)}">
+   <span class="skill-icon-placeholder">${escapeHtml(skillIconLabel(s))}</span>
+   <span class="skill-icon-name">${escapeHtml(s)}</span>
+  </button>`).join("")}</div>
+  <div class="skill-reveal-box" id="skillReveal_${escapeHtml(scope)}"></div>
+ </div>`;
+}
+function bindSkillIconGrid(){
+ document.querySelectorAll("[data-skill-name]").forEach(btn=>{
+   btn.onclick=()=>{
+    const scope=btn.dataset.skillScope;
+    const name=btn.dataset.skillName;
+    const box=document.getElementById(`skillReveal_${scope}`);
+    const wasActive=btn.classList.contains("active");
+
+    document.querySelectorAll(`[data-skill-scope="${scope}"]`).forEach(x=>x.classList.remove("active"));
+
+    if(wasActive){
+      if(box){box.classList.remove("show");box.innerHTML="";}
+      return;
+    }
+
+    btn.classList.add("active");
+    const d=skillDetailText(name);
+    if(box){
+      box.innerHTML=`<b>${escapeHtml(name)}</b><br>${escapeHtml(d.desc)}<br><span class="small">Session use: ${escapeHtml(d.check)}</span>`;
+      box.classList.add("show");
+    }
+   };
+ });
+}
+
 function renderSkillUsageList(skills){
  if(!skills||!skills.length) return `<div class="usage-card"><b>No starting skills yet.</b><div class="small">Choose a race and class to see starting skills.</div></div>`;
  return skills.map(s=>{const u=skillUsage(s);return `<div class="usage-card"><b>${escapeHtml(s)}</b><div>${escapeHtml(u.desc)}</div><div class="small"><b>Session Use:</b> ${escapeHtml(u.check)}</div></div>`}).join("");
@@ -1629,8 +2599,10 @@ function renderGearUsageList(items){
  if(!items||!items.length)return "";
  return `<div class="gear-chip-wrap">${items.map(item=>{
    const name=typeof item==="string"?item:item.name;
-   const desc=typeof item==="string"?(GEAR_DESCRIPTIONS[name]?.description||"A carried item whose usefulness depends on how it is used in the fiction."):item.description||"A carried item whose usefulness depends on how it is used in the fiction.";
-   const use=typeof item==="string"?(GEAR_DESCRIPTIONS[name]?.use||"May grant leverage, access, permission, advantage, or a reasonable stat check when relevant."):item.use||"May grant leverage, access, permission, advantage, or a reasonable stat check when relevant.";
+   if(!name)return "";
+   const usage=gearUsage(name);
+   const desc=typeof item==="string"?usage.desc:(item.description||usage.desc);
+   const use=typeof item==="string"?usage.check:(item.use||usage.check);
    return `<span class="gear-chip tip-box" data-tip="${escapeHtml(desc+" Use: "+use)}">${escapeHtml(name)}</span>`;
  }).join("")}</div>`;
 }
@@ -1727,6 +2699,27 @@ const GEAR_USE={
  "hidden coin ribbon":"Can protect payment, hide a message, or keep emergency money through a search. Usually supports Craft or Survival.",
  "safety pin blade":"Can cut ties, threaten at intimate range, slice fabric, or give a last defensive option. Usually supports Body, Craft, or Survival.",
  "client note slips":"Can track patron habits, blackmail leads, warnings, codes, or contradictions. Usually supports Mind or Presence."
+,
+ "channeling focus":"May support Vein checks when stabilizing controlled channeling, reading pressure, or avoiding reckless overdraw.",
+ "grounding charm":"May reduce difficulty or consequence when dealing with unstable residue, static discharge, or early Veinburn warning signs.",
+ "rune-marked gloves":"May support Craft or Vein checks when touching rune-work, residue, hot mechanisms, or suspicious artifacts.",
+ "rune chalk":"May support Craft checks to mark rune paths, safe routes, traps, doors, or unstable geometry.",
+ "brass calipers":"May support Mind or Craft checks involving precise measurements, forgeries, locks, seals, mechanisms, or rune spacing.",
+ "fine scarf":"May support Presence checks involving disguise, social presentation, misdirection, or quiet signaling.",
+ "forged invitation":"May grant access or create a Presence/Mind check when entering restricted social spaces.",
+ "hidden coin purse":"May preserve coin through searches or support bribes when visible wealth would create danger.",
+ "perfume vial":"May support Presence checks involving memory, seduction, disguise, misdirection, or identifying a repeated scent.",
+ "blackmail note":"May create leverage in social conflict, but using it can raise suspicion, legal heat, or relationship damage.",
+ "house token":"May grant limited access or recognition, but also ties the character to house politics.",
+ "ledger scrap":"May support Mind or Presence checks when proving a contradiction, pressuring a debtor, or tracing payment.",
+ "perfume ribbon":"May support social recognition, disguise, intimacy, or a remembered presence in a scene.",
+ "quiet shoes":"May support Survival checks for quiet movement in halls, stairs, private rooms, or night streets.",
+ "boundary pin":"May support Presence checks to assert limits, invoke house custom, or signal negotiated protection.",
+ "painted lip tin":"May support Presence checks where appearance, performance, or controlled vulnerability matters.",
+ "client token":"May grant access to a patron trail, private room, or house ledger, but can become incriminating.",
+ "hairpin blade":"May allow a concealed close-range option, cutting restraint, or emergency defense when searched lightly.",
+ "clean silk wrap":"May function as presentation, improvised bandage, concealment, signal cloth, or social prop."
+
 };
 function personalItemFlavor(name){
  const n=String(name||"").trim();
@@ -1753,7 +2746,7 @@ function showToast(message,type=""){
  if(!t)return alert(String(message).replace(/<[^>]+>/g,""));
  if(!type){
    const plain=String(message).replace(/<[^>]+>/g," ").toLowerCase();
-   const isBad=/(not ready|required|must|cannot|failed|error|rejected|missing|invalid|blocked)/.test(plain);
+   const isBad=/(not ready|required|must|cannot|can't|failed|error|rejected|missing|invalid|blocked|no packet|select .* first|build .* first|unable|denied)/.test(plain);
    type=isBad?"error":"success";
  }
  t.innerHTML=message;
@@ -1783,7 +2776,7 @@ const CANON_DOC_RULES=[
  {id:"DOC-DEAD-ZONE-STABLE",level:"reject",source:"Writer Personal Note v5 / Worldbuilding v5",why:"Dead Zones are stable, low/no magic, strategically valuable, and often protected by law; they should not casually become mana-rich.",patterns:["dead zone"],conflicts:["mana rich","high magic","major vein","overflowing with mana","stronger magic","unlimited magic","perfect casting"]},
  {id:"DOC-BLIGHT-LINGERS",level:"reject",source:"Writer Personal Note v5 / Worldbuilding v5",why:"Blight lingers and does not heal normally; Blighted Zones have long-lived contamination and unreliable geography.",patterns:["blight","blighted zone"],conflicts:["healed completely","cured instantly","cleansed easily","safe and normal","no corruption","fully restored"]},
  {id:"DOC-RUNES-GEOMETRY",level:"warning",source:"Writer Personal Note v5 / Worldbuilding v5",why:"Runes are circuitry and geometry dictates outcome; custom rune claims should respect geometry, power source, and maintenance limits.",patterns:["rune","runic"],conflicts:["anything i imagine","no geometry","works without pattern","ignores geometry","unbreakable rune"]},
- {id:"DOC-TITAN-ARTIFACTS",level:"reject",source:"Worldbuilding v5 / Complete Timeline v5",why:"Titanforged ambient-runed artifacts are rare, priceless, and politically dangerous. A starting character cannot casually own a world-breaking or self-sustaining legendary artifact.",patterns:["titanforged artifact","ambient-runed weapon","self-sustaining artifact","ancient weapon"],conflicts:["my starting gear","i own","belongs to me","family heirloom","unlimited","world ending","controls veins","controls mana"]},
+ {id:"DOC-TITAN-ARTIFACTS",level:"reject",source:"Worldbuilding v5 / Complete Timeline v5",why:"Titanforged ambient-runed artifacts are rare, priceless, and politically dangerous. A starting character cannot casually own a world-breaking or self-sustaining legendary artifact.",patterns:["titanforged artifact","ambient-runed weapon","self-sustaining artifact","ancient weapon"],conflicts:["my class gear","i own","belongs to me","family heirloom","unlimited","world ending","controls veins","controls mana"]},
  {id:"DOC-COMPACT-NOT-ABOVE-LAW",level:"reject",source:"Complete Timeline v5",why:"The Vein Compact established limits, monitoring, Dead Zones, and responsibility. Characters are not above Compact law by birth or faction tie.",patterns:["above the compact","compact does not apply","immune to compact","ignore the vein compact","exempt from compact"],conflicts:[""]},
  {id:"DOC-CURRENT-YEAR",level:"warning",source:"Complete Timeline v5",why:"Uploaded timeline sets current year as 200 CR / 150 VR. Backstories that claim a different present year should be reframed unless the campaign deliberately changes era.",patterns:["current year","present year","now it is"],conflicts:["201 cr","250 cr","300 cr","149 vr","200 vr"]},
  {id:"DOC-RANK-MASTER",level:"warning",source:"Terminology v5 / Worldbuilding v5",why:"Master and Grandmaster titles are formal, rare, and require trials/status. A starting character should not begin as Master or Grandmaster without special campaign approval.",patterns:["master ","grandmaster","archmage"],conflicts:["i am","starting as","already","my title"]},
@@ -1847,7 +2840,6 @@ const SECTION_NOTES={
  origin:["Origin can open a door, close a mouth, or make a guard look twice.","It grants texture, not immunity."],
  background:["Background is what you know how to do before the first Bell tolls.","It should give you useful habits and believable limits."],
  className:["Class is your role under pressure, not your destiny.","It gives starting skills and tradeoffs, but the campaign will still judge actions by risk and consequence.","Skills describe what checks become reasonable and how the GM frames risk. Their strength depends on the current situation, opposition, preparation, and consequences.","Adult-oriented classes such as Whore are about agency, consent, leverage, safety, survival, and social consequence; the engine does not force explicit scenes."],
- startingGear:["These are the things within reach when the first Bell tolls.","None of them solve the story alone, but the right tool can keep a mistake from becoming a corpse.","Gear usually grants permission, leverage, reduced difficulty, better positioning, or access to an action. It never guarantees success; the GM chooses the stat and difficulty from the situation."],
  factionTie:["A faction tie means someone may open a door for you, then ask why you walked through it.","Protection always creates expectation."],
  flaw:["A flaw is a pressure point. It should hurt at the worst possible time and make the character more interesting, not stronger.","The best flaw does not punish every scene; it waits until the cost matters."],
  goal:["A goal points your character forward. The best goals are small enough to chase and sharp enough to cost something.","A good goal gives the campaign a handle on your choices."],
@@ -1864,7 +2856,6 @@ const STEPS=[
  {key:"origin",title:"Origin",kind:"cardsCustom",source:"origins",prompt:"Choose the station or circumstance you came from.",help:"Origin is personal scale, not legal immunity."},
  {key:"background",title:"Background",kind:"cardsCustom",source:"backgrounds",prompt:"Choose what you did before the campaign found you.",help:"Background gives training and starting assumptions."},
  {key:"className",title:"Class",kind:"cards",source:"classes",prompt:"Choose your adventuring role.",help:"Class defines your strongest play pattern, core training, and what kind of problem you are best prepared to face."},
- {key:"startingGear",title:"Starting Gear",kind:"cards",source:"startingGear",prompt:"Choose what you carry at the beginning.",help:"Starting gear is useful, but not legendary."},
  {key:"factionTie",title:"Faction Tie",kind:"cardsCustom",source:"factions",prompt:"Choose who knows your name before the first Bell tolls.",help:"A faction tie grants doors and obligations. Never immunity."},
  {key:"flaw",title:"Flaw",kind:"cardsCustom",source:"flaws",prompt:"Choose the weakness that follows you into hard choices.",help:"A flaw should create pressure, not a secret advantage."},
  {key:"goal",title:"Goal",kind:"cardsCustom",source:"goals",prompt:"Choose what keeps you moving.",help:"Goals should be personal and playable, not destiny."},
@@ -1876,7 +2867,7 @@ const STEPS=[
  {key:"review",title:"Review",kind:"review",prompt:"Review the dossier and create your character.",help:"Difficulty emerges from the world and your actions."}
 ];
 
-const APP_VERSION="5.9";
+const APP_VERSION="6.0";
 function freshState(){
  return {
   version:APP_VERSION,
@@ -1893,7 +2884,6 @@ function freshState(){
     origin:"",
     background:"",
     className:"",
-    startingGear:"",
     factionTie:"",
     flaw:"",
     goal:"",
@@ -1936,9 +2926,31 @@ function freshState(){
 }
 let S=freshState();
 function $(id){return document.getElementById(id)};function pick(a){return a[Math.floor(Math.random()*a.length)]};function roll(n=20){return 1+Math.floor(Math.random()*n)};function clamp(n,a,b){return Math.max(a,Math.min(b,n))};function now(){return new Date().toLocaleTimeString()};function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
-function save(){localStorage.setItem("veinfire_rpg_v59",JSON.stringify(S))}function load(){
- try{ localStorage.removeItem("veinfire_rpg_v59"); }catch(e){}
- S=freshState();
+function save(){localStorage.setItem("veinfire_rpg_v60",JSON.stringify(S))}function load(){
+ try{
+   const raw=localStorage.getItem("veinfire_rpg_v60");
+   if(raw){
+     const parsed=JSON.parse(raw);
+     const base=freshState();
+     S={...base,...parsed};
+     S.form={...base.form,...(parsed.form||{})};
+     if(S.form)S.form=normalizeAppearanceInput(S.form);
+     if(S.campaign?.npcs)S.campaign.npcs.forEach(n=>{if(typeof normalizeNpc==="function")normalizeNpc(n);});
+
+     // Startup rule:
+     // Preserve saved data, but always open the engine at the Welcome page.
+     // This prevents stale saved phases from loading directly into Creation, Review,
+     // GM Handoff, Tracker, or a half-rendered state.
+     S.phase="welcome";
+   }else{
+     S=freshState();
+     S.phase="welcome";
+   }
+ }catch(e){
+   console.warn("Failed to load save; starting fresh.",e);
+   S=freshState();
+   S.phase="welcome";
+ }
 }
 function addLog(title,text){S.log.unshift({t:now(),title,text});renderLog();save()}
 function currentStep(){return STEPS[S.step]||STEPS[0]}function sumMods(base,mods){let o={...base};Object.entries(mods||{}).forEach(([k,v])=>o[k]=(o[k]||0)+v);return o}
@@ -2037,7 +3049,7 @@ const OPTION_DETAIL_EXTRA={
   "Rune Apprentice":"A rune apprentice understands that a line drawn wrong can become a wound. They are not masters, but they know enough to fear confident amateurs.",
   "Healer's Aide":"A healer's aide learns truth from bodies before officials finish arguing. They may be gentle, but they have seen how quickly politics abandons the injured.",
   "Blight Scout":"A Blight scout walks where maps become suggestions. They know survival can depend on admitting that the world is wrong before it proves it.",
-  Custom:"A custom background should describe a trade, failure, obligation, or training path that can be pressured during play. It should not begin at master rank. It does not add hidden gear; equipment comes from Starting Gear and Personal Object."
+  Custom:"A custom background should describe a trade, failure, obligation, or training path that can be pressured during play. It should not begin at master rank. It does not add hidden gear; equipment comes from Class Gear and Personal Object."
  },
  startingGear:{
   "Road Kit":"This kit belongs to someone expecting distance, weather, and inconvenience. It will not win a fight alone, but it can keep a bad night from becoming a fatal one.",
@@ -2136,7 +3148,29 @@ function selectedDetail(source,val){
  html+=statPreview(d.mods);
  return html;
 }
-function renderNotes(key){const notes=SECTION_NOTES[key]||[];if(!notes.length)return "";return `<div class="section-notes"><b>Notes</b><ul>${notes.map(n=>`<li>${n}</li>`).join("")}</ul></div>`}
+
+function helpButtonFor(key,title){
+ const notes=(typeof SECTION_NOTES!=="undefined"&&SECTION_NOTES[key])?SECTION_NOTES[key]:[];
+ if(!notes||!notes.length)return "";
+ return `<button type="button" class="help-btn" title="Open notes" onclick="openHelpNotes('${escapeHtml(key)}','${escapeHtml(title||key)}')">?</button>`;
+}
+function openHelpNotes(key,title){
+ const notes=(typeof SECTION_NOTES!=="undefined"&&SECTION_NOTES[key])?SECTION_NOTES[key]:[];
+ const modal=$("helpModal"), h=$("helpTitle"), b=$("helpBody");
+ if(!modal||!h||!b)return;
+ h.textContent=title+" Notes";
+ b.innerHTML=notes.length?`<ul>${notes.map(n=>`<li>${escapeHtml(n)}</li>`).join("")}</ul>`:"No notes for this section.";
+ modal.classList.add("show");
+}
+function closeHelpNotes(){
+ const modal=$("helpModal");
+ if(modal)modal.classList.remove("show");
+}
+function sectionTitleWithHelp(title,key){
+ return `<span class="section-heading-row"><span>${escapeHtml(title)}</span>${helpButtonFor(key,title)}</span>`;
+}
+
+function renderNotes(key){return "";}
 
 
 
@@ -2444,7 +3478,7 @@ function randomizeCustomFactionTie(btn){
  renderAll();
  showToast("<b>Faction tie rolled.</b><br>You can edit the tie and stat choices before continuing.","success");
 }
-function randomButtonInline(kind){
+function randomButton(kind,inline=false){
  const map={
   origin:`randomizeCustomOrigin(this)`,
   background:`randomizeCustomBackground(this)`,
@@ -2452,7 +3486,8 @@ function randomButtonInline(kind){
   backstory:`randomizeBackstory(this)`,
   appearance:`randomizeAppearance(this)`
  };
- return `<button type="button" class="dice-btn secondary" title="Randomize this section" onclick="${map[kind]}">🎲</button>`;
+ const btn=`<button type="button" class="dice-btn secondary" title="Randomize this section" onclick="${map[kind]}">🎲</button>`;
+ return inline?btn:`<div class="creation-random-header">${btn}</div>`;
 }
 
 function randomButton(kind){
@@ -2520,7 +3555,7 @@ function stepErrors(index){
  const st=STEPS[index], f=S.form, errors=[];
  if(!st || st.key==="review") return errors;
  if(st.key==="name"){
-   const err=qualityCheckField(st.title,f[st.key],"object"); if(err) errors.push(err);
+   const err=qualityCheckField(st.title,f[st.key],st.key==="name"?"name":"object"); if(err) errors.push(err);
  }
  if(st.key==="appearance"){
    if(!isAppearanceComplete()) errors.push("Appearance needs Body / Build, Face / Features, Hair / Eyes, Clothing / Style, Scars / Marks / Tells, and Presence / First Impression.");
@@ -2537,7 +3572,7 @@ function stepErrors(index){
    const err=qualityCheckField(st.title,backstoryCombined(),"backstory"); if(err) errors.push(err);
  }
  if(st.key==="object"){
-   const err=qualityCheckField(st.title,f[st.key],"object"); if(err) errors.push(err);
+   const err=qualityCheckField(st.title,f[st.key],st.key==="name"?"name":"object"); if(err) errors.push(err);
  }
  if((st.kind==="cards"||st.kind==="cardsCustom") && !f[st.key]) errors.push(`${st.title} must be selected.`);
  if(st.key==="kind"){
@@ -2762,10 +3797,54 @@ function renderNameStep(){
  </div>${renderNotes("name")}`;
 }
 
+
+function renderDialogueChoiceLayout(st,source,opts,val){
+ const detail=val?selectedDetail(source,val):emptySelectionDetail(st.title);
+ const customOn=val==="Custom";
+ const custom=`<div class="custom-box ${customOn?'':'hidden'}"><label>Custom ${escapeHtml(st.title)}</label><textarea id="customInput" placeholder="Write your own ${escapeHtml(st.title.toLowerCase())} here.">${escapeHtml(S.form[st.key+"Custom"]||"")}</textarea></div>`;
+ return `<div class="two-col-choice-layout">
+  <div class="option-grid">${opts.map(o=>`<div class="option-card dialogue-choice-card ${o===val?'active':''}" data-val="${escapeHtml(o)}"><b>${escapeHtml(o)}</b></div>`).join("")}</div>
+  <div class="choice-detail-panel">${detail}${custom}</div>
+ </div>`;
+}
+
+
+function renderClassGearPanel(gear,scope){
+ if(!gear||!gear.length)return "";
+ return `<div class="class-gear-panel">
+  <div class="class-gear-title">Gear</div>
+  <div class="class-gear-layout">
+   <div class="class-gear-list">${gear.map(g=>`<button type="button" class="class-gear-item" data-gear-scope="${escapeHtml(scope)}" data-gear-name="${escapeHtml(g)}">${escapeHtml(g)}</button>`).join("")}</div>
+   <div class="class-gear-detail empty" id="gearReveal_${escapeHtml(scope)}">Select a gear item to view its description and session use.</div>
+  </div>
+ </div>`;
+}
+function bindClassGearPanel(){
+ document.querySelectorAll("[data-gear-name]").forEach(btn=>{
+   btn.onclick=()=>{
+    const scope=btn.dataset.gearScope;
+    const name=btn.dataset.gearName;
+    const box=document.getElementById(`gearReveal_${scope}`);
+    const wasActive=btn.classList.contains("active");
+    document.querySelectorAll(`[data-gear-scope="${scope}"]`).forEach(x=>x.classList.remove("active"));
+    if(wasActive){
+      if(box){box.classList.add("empty");box.innerHTML="Select a gear item to view its description and session use.";}
+      return;
+    }
+    btn.classList.add("active");
+    const u=gearUsage(name);
+    if(box){
+      box.classList.remove("empty");
+      box.innerHTML=`<b>${escapeHtml(name)}</b><br>${escapeHtml(u.desc)}<br><span class="small">Session use: ${escapeHtml(u.check)}</span>`;
+    }
+   };
+ });
+}
+
 function renderStep(){
  const st=currentStep();
  $("stepKicker").textContent=`Step ${S.step+1} of ${STEPS.length}`;
- $("stepTitle").textContent=st.title;
+ $("stepTitle").innerHTML=sectionTitleWithHelp(st.title,st.key);
  $("stepHelp").textContent=st.help;
  $("stepCounter").textContent=st.prompt;
  $("backBtn").disabled=S.step===0;
@@ -2789,26 +3868,29 @@ function renderStep(){
   }else{
     html=`<label>${st.title}</label><textarea id="mainInput" placeholder="${st.prompt}">${escapeHtml(S.form[st.key]||"")}</textarea>${renderNotes(st.key)}`;
   }
- } else if(st.kind==="cards"||st.kind==="cardsCustom"){
+ } else bindSkillIconGrid();
+ bindClassGearPanel();
+ if(st.kind==="cards"||st.kind==="cardsCustom"){
    const source=st.source,opts=Object.keys(DB[source]),val=S.form[st.key]||"";
    if(isDialogue){
-     html+=`<div class="dialogue-list">${opts.map(o=>`<div class="option-card dialogue-option ${o===val?'active':''}" data-val="${escapeHtml(o)}"><b>${escapeHtml(o)}</b><span class="dialogue-text">${escapeHtml(DB[source][o].desc||"")}</span></div>`).join("")}</div>`;
+     html+=renderDialogueChoiceLayout(st,source,opts,val);
    }else{
      html+=`<div class="option-grid">${opts.map(o=>`<div class="option-card ${o===val?'active':''}" data-val="${escapeHtml(o)}"><div class="icon">${escapeHtml(DB[source][o].icon||o.slice(0,2))}</div><b>${escapeHtml(o)}</b></div>`).join("")}</div>`;
+     html+=`<div class="detail">${val?selectedDetail(source,val):emptySelectionDetail(st.title)}</div>`;
    }
-   html+=`<div class="detail">${val?selectedDetail(source,val):emptySelectionDetail(st.title)}</div>`;
    if(st.key==="race" && val && DB.races[val]?.skills){
-     html+=`<div class="detail"><div class="detail-title">Race Starting Skills</div><p>These skills describe what the character can attempt more confidently during play. They do not guarantee success; they shape which stat checks are reasonable and how the GM frames risk.</p><div class="usage-list">${renderSkillUsageList(DB.races[val].skills)}</div></div>`;
+     html+=renderSkillIconGrid(DB.races[val].skills,"raceSkills");
    }
    if(st.key==="className" && val && DB.classes[val]?.skills){
-     html+=`<div class="detail"><div class="detail-title">Class Starting Skills</div><p>These skills define the class's strongest play pattern. Their power depends on the session situation, preparation, opposition, and consequences.</p><div class="usage-list">${renderSkillUsageList(DB.classes[val].skills)}</div></div>`;
+     html+=renderSkillIconGrid(DB.classes[val].skills,"classSkills");
+     html+=renderClassGearPanel(DB.classes[val].gear||[],"classGear");
    }
    html+=renderNotes(st.key);
    if(st.key==="kind"){
      const roleSource=sourceForRole(),rk=roleKey(),rval=S.form[rk]||Object.keys(DB[roleSource])[0];
      html+=`<div class="detail"><div class="detail-title">${S.form.kind==="Veinborn"?"Discipline":"Mundane Proficiency"}</div><p>${S.form.kind==="Veinborn"?"Choose the school or manifestation your body uses when answering the Veins.":"Choose the practical excellence that keeps you alive without channeling the Veins."}</p><div class="option-grid">${Object.keys(DB[roleSource]).map(o=>`<div class="option-card ${o===rval?'active':''}" data-role="${escapeHtml(o)}"><div class="icon">${escapeHtml(DB[roleSource][o].icon||o.slice(0,2))}</div><b>${escapeHtml(o)}</b></div>`).join("")}</div><div class="detail">${selectedDetail(roleSource,rval)}</div></div>`;
    }
-   if(st.kind==="cardsCustom"){
+   if(st.kind==="cardsCustom" && !isDialogue){
      const customOn=val==="Custom";
      html+=`<div class="custom-box ${customOn?'':'hidden'}"><label>Custom ${st.title}</label><div class="custom-input-row"><textarea id="customInput" placeholder="Write your own ${st.title.toLowerCase()} here. The lore validator will check it.">${escapeHtml(S.form[st.key+"Custom"]||"")}</textarea>${customOn&&["origin","background","factionTie"].includes(st.key)?randomButtonInline(st.key):""}</div>${["background","factionTie"].includes(st.key)?renderCustomStatPicker(st.key):""}</div>`;
    }
@@ -2827,12 +3909,22 @@ function renderStep(){
    if(custom)custom.oninput=e=>{S.form[st.key+"Custom"]=e.target.value;save();renderValidationBox()};
    if(["background","factionTie"].includes(st.key)) wireCustomStatPicker(st.key);
  }
+ bindSkillIconGrid();
+ bindClassGearPanel();
  renderValidationBox();
 }
 function valueText(key){const v=S.form[key]||"";return v==="Custom"?(S.form[key+"Custom"]||""):v}
 
 function qualityCheckField(label, value, mode="text"){
  const text=String(value||"").trim();
+ if(mode==="name"){
+   const t=text;
+   if(!t)return `${label} is required.`;
+   if(t.length<2)return `${label} is too short.`;
+   if(!/[A-Za-zÀ-ÖØ-öø-ÿ' -]/.test(t))return `${label} needs readable name characters.`;
+   return "";
+ }
+
  const lower=text.toLowerCase();
  const badExact=["test","testing","asdf","qwerty","aaa","aaaa","none","n/a","na","idk","???","...", "-", "--", "placeholder", "temp", "todo"];
  if(!text) return `${label} is required.`;
@@ -2862,7 +3954,7 @@ function qualityCheckField(label, value, mode="text"){
 function validateLore(show=true){const f=S.form,problems=[],warnings=[],accepts=[];for(const st of STEPS){
  if(st.key==="review")continue;
  if(st.key==="name"){
-   const err=qualityCheckField(st.title,f[st.key],"object"); if(err) problems.push(err);
+   const err=qualityCheckField(st.title,f[st.key],st.key==="name"?"name":"object"); if(err) problems.push(err);
  }
  if(st.key==="appearance"){
    if(!isAppearanceComplete()) problems.push("Appearance needs Body / Build, Face / Features, Hair / Eyes, Clothing / Style, Scars / Marks / Tells, and Presence / First Impression.");
@@ -2879,7 +3971,7 @@ function validateLore(show=true){const f=S.form,problems=[],warnings=[],accepts=
    const err=qualityCheckField(st.title,backstoryCombined(),"backstory"); if(err) problems.push(err);
  }
  if(st.key==="object"){
-   const err=qualityCheckField(st.title,f[st.key],"object"); if(err) problems.push(err);
+   const err=qualityCheckField(st.title,f[st.key],st.key==="name"?"name":"object"); if(err) problems.push(err);
  }
  if(st.kind==="cardsCustom"&&f[st.key]==="Custom"){
    const err=qualityCheckField(`Custom ${st.title}`,f[st.key+"Custom"],"custom"); if(err) problems.push(err);
@@ -2900,7 +3992,7 @@ function validateLore(show=true){const f=S.form,problems=[],warnings=[],accepts=
 }
  if(!f.kind)problems.push("Type must be selected."); if(f.kind==="Veinborn"&&!f.discipline)problems.push("Veinborn characters must choose a discipline."); if(f.kind==="Mundane"&&!f.proficiency)problems.push("Mundane characters must choose a proficiency.");
  const text=[f.name,f.gender,f.className,appearanceText(),f.backstory,f.backstoryOrigin,f.backstoryPressure,f.backstoryIncident,f.backstoryTie,f.backstoryReason,f.backstoryOther,f.object,f.originCustom,f.backgroundCustom,f.factionTieCustom,f.flawCustom,f.goalCustom,f.secretCustom].join(" ").toLowerCase();const hard=["chosen one","prophecy chose me","destined savior","demigod","immortal","cannot die","control all mana veins","master of all magic","all disciplines","immune to veinburn","cannot suffer veinburn","last titanforged king","titanforged prince","syr'kai heir","own the silent city","resurrect souls","true resurrection","bring souls back","no cost magic","infinite mana","vein compact does not apply","above the compact","personal major vein","king of all","emperor of all"];hard.forEach(k=>{if(text.includes(k))problems.push(`Canon break / chosen-one pattern detected: “${k}”.`)});
- if(f.race==="Orikarn"&&f.kind==="Veinborn")problems.push("Orikarn cannot be Veinborn."); if(f.className==="Vein Adept"&&f.kind!=="Veinborn")problems.push("Vein Adept class requires a Veinborn character."); if(f.className==="Whore"&&f.startingGear!=="Whore\'s Kit")warnings.push("Whore class can use any starting gear, but Whore\'s Kit is the most class-aligned package.");  if(f.discipline==="Necromancy"&&text.includes("ghost"))warnings.push("Necromancy may mimic residual patterns, but it is not soul-contact or true resurrection."); if(text.includes("titanforged artifact")||text.includes("ancient relic"))warnings.push("Relic ties are allowed, but starting gear cannot be god-tier or consequence-free."); if(text.includes("noble")||f.origin==="Minor Noble")warnings.push("Status can help socially, but it does not override guild, Watcher, Compact, or border authority."); const canon=docCanonValidate();
+ if(f.race==="Orikarn"&&f.kind==="Veinborn")problems.push("Orikarn cannot be Veinborn."); if(f.className==="Vein Adept"&&f.kind!=="Veinborn")problems.push("Vein Adept class requires a Veinborn character.");  if(f.discipline==="Necromancy"&&text.includes("ghost"))warnings.push("Necromancy may mimic residual patterns, but it is not soul-contact or true resurrection."); if(text.includes("titanforged artifact")||text.includes("ancient relic"))warnings.push("Relic ties are allowed, but class gear cannot be god-tier or consequence-free."); if(text.includes("noble")||f.origin==="Minor Noble")warnings.push("Status can help socially, but it does not override guild, Watcher, Compact, or border authority."); const canon=docCanonValidate();
  canon.rejections.forEach(x=>problems.push(x));
  canon.warnings.forEach(x=>warnings.push(x));
  canon.reviews.forEach(x=>warnings.push("Needs Review: "+x));
@@ -2925,7 +4017,7 @@ function next(){
  const st=currentStep();
  const v=validateLore(false);
  if(st.key==="name"){
-   const err=qualityCheckField(st.title,S.form[st.key],"object");
+   const err=qualityCheckField(st.title,S.form[st.key],st.key==="name"?"name":"object");
    if(err){ showToast(`<b>${st.title} is not ready.</b><br>${err}`); return; }
  }
  if(st.key==="appearance"){
@@ -2947,7 +4039,7 @@ function next(){
    if(err){ showToast(`<b>${st.title} is not ready.</b><br>${err}`); return; }
  }
  if(st.key==="object"){
-   const err=qualityCheckField(st.title,S.form[st.key],"object");
+   const err=qualityCheckField(st.title,S.form[st.key],st.key==="name"?"name":"object");
    if(err){ showToast(`<b>${st.title} is not ready.</b><br>${err}`); return; }
  }
  if((st.kind==="cards"||st.kind==="cardsCustom")&&!S.form[st.key]){ showToast(`<b>${st.title} is required.</b><br>Choose one option before continuing.`); return; }
@@ -2983,9 +4075,7 @@ function back(){S.step=clamp(S.step-1,0,STEPS.length-1);renderAll()}
 function statBlock(stats){return Object.entries(stats).map(([k,v])=>`<div class="statbox"><b>${k.slice(0,3).toUpperCase()}</b><span>${v}</span><div class="tooltip"><strong>${k}</strong><br>${STAT_HELP[k]}</div></div>`).join("")}
 function renderDossier(target="dossier"){
  const f=S.form,stats=provisionalStats(),name=f.name||"Unnamed",race=f.race||"",crest=(race&&DB.races[race])?DB.races[race].icon:"?";
- const gear=[...(f.background&&DB.backgrounds[f.background]?DB.backgrounds[f.background].gear||[]:[]),...(f.startingGear&&DB.startingGear[f.startingGear]?DB.startingGear[f.startingGear].items||[]:[])];
- if(f.object)gear.push(f.object);
- const cleanGear=sanitizeGearList(gear);
+ const cleanGear=selectedStartingGearItems(f);
  const role=f.kind==="Veinborn"?f.discipline:(f.kind==="Mundane"?f.proficiency:"");
  const traitItems=[
    (race&&DB.races[race]?DB.races[race].trait:"")||"",
@@ -3006,18 +4096,18 @@ function renderDossier(target="dossier"){
   <div class="selection-row"><b>${f.kind==="Veinborn"?"Discipline":(f.kind==="Mundane"?"Proficiency":"Focus")}</b><span>${escapeHtml(role||"—")}</span></div>
  </div></div>
  <div class="side-section"><h3>Traits</h3><ul class="trait-list">${traitItems.map(x=>`<li>${escapeHtml(x)}</li>`).join("")}</ul></div>
- <div class="side-section"><h3>Starting Skills</h3><div class="tags">${[...raceSkills,...classSkills].map(x=>skillChip(x)).join("") || "<span class='tag'>—</span>"}</div></div>
+ <div class="side-section"><h3>Skills</h3><div class="tags">${[...raceSkills,...classSkills].map(x=>skillChip(x)).join("") || "<span class='tag'>—</span>"}</div></div>
  <div class="side-section"><div class="selection-table">
    <div class="selection-row"><b>Goal</b><span>${escapeHtml(valueText("goal")||"—")}</span></div>
    <div class="selection-row"><b>Flaw</b><span>${escapeHtml(valueText("flaw")||"—")}</span></div>
    <div class="selection-row"><b>Secret</b><span>${escapeHtml(valueText("secret")||"—")}</span></div>
   </div>
  </div>
- <div class="side-section"><h3>Gear</h3><div class="tags">${cleanGear.map(g=>gearChip(g)).join("") || "<span class='tag'>—</span>"}</div></div>`;
+ <div class="side-section"><h3>Inventory</h3><div class="tags">${cleanGear.map(g=>gearChip(g)).join("") || "<span class='tag'>—</span>"}</div></div>`;
  if($(target))$(target).innerHTML=html;
  if(target==="dossier"&&$("dossier2"))$("dossier2").innerHTML=html;
 }
-function randomize(){const race=pick(Object.keys(DB.races));S.form={race,gender:pick(["Male","Female"]),kind:DB.races[race].vein==="Forbidden"?"Mundane":pick(["Mundane","Veinborn"]),home:pick(Object.keys(DB.homes)),origin:pick(Object.keys(DB.origins).filter(x=>x!=="Custom")),background:pick(Object.keys(DB.backgrounds).filter(x=>x!=="Custom")),className:"",startingGear:pick(Object.keys(DB.startingGear)),factionTie:pick(Object.keys(DB.factions).filter(x=>x!=="Custom")),flaw:pick(Object.keys(DB.flaws).filter(x=>x!=="Custom")),goal:pick(Object.keys(DB.goals).filter(x=>x!=="Custom")),secret:pick(Object.keys(DB.secrets).filter(x=>x!=="Custom")),name:pick(DB.names[race]),appearance:{body:"",face:"",hairEyes:"",clothing:"",marks:"",presence:"",extra:""},backstory:"",object:pick(["cracked route compass","family seal-ring","burn-scarred field notebook","horn-band token","Veilthread scrap","illegal waymarker coin"])};S.form.className=pick(Object.keys(DB.classes).filter(x=>DB.classes[x].requires!=="Veinborn"||S.form.kind==="Veinborn"));S.form.discipline=S.form.kind==="Veinborn"?pick(Object.keys(DB.disciplines)):"";S.form.proficiency=S.form.kind==="Mundane"?pick(Object.keys(DB.proficiencies)):"";S.step=0;addLog("Randomized Draft","A new character draft was prepared.");renderAll()}
+function randomize(){const race=pick(Object.keys(DB.races));S.form={race,gender:pick(["Male","Female"]),kind:DB.races[race].vein==="Forbidden"?"Mundane":pick(["Mundane","Veinborn"]),home:pick(Object.keys(DB.homes)),origin:pick(Object.keys(DB.origins).filter(x=>x!=="Custom")),background:pick(Object.keys(DB.backgrounds).filter(x=>x!=="Custom")),className:"",factionTie:pick(Object.keys(DB.factions).filter(x=>x!=="Custom")),flaw:pick(Object.keys(DB.flaws).filter(x=>x!=="Custom")),goal:pick(Object.keys(DB.goals).filter(x=>x!=="Custom")),secret:pick(Object.keys(DB.secrets).filter(x=>x!=="Custom")),name:pick(DB.names[race]),appearance:{body:"",face:"",hairEyes:"",clothing:"",marks:"",presence:"",extra:""},backstory:"",object:pick(["cracked route compass","family seal-ring","burn-scarred field notebook","horn-band token","Veilthread scrap","illegal waymarker coin"])};S.form.className=pick(Object.keys(DB.classes).filter(x=>DB.classes[x].requires!=="Veinborn"||S.form.kind==="Veinborn"));S.form.discipline=S.form.kind==="Veinborn"?pick(Object.keys(DB.disciplines)):"";S.form.proficiency=S.form.kind==="Mundane"?pick(Object.keys(DB.proficiencies)):"";S.step=0;addLog("Randomized Draft","A new character draft was prepared.");renderAll()}
 
 function defaultProgression(){
  return {
@@ -3059,7 +4149,17 @@ function renderAdvancement(){
  </div>`;
 }
 
-function createCharacter(){const v=validateLore(false);if(!v.ok){showToast(`<b>Character is not ready.</b><br>${v.problems.slice(0,4).join("<br>")}`);return;}const stats=provisionalStats(),f=S.form,gear=[...(f.background&&DB.backgrounds[f.background]?DB.backgrounds[f.background].gear||[]:[]),...(f.startingGear&&DB.startingGear[f.startingGear]?DB.startingGear[f.startingGear].items||[]:[])];if(f.object)gear.push(f.object);gear.splice(0, gear.length, ...sanitizeGearList(gear)); const raceSkills=(f.race&&DB.races[f.race]&&DB.races[f.race].skills)?DB.races[f.race].skills:[]; const classSkills=(f.className&&DB.classes[f.className]&&DB.classes[f.className].skills)?DB.classes[f.className].skills:[]; S.pc={...f,appearance:appearanceText(),stats,gear,skills:[...raceSkills,...classSkills]};S.progression=defaultProgression();
+
+function selectedClassGearItems(form){
+ const f=form||S.form||{};
+ const classGear=(f.className&&DB.classes[f.className]&&DB.classes[f.className].gear)?DB.classes[f.className].gear:[];
+ return sanitizeGearList([...(classGear||[]),...(f.object?[f.object]:[])]);
+}
+function selectedStartingGearItems(form){
+ return selectedClassGearItems(form);
+}
+
+function createCharacter(){const v=validateLore(false);if(!v.ok){showToast(`<b>Character is not ready.</b><br>${v.problems.slice(0,4).join("<br>")}`);return;}const stats=provisionalStats(),f=S.form,gear=selectedStartingGearItems(f); const raceSkills=(f.race&&DB.races[f.race]&&DB.races[f.race].skills)?DB.races[f.race].skills:[]; const classSkills=(f.className&&DB.classes[f.className]&&DB.classes[f.className].skills)?DB.classes[f.className].skills:[]; S.pc={...f,appearance:appearanceText(),stats,gear,skills:[...raceSkills,...classSkills]};S.progression=defaultProgression();
 const hpMax=10+stats.Body*3+tierBonus();
 S.resources={Health:hpMax,MaxHealth:hpMax,Stress:0,MaxStress:8+stats.Presence,Fatigue:0,MaxFatigue:6+stats.Body,Veinburn:0,MaxVeinburn:f.kind==="Veinborn"?8+stats.Vein+(f.race==="Taurakin"?2:0):0,Blight:0,MaxBlight:8,Supplies:5+stats.Survival,Coin:15+stats.Presence*3,LegalHeat:0,Suspicion:0,Inventory:sanitizeGearList([...gear]),Injury:"None",Encumbrance:gear.length,MaxEncumbrance:10+stats.Body*3};S.phase="between";addLog("Character Created",`<b>${escapeHtml(f.name)}</b> is ready.`);renderAll();showToast(`<b>Character created.</b><br>${escapeHtml(f.name)} is ready for campaign generation.`,"success")}
 function initCampaignOptions(){
@@ -3346,7 +4446,7 @@ function getCharacterPacket(){
  const f=S.form, pc=S.pc || {};
  const stats=pc.stats || provisionalStats();
  const role=f.kind==="Veinborn"?f.discipline:f.proficiency;
- const gear=sanitizeGearList((pc.gear&&pc.gear.length)?pc.gear:[...(f.background&&DB.backgrounds[f.background]?DB.backgrounds[f.background].gear||[]:[]),...(f.startingGear&&DB.startingGear[f.startingGear]?DB.startingGear[f.startingGear].items||[]:[])]);
+ const gear=sanitizeGearList((pc.gear&&pc.gear.length)?pc.gear:selectedStartingGearItems(f));
  return {
   name:f.name,
   race:f.race,
@@ -3357,7 +4457,7 @@ function getCharacterPacket(){
   origin:valueText("origin"),
   background:valueText("background"),
   class_name:f.className,
-  starting_gear:f.startingGear,
+  class_gear:gear.filter(x=>x!==f.object),
   faction_tie:valueText("factionTie"),
   flaw:valueText("flaw"),
   goal:valueText("goal"),
@@ -3430,7 +4530,7 @@ GM STYLE:
 - Difficulty is not fixed. Adjust difficulty dynamically according to campaign situation, leverage, preparation, injuries, faction pressure, terrain, mana pressure, law pressure, and prior consequences.
 - Inventory is a live tracker. Add, remove, damage, conceal, spend, or mark items when the fiction requires it. Do not assume unlimited supplies.
 - Skills are live descriptors, not fixed superpowers. Starting skills and newly gained skills should affect what checks are possible, which stat applies, whether the DC shifts, and what consequences make sense.
-- Gear and inventory are live fictional tools, not automatic success buttons. Starting gear and newly gained gear may grant access, leverage, reduced difficulty, better positioning, or new options. How powerful a skill or item is depends on the current session situation, preparation, risk, opposition, and canon constraints.
+- Gear and inventory are live fictional tools, not automatic success buttons. Class gear and newly gained gear may grant access, leverage, reduced difficulty, better positioning, or new options. How powerful a skill or item is depends on the current session situation, preparation, risk, opposition, and canon constraints.
 
 
 LIVE SESSION PACING RULES:
@@ -3460,7 +4560,7 @@ NPC RESISTANCE AND RELATIONSHIP RULES:
 - NPCs are not information vending machines. They want safety, money, status, revenge, secrecy, belonging, survival, intimacy, or leverage.
 - Important NPCs have resistance states: Open, Guarded, Afraid, Loyal, Compromised, Hostile, or Broken.
 - Before major information is revealed, decide why the NPC would resist, bargain, lie, stall, panic, flee, attack, or offer only partial truth.
-- Track a relationship score between the player character and important NPCs from -3 to +3.
+- Track a relationship score between the player character and important NPCs from -10 to +10.
 - Relationship scale: -3 Enemy, -2 Hostile, -1 Wary, 0 Neutral, +1 Warm, +2 Trusted, +3 Bonded.
 - Relationship affects NPC reaction, but never overrides survival, fear, faction loyalty, blackmail, ideology, or canon constraints.
 - Positive relationship may lower social difficulty, increase patience, unlock honesty, or create aid.
@@ -3525,7 +4625,7 @@ Homeland: ${character.homeland}
 Origin: ${character.origin}
 Background: ${character.background}
 Class: ${character.class_name}
-Starting Gear Package: ${character.starting_gear}
+Class Gear: ${character.class_gear && character.class_gear.length ? character.class_gear.join(", ") : "—"}
 Faction Tie: ${character.faction_tie}
 Flaw: ${character.flaw}
 Goal: ${character.goal}
@@ -3545,7 +4645,7 @@ ${Object.entries(character.stats).map(([k,v])=>`- ${k}: ${v}`).join("\n")}
 Gear:
 ${character.gear.map(x=>{const u=gearUsage(x);return `- ${x}: ${u.desc} Session use: ${u.check}`}).join("\n")}
 
-Starting Skills:
+Skills:
 ${character.skills.map(x=>{const u=skillUsage(x);return `- ${x}: ${u.desc} Session use: ${u.check}`}).join("\n")}
 
 STARTING RESOURCES AND TRACKERS:
@@ -3726,7 +4826,7 @@ Rules for this JSON:
 - If a tracker changes, include the updated total value, not vague prose.
 - Use inventoryAdd and inventoryRemove for item changes.
 - Use playerFacingLedgerAdd only for information the player character knows, perceives, confirms, or can reasonably infer.
-- Use npcRelationship for relationship score changes with important NPCs. Values must stay between -3 and +3.
+- Use npcRelationship for relationship score changes with important NPCs. Values must stay between -10 and +10.
 - Relationship values are player-facing only when the character can reasonably perceive the shift. Otherwise keep the change hidden until it shows through behavior.
 - Do not include hidden faction clocks, secret NPC motives, undiscovered lies, or offscreen spoilers in the JSON.
 - If nothing mechanical changed, the JSON may include only chronicleAdd.
@@ -3743,10 +4843,10 @@ Start with the opening scene. Establish sensory details, immediate stakes, and t
 }
 async function copyGMPacket(){
  const text=$("gmPacket").value;
- if(!text || $("packetArea").classList.contains("packet-hidden")){showToast("<b>No packet yet.</b><br>Select an AI model and build the GM packet first.");return;}
+ if(!text || $("packetArea").classList.contains("packet-hidden")){showToast("<b>No packet yet.</b><br>Select an AI model and build the GM packet first.","error");return;}
  try{
    await navigator.clipboard.writeText(text);
-   showToast("<b>Copied.</b><br>Paste the packet into ChatGPT to start the live session.");
+   showToast(`<b>Copied.</b><br>Paste the packet into ${escapeHtml(S.selectedAIModel||selectedAIModel||"your AI chat")} to start the live session.`);
  }catch(e){
    $("gmPacket").select();
    showToast("<b>Copy manually.</b><br>Your browser blocked clipboard access, so the packet is selected.");
@@ -3860,7 +4960,8 @@ function applyPresetToForm(preset){
 }
 function currentPreset(){
  const sel=$("presetSelect");
- return TEST_PRESETS.find(p=>p.id===(sel?sel.value:"")) || TEST_PRESETS[0];
+ const list=orderedPresetList();
+ return list.find(p=>p.id===(sel?sel.value:"")) || list[0] || TEST_PRESETS[0];
 }
 function renderPresetPreview(){
  const preset=currentPreset();
@@ -3869,23 +4970,9 @@ function renderPresetPreview(){
  const oldPc=S.pc;
  const oldCampaign=S.campaign;
  applyPresetToForm(preset);
- const race=S.form.race||"";
- const role=S.form.kind==="Veinborn"?S.form.discipline:S.form.proficiency;
- const raceTip=race&&DB.races[race]?DB.races[race].desc:"Race shapes how Eldoria reads your body, prejudice, strengths, and boundaries.";
- const typeTip=S.form.kind==="Veinborn"
-   ?"Veinborn characters can channel manic radiation through a discipline, but power brings Veinburn risk and political accountability."
-   :"Mundane characters do not channel the Veins. Their survival comes from training, craft, discipline, and social leverage.";
- const classTip=S.form.className&&DB.classes[S.form.className]?DB.classes[S.form.className].desc:"Class defines the character's practical role and opening skill pattern.";
- const originTip=S.form.origin&&DB.origins[S.form.origin]?DB.origins[S.form.origin].desc:"Origin describes the social place the character came from. It creates doors, habits, and pressure; not immunity.";
  if($("presetBrief")){
-   $("presetBrief").innerHTML=`<h3>${escapeHtml(preset.label)}</h3>
-   <div class="campaign-detail-grid">
-    <div class="campaign-info-card tip-box" data-tip="${escapeHtml(raceTip)}"><b>Race</b><br>${escapeHtml(race||"—")}</div>
-    <div class="campaign-info-card tip-box" data-tip="${escapeHtml(typeTip)}"><b>Type</b><br>${escapeHtml(S.form.kind||"—")} ${role?`· ${escapeHtml(role)}`:""}</div>
-    <div class="campaign-info-card tip-box" data-tip="${escapeHtml(classTip)}"><b>Class</b><br>${escapeHtml(S.form.className||"—")}</div>
-    <div class="campaign-info-card tip-box" data-tip="${escapeHtml(originTip)}"><b>Origin</b><br>${escapeHtml(valueText("origin")||"—")}</div>
-   </div>
-   `;
+   $("presetBrief").hidden=true;
+   $("presetBrief").innerHTML="";
  }
  renderDossier("presetDossier");
  S.form=oldForm;
@@ -3895,7 +4982,7 @@ function renderPresetPreview(){
 function beginWelcome(){
  S=freshState();
  S.phase="welcome";
- renderAll(false);
+ renderAll(false); if(typeof syncResumeCreationOption==="function")syncResumeCreationOption(); if(typeof syncBackToBeginButton==="function")syncBackToBeginButton();
 }
 function startSetup(){
  S.phase="presetChoice";
@@ -3963,6 +5050,26 @@ function goHandoff(){
  buildGMPacket();
 }
 
+
+
+function goBackToBegin(){
+ S.phase="presetChoice";
+ syncResumeCreationOption();
+ renderAll();
+ showToast("<b>Back to setup choice.</b><br>Your unfinished character is still saved.","info");
+}
+function syncBackToBeginButton(){
+ const btn=$("backToBeginBtn");
+ if(btn)btn.onclick=goBackToBegin;
+}
+
+function syncResumeCreationOption(){
+ const card=$("resumeCreationCard");
+ const btn=$("resumeCreationBtn");
+ if(card)card.classList.toggle("stage-hidden",!hasIncompleteCharacterCreation());
+ if(btn)btn.onclick=resumeCharacterCreation;
+}
+
 function renderPhase(){
  if($("welcomeShell"))$("welcomeShell").classList.toggle("stage-hidden",S.phase!=="welcome");
  if($("presetChoiceShell"))$("presetChoiceShell").classList.toggle("stage-hidden",S.phase!=="presetChoice");
@@ -3977,6 +5084,7 @@ function renderPhase(){
 
  const creation=$("creationShell");
  const inCreation=S.phase==="creation";
+ document.body.classList.toggle("veinfire-creation-active",inCreation);
  document.body.classList.toggle("has-floating-actions",inCreation);
  if(creation)creation.classList.toggle("review-mode",inCreation && currentStep().key==="review");
 
@@ -3991,16 +5099,53 @@ function renderPhase(){
    navHand.disabled=!S.campaign;
    if(navProg) navProg.disabled=false;
  }
-}function renderAll(saveIt=true){
+}
+function syncCreationActionBar(){
+ const bar=$("creationActionBar");
+ if(!bar)return;
+ const inCreation=S.phase==="creation";
+ bar.classList.toggle("stage-hidden",!inCreation);
+ document.body.classList.toggle("veinfire-creation-active",inCreation);
+ document.body.classList.toggle("has-floating-actions",inCreation);
+ if(!inCreation)return;
+
+ const st=currentStep();
+ const backBtnGlobal=$("creationActionBack");
+ const nextBtnGlobal=$("creationActionNext");
+ if(backBtnGlobal){
+   backBtnGlobal.disabled=S.step===0;
+   backBtnGlobal.onclick=back;
+ }
+ if(nextBtnGlobal){
+   nextBtnGlobal.textContent=st.key==="review"?"Create Character":"Next";
+   nextBtnGlobal.onclick=st.key==="review"?createCharacter:next;
+ }
+}
+
+
+function hasIncompleteCharacterCreation(){
+ if(!S||!S.form)return false;
+ if(S.pc)return false;
+ const f=S.form;
+ const meaningfulKeys=["race","gender","kind","discipline","proficiency","className","origin","originCustom","background","backgroundCustom","factionTie","factionTieCustom","flaw","goal","secret","object","name"];
+ return meaningfulKeys.some(k=>String(f[k]||"").trim().length>0) || isAppearanceComplete() || backstoryCombined().trim().length>0;
+}
+function resumeCharacterCreation(){
+ S.phase="creation";
+ if(typeof S.step!=="number"||S.step<0||S.step>=STEPS.length)S.step=0;
+ renderAll();
+ showToast("<b>Character creation resumed.</b><br>Continue from where you left off.","info");
+}
+
+function renderAll(saveIt=true){
  S.form=normalizeAppearanceInput(S.form);
- S.form.backstory=backstoryCombined();
  validateLore(false);
  renderPhase();
  if(S.phase==="creation"){
    renderPath();
    renderStep();
    renderDossier("dossier");
-   if($("reviewCreateSlot"))$("reviewCreateSlot").innerHTML=currentStep().key==="review"?`<div class="floating-actions"><button class="secondary" onclick="back()">Back</button><button onclick="createCharacter()">Create Character</button></div>`:"";
+   if($("reviewCreateSlot"))$("reviewCreateSlot").innerHTML="";
    renderDossier("dossier2");
  }else if(S.phase==="presetReview"){
    renderPresetPreview();
@@ -4010,18 +5155,47 @@ function renderPhase(){
  }
  renderPlayPanels();
  if(saveIt)save();
+
+ syncCreationActionBar();
+
+ if(typeof syncResumeCreationOption==='function')syncResumeCreationOption();
+
+ if(typeof syncBackToBeginButton==="function")syncBackToBeginButton();
 }
 function resetAll(){
- localStorage.removeItem("veinfire_rpg_v59");
+ localStorage.removeItem("veinfire_rpg_v60");
  S=freshState();
  S.phase="welcome";
  renderAll(false);
 }
 
+
+function presetTropeLabel(p){
+ const f=p.form||{};
+ const fallback=(p.label||"Preset Character").replace(/^.*?—\s*/,"").trim();
+ const cls=f.className||"";
+ const origin=f.origin||"";
+ const role=f.discipline||f.proficiency||"";
+ if(cls==="Whore")return "Exiled Noble Whore";
+ if(role&&/Watcher/i.test(p.label||""))return "Watcher-Bell Runecaster";
+ if(cls&&origin)return `${origin} ${cls}`;
+ return fallback||p.shortLabel||p.label||"Preset Character";
+}
+function orderedPresetList(){
+ const list=[...TEST_PRESETS];
+ return list.sort((a,b)=>{
+   const aw=a.form?.className==="Whore"?1:0;
+   const bw=b.form?.className==="Whore"?1:0;
+   if(aw!==bw)return aw-bw;
+   return presetTropeLabel(a).localeCompare(presetTropeLabel(b));
+ });
+}
+
 function initPresetSelect(){
  const sel=$("presetSelect");
  if(!sel)return;
- sel.innerHTML=TEST_PRESETS.map(p=>`<option value="${p.id}">${escapeHtml(PRESET_SHORT_LABELS[p.id]||p.shortLabel||p.label)}</option>`).join("");
+ const list=orderedPresetList();
+ sel.innerHTML=list.map(p=>`<option value="${p.id}">${escapeHtml(presetTropeLabel(p))}</option>`).join("");
  sel.onchange=()=>renderPresetPreview();
  renderPresetPreview();
 }
@@ -4164,7 +5338,28 @@ function applyProgressData(data,isFullImport=false){
  if(data.milestones!==undefined)p.milestones=data.milestones;if(data.tier!==undefined)p.tier=data.tier;if(data.unspentGrowth!==undefined)p.unspentGrowth=data.unspentGrowth;
  if(data.npcAdd){if(!S.campaign)S.campaign={npcs:[],reps:{}};if(!S.campaign.npcs)S.campaign.npcs=[];(Array.isArray(data.npcAdd)?data.npcAdd:[data.npcAdd]).forEach(n=>S.campaign.npcs.push(normalizeNpc(n)));}
  if(data.npcUpdate){if(!S.campaign)S.campaign={npcs:[],reps:{}};if(!S.campaign.npcs)S.campaign.npcs=[];(Array.isArray(data.npcUpdate)?data.npcUpdate:[data.npcUpdate]).forEach(up=>{let npc=S.campaign.npcs.find(n=>n.name===up.name);if(!npc){npc={name:up.name||"Unnamed NPC",relationship:0,resistance:"Guarded",memory:[]};S.campaign.npcs.push(npc);}if(up.memoryAdd){npc.memory=npc.memory||[];(Array.isArray(up.memoryAdd)?up.memoryAdd:[up.memoryAdd]).forEach(m=>npc.memory.push(m));}Object.assign(npc,up);if(up.relationship!==undefined)npc.relationship=clampRelationship(up.relationship);normalizeNpc(npc);});}
- if(data.npcRelationship){if(!S.campaign)S.campaign={npcs:[],reps:{}};if(!S.campaign.npcs)S.campaign.npcs=[];Object.entries(data.npcRelationship).forEach(([name,chg])=>{let npc=S.campaign.npcs.find(n=>n.name===name);if(!npc){npc={name,relationship:0,resistance:"Guarded",memory:[]};S.campaign.npcs.push(npc);}const old=clampRelationship(npc.relationship||0), next=chg.newValue!==undefined?clampRelationship(chg.newValue):clampRelationship(old+(Number(chg.delta)||0));npc.relationship=next;npc.relationshipLabel=relationshipLabel(next);npc.memory=npc.memory||[];if(chg.reason)npc.memory.push(`Relationship ${next-old>=0?"+":""}${next-old} (${relationshipDeltaScaleNote(next-old)}): ${chg.reason}`);normalizeNpc(npc);});}
+ if(data.npcRelationship){
+   if(!S.campaign)S.campaign={npcs:[],reps:{}};
+   if(!S.campaign.npcs)S.campaign.npcs=[];
+   const relEntries=Array.isArray(data.npcRelationship)
+     ? data.npcRelationship.map(entry=>[entry.name,entry])
+     : Object.entries(data.npcRelationship);
+   relEntries.forEach(([name,chg])=>{
+    if(!name)return;
+    let npc=S.campaign.npcs.find(n=>n.name===name);
+    if(!npc){npc={name,relationship:0,resistance:"Guarded",memory:[]};S.campaign.npcs.push(npc);}
+    const old=clampRelationship(npc.relationship||0);
+    const incomingValue=chg.newValue!==undefined?chg.newValue:(chg.value!==undefined?chg.value:undefined);
+    const next=incomingValue!==undefined?clampRelationship(incomingValue):clampRelationship(old+(Number(chg.delta)||0));
+    npc.relationship=next;
+    npc.relationshipLabel=relationshipLabel(next);
+    if(chg.label)npc.relationshipLabel=chg.label;
+    npc.memory=npc.memory||[];
+    const reason=chg.reason||chg.note;
+    if(reason)npc.memory.push(`Relationship ${next-old>=0?"+":""}${next-old} (${relationshipDeltaScaleNote(next-old)}): ${reason}`);
+    normalizeNpc(npc);
+   });
+ }
  if(data.campaignNotesAdd)addLog("Campaign Note",escapeHtml(data.campaignNotesAdd)); if(data.chronicleAdd)addLog("GM Update",escapeHtml(data.chronicleAdd)); else addLog("GM Update","Progress update imported."); markProgressImported();
 }
 
@@ -4231,6 +5426,7 @@ function downloadProgressSave(){
 }
 
 document.addEventListener("DOMContentLoaded",()=>{load();initCampaignOptions();initPresetSelect();setupModelButtons();setupCanonModes();renderAll(false);renderManualEditor();
+ if($("closeHelpBtn"))$("closeHelpBtn").onclick=closeHelpNotes; if($("helpModal"))$("helpModal").onclick=e=>{if(e.target.id==="helpModal")closeHelpNotes();};
  const toolsBtn=$("toolsBtn"), toolsMenu=$("toolsMenu");
  if(toolsBtn&&toolsMenu){
    toolsBtn.onclick=(e)=>{e.stopPropagation();toolsMenu.classList.toggle("show");};
